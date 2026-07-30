@@ -1,3 +1,4 @@
+// src/components/GameQuiz.jsx
 import React, { useState, useEffect } from 'react';
 import { barajarArray, TIEMPO_POR_DEFECTO_SEGUNDOS, TEXTOS_UI } from '../data/temarioPRL';
 
@@ -18,43 +19,61 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
   const txt = TEXTOS_UI[lang];
 
-  const cargarYBarajar = () => {
-    if (unidade && unidade.preguntas) {
-      const preguntasConOpcionesBarajadas = unidade.preguntas.map((p) => {
-        const opcionesIdioma = p.opciones[lang];
-        const opcionCorrectaTexto = opcionesIdioma[p.respuestaCorrecta];
-        const opcionesMezcladas = barajarArray(opcionesIdioma);
-        const nuevaRespuestaCorrecta = opcionesMezcladas.indexOf(opcionCorrectaTexto);
-
-        return {
-          ...p,
-          preguntaTexto: p.pregunta[lang],
-          explicacionTexto: p.explicacion ? p.explicacion[lang] : null,
-          opciones: opcionesMezcladas,
-          respuestaCorrecta: nuevaRespuestaCorrecta
-        };
-      });
-
-      const listaFinal = barajarArray(preguntasConOpcionesBarajadas);
-      setPreguntasBarajadas(listaFinal);
-      setCurrentIdx(0);
-      setSelectedOption(null);
-      setIsAnswered(false);
-      setFeedback(null);
-      setIsQuizFinished(false);
-      setAciertos(0);
-      setPuntosTotalesIntento(0);
-      setHistorialRespuestas([]);
-      setMostrarRevision(false);
-      setTimeLeft(listaFinal[0]?.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS);
-      setGlobalTimeLeft(unidade.isTestGeneral ? 600 : null);
+  // Carga inicial al seleccionar el tema (solo la primera vez)
+  useEffect(() => {
+    if (unidade && unidade.preguntas && preguntasBarajadas.length === 0) {
+      inicializarPreguntas(unidade.preguntas);
     }
+  }, [unidade]);
+
+  const inicializarPreguntas = (rawPreguntas) => {
+    const preguntasConOpcionesBarajadas = rawPreguntas.map((p) => {
+      // Guardamos la referencia de los textos originales en ambos idiomas para poder cambiar dinámicamente
+      const opcionesGl = p.opciones.gl;
+      const opcionesEs = p.opciones.es;
+      const opcionCorrectaTextoGl = opcionesGl[p.respuestaCorrecta];
+      const opcionCorrectaTextoEs = opcionesEs[p.respuestaCorrecta];
+
+      // Barajamos ambos idiomas de forma independiente pero manteniendo el mapeo correcto
+      const opMezcladasGl = barajarArray(opcionesGl);
+      const nuevaCorrectaGl = opMezcladasGl.indexOf(opcionCorrectaTextoGl);
+
+      const opMezcladasEs = barajarArray(opcionesEs);
+      const nuevaCorrectaEs = opMezcladasEs.indexOf(opcionCorrectaTextoEs);
+
+      return {
+        ...p,
+        textoGl: p.pregunta.gl,
+        textoEs: p.pregunta.es,
+        explGl: p.explicacion ? p.explicacion.gl : null,
+        explEs: p.explicacion ? p.explicacion.es : null,
+        opcionesGl: opMezcladasGl,
+        opcionesEs: opMezcladasEs,
+        corrGl: nuevaCorrectaGl,
+        corrEs: nuevaCorrectaEs
+      };
+    });
+
+    const listaFinal = barajarArray(preguntasConOpcionesBarajadas);
+    setPreguntasBarajadas(listaFinal);
+    setCurrentIdx(0);
+    setSelectedOption(null);
+    setIsAnswered(false);
+    setFeedback(null);
+    setIsQuizFinished(false);
+    setAciertos(0);
+    setPuntosTotalesIntento(0);
+    setHistorialRespuestas([]);
+    setMostrarRevision(false);
+    setTimeLeft(listaFinal[0]?.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS);
+    setGlobalTimeLeft(unidade.isTestGeneral ? 600 : null);
   };
 
-  useEffect(() => {
-    cargarYBarajar();
-  }, [unidade, lang]);
+  const reiniciarTest = () => {
+    inicializarPreguntas(unidade.preguntas);
+  };
 
+  // Reloj Global de 10 minutos (Test General)
   useEffect(() => {
     if (!unidade.isTestGeneral || globalTimeLeft === null || isQuizFinished) return;
 
@@ -69,6 +88,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
   const preguntaActual = preguntasBarajadas[currentIdx];
 
+  // Reloj Individual de 30s por pregunta
   useEffect(() => {
     if (isAnswered || isQuizFinished || !preguntaActual) return;
     if (timeLeft === 0) {
@@ -82,14 +102,18 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
   const handleTimeout = () => {
     setIsAnswered(true);
     
+    const opActuales = lang === 'gl' ? preguntaActual.opcionesGl : preguntaActual.opcionesEs;
+    const corrActual = lang === 'gl' ? preguntaActual.corrGl : preguntaActual.corrEs;
+    const explActual = lang === 'gl' ? preguntaActual.explGl : preguntaActual.explEs;
+
     setHistorialRespuestas((prev) => [
       ...prev,
       {
-        pregunta: preguntaActual.preguntaTexto,
-        opciones: preguntaActual.opciones,
+        pregunta: lang === 'gl' ? preguntaActual.textoGl : preguntaActual.textoEs,
+        opciones: opActuales,
         seleccionada: -1,
-        correcta: preguntaActual.respuestaCorrecta,
-        explicacion: preguntaActual.explicacionTexto
+        correcta: corrActual,
+        explicacion: explActual
       }
     ]);
 
@@ -104,16 +128,21 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
     setSelectedOption(index);
     setIsAnswered(true);
 
-    const esCorrecta = index === preguntaActual.respuestaCorrecta;
+    const corrActual = lang === 'gl' ? preguntaActual.corrGl : preguntaActual.corrEs;
+    const opActuales = lang === 'gl' ? preguntaActual.opcionesGl : preguntaActual.opcionesEs;
+    const explActual = lang === 'gl' ? preguntaActual.explGl : preguntaActual.explEs;
+    const preguntaTextoActual = lang === 'gl' ? preguntaActual.textoGl : preguntaActual.textoEs;
+
+    const esCorrecta = index === corrActual;
 
     setHistorialRespuestas((prev) => [
       ...prev,
       {
-        pregunta: preguntaActual.preguntaTexto,
-        opciones: preguntaActual.opciones,
+        pregunta: preguntaTextoActual,
+        opciones: opActuales,
         seleccionada: index,
-        correcta: preguntaActual.respuestaCorrecta,
-        explicacion: preguntaActual.explicacionTexto
+        correcta: corrActual,
+        explicacion: explActual
       }
     ]);
 
@@ -132,7 +161,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
     } else {
       setFeedback({
         type: 'error',
-        text: `${txt.incorrectoRespuesta} ${preguntaActual.opciones[preguntaActual.respuestaCorrecta]}`
+        text: `${txt.incorrectoRespuesta} ${opActuales[corrActual]}`
       });
     }
   };
@@ -224,7 +253,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
           <button
-            onClick={cargarYBarajar}
+            onClick={reiniciarTest}
             className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-md uppercase tracking-wider shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2"
           >
             <span>🔄</span> Repetir Test
@@ -244,6 +273,11 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
   const maxTiempo = preguntaActual.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS;
   const porcentajeTiempo = (timeLeft / maxTiempo) * 100;
+
+  const textoPreguntaActual = lang === 'gl' ? preguntaActual.textoGl : preguntaActual.textoEs;
+  const opcionesActuales = lang === 'gl' ? preguntaActual.opcionesGl : preguntaActual.opcionesEs;
+  const correctaActual = lang === 'gl' ? preguntaActual.corrGl : preguntaActual.corrEs;
+  const explicacionActual = lang === 'gl' ? preguntaActual.explGl : preguntaActual.explEs;
 
   return (
     <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-3xl mx-auto relative">
@@ -305,14 +339,14 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
       </div>
 
       <h2 className="text-2xl font-bold text-white mb-8 text-center leading-relaxed">
-        {preguntaActual.preguntaTexto}
+        {textoPreguntaActual}
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        {preguntaActual.opciones.map((opcion, idx) => {
+        {opcionesActuales.map((opcion, idx) => {
           let btnStyle = "bg-slate-800/80 border-slate-700 text-slate-200 hover:bg-slate-800 hover:border-blue-500";
           if (isAnswered) {
-            if (idx === preguntaActual.respuestaCorrecta) {
+            if (idx === correctaActual) {
               btnStyle = "bg-emerald-500/20 border-emerald-500 text-emerald-200 font-bold";
             } else if (idx === selectedOption) {
               btnStyle = "bg-red-500/20 border-red-500 text-red-200";
@@ -345,9 +379,9 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
           }`}>
             <div>{feedback.text}</div>
             
-            {preguntaActual.explicacionTexto && (
+            {explicacionActual && (
               <div className="mt-3 pt-3 border-t border-slate-700/50 text-xs font-normal text-slate-300 text-left bg-slate-950/40 p-3 rounded-lg">
-                💡 <strong>Justificación Didáctica:</strong> {preguntaActual.explicacionTexto}
+                💡 <strong>Justificación Didáctica:</strong> {explicacionActual}
               </div>
             )}
           </div>
