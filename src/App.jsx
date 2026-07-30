@@ -32,10 +32,20 @@ export default function App() {
     return () => unsubscribe();
   }, [codigoSala]);
 
+  const handleEntrarAlumno = (e) => {
+    e.preventDefault();
+    if (equipo.trim() && codigoSala.trim()) {
+      const keyEquipo = equipo.trim().replace(/[.#$\[\]]/g, "_");
+      const equipoRef = ref(db, `salas/${codigoSala.trim()}/ranking/${keyEquipo}`);
+      set(equipoRef, 0);
+      setIsStarted(true);
+    }
+  };
+
   const reportScore = (nombreEquipo, pts) => {
     if (!codigoSala) return;
 
-    const keyEquipo = nombreEquipo.replace(/[.#$\[\]]/g, "_");
+    const keyEquipo = nombreEquipo.trim().replace(/[.#$\[\]]/g, "_");
     const equipoRef = ref(db, `salas/${codigoSala}/ranking/${keyEquipo}`);
     const puntosActuales = rankingAula[keyEquipo] || 0;
     
@@ -59,7 +69,7 @@ export default function App() {
   };
 
   const rankingOrdenado = Object.entries(rankingAula).sort((a, b) => b[1] - a[1]);
-  const posicionAlumno = rankingOrdenado.findIndex(([nombre]) => nombre === equipo.replace(/[.#$\[\]]/g, "_")) + 1;
+  const posicionAlumno = rankingOrdenado.findIndex(([nombre]) => nombre === equipo.trim().replace(/[.#$\[\]]/g, "_")) + 1;
 
   const LanguageToggle = () => (
     <div className="flex bg-slate-800 p-1 rounded-xl border border-slate-700">
@@ -100,7 +110,7 @@ export default function App() {
             {txt.subtitulo}
           </p>
 
-          <form onSubmit={(e) => { e.preventDefault(); if (equipo.trim() && codigoSala.trim()) setIsStarted(true); }} className="space-y-4">
+          <form onSubmit={handleEntrarAlumno} className="space-y-4">
             <input
               type="text"
               value={equipo}
@@ -253,7 +263,7 @@ export default function App() {
             ) : (
               <div className="space-y-2">
                 {rankingOrdenado.map(([nombre, pts], index) => {
-                  const esMiEquipo = nombre === equipo.replace(/[.#$\[\]]/g, "_");
+                  const esMiEquipo = nombre === equipo.trim().replace(/[.#$\[\]]/g, "_");
                   return (
                     <div
                       key={nombre}
