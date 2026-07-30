@@ -155,6 +155,68 @@ export const TEMARIO_PRL = [
             respuestaCorrecta: 2,
             tiempo: 30,
             puntos: 100
+          },
+          {
+            id: 103,
+            pregunta: {
+              gl: "Desde o punto de vista técnico-preventivo, que é un accidente de traballo?",
+              es: "Desde el punto de vista técnico-preventivo, ¿qué es un accidente de trabajo?"
+            },
+            opciones: {
+              gl: [
+                "Toda lesión corporal sufrida con ocasión ou a consecuencia do traballo",
+                "Un suceso anormal, brusco e inesperado que interrompe o traballo e pode causar lesións",
+                "Un deterioro lento e paulatino da saúde por exposición crónica",
+                "Calquera enfermidade contraída no centro de traballo"
+              ],
+              es: [
+                "Toda lesión corporal sufrida con ocasión o a consecuencia del trabajo",
+                "Un suceso anormal, brusco e inesperado que interrumpe el trabajo y puede causar lesiones",
+                "Un deterioro lento de la salud por exposición crónica",
+                "Cualquier enfermedad contraída en el centro de trabajo"
+              ]
+            },
+            respuestaCorrecta: 1,
+            tiempo: 30,
+            puntos: 100
+          },
+          {
+            id: 104,
+            pregunta: {
+              gl: "Que son os accidentes chamados 'in itinere'?",
+              es: "¿Qué son los accidentes llamados 'in itinere'?"
+            },
+            opciones: {
+              gl: [
+                "Os ocorridos ao desprazarse entre centros de traballo da mesma empresa",
+                "Os producidos no traxecto habitual entre o domicilio e o centro de traballo",
+                "Os sufridos durante as pausas de descanso dentro da xornada",
+                "Os accidentes graves producidos por maquinaria itinerante"
+              ],
+              es: [
+                "Los ocurridos al desplazarse entre centros de trabajo de la misma empresa",
+                "Los producidos en el trayecto habitual entre el domicilio y el centro de trabajo",
+                "Los sufridos durante las pausas de descanso en la jornada",
+                "Los accidentes graves producidos por maquinaria itinerante"
+              ]
+            },
+            respuestaCorrecta: 1,
+            tiempo: 30,
+            puntos: 100
+          },
+          {
+            id: 105,
+            pregunta: {
+              gl: "Que especialidade preventiva busca a adaptación entre o traballo e a persoa?",
+              es: "¿Qué especialidad preventiva busca la adecuación entre el trabajo y la persona?"
+            },
+            opciones: {
+              gl: ["Hixiene Industrial", "Seguridade no Traballo", "Ergonomía", "Psicoloxía Aplicada"],
+              es: ["Higiene Industrial", "Seguridad en el Trabajo", "Ergonomía", "Psicología Aplicada"]
+            },
+            respuestaCorrecta: 2,
+            tiempo: 30,
+            puntos: 100
           }
         ]
       },
@@ -186,6 +248,20 @@ export const TEMARIO_PRL = [
               ]
             },
             respuestaCorrecta: 1,
+            tiempo: 30,
+            puntos: 100
+          },
+          {
+            id: 108,
+            pregunta: {
+              gl: "A partir de cantos traballadores é obrigatoria a constitución do Comité de Seguridade e Saúde?",
+              es: "¿A partir de cuántos trabajadores es obligatoria la constitución del Comité de Seguridad y Salud?"
+            },
+            opciones: {
+              gl: ["6 traballadores", "30 traballadores", "50 traballadores", "100 traballadores"],
+              es: ["6 trabajadores", "30 trabajadores", "50 trabajadores", "100 trabajadores"]
+            },
+            respuestaCorrecta: 2,
             tiempo: 30,
             puntos: 100
           }
@@ -220,6 +296,20 @@ export const TEMARIO_PRL = [
             respuestaCorrecta: 1,
             tiempo: 30,
             puntos: 100
+          },
+          {
+            id: 202,
+            pregunta: {
+              gl: "Cada canto tempo debe realizarse o retimbrado (comprobación de presión) dun extintor?",
+              es: "¿Cada cuánto tiempo debe realizarse el retimbrado (comprobación de presión) de un extintor?"
+            },
+            opciones: {
+              gl: ["Cada ano", "Cada 3 anos", "Cada 5 anos (ata un máximo de 3 veces)", "Cada 10 anos"],
+              es: ["Cada año", "Cada 3 años", "Cada 5 años (hasta un máximo de 3 veces)", "Cada 10 años"]
+            },
+            respuestaCorrecta: 2,
+            tiempo: 30,
+            puntos: 100
           }
         ]
       },
@@ -241,6 +331,20 @@ export const TEMARIO_PRL = [
               es: ["Vía dérmica", "Vía inhalatoria o respiratoria", "Vía digestiva", "Vía parenteral"]
             },
             respuestaCorrecta: 1,
+            tiempo: 30,
+            puntos: 100
+          },
+          {
+            id: 209,
+            pregunta: {
+              gl: "A partir de que nivel de ruído diario (LAeq,d) é de uso OBRIGATORIO o protector auditivo segundo o RD 1316/1989?",
+              es: "¿A partir de qué nivel de ruido diario (LAeq,d) es de uso OBLIGATORIO el protector auditivo según el RD 1316/1989?"
+            },
+            opciones: {
+              gl: ["80 dBA", "85 dBA", "90 dBA", "95 dBA"],
+              es: ["80 dBA", "85 dBA", "90 dBA", "95 dBA"]
+            },
+            respuestaCorrecta: 2,
             tiempo: 30,
             puntos: 100
           }

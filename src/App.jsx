@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { ref, onValue, set } from 'firebase/database';
-import { db } from './firebase';
 import SelectorUnidad from './components/SelectorUnidad';
 import GameQuiz from './components/GameQuiz';
 import { TEXTOS_UI } from './data/temarioPRL';
@@ -21,27 +19,32 @@ export default function App() {
   const currentUrl = window.location.href;
 
   useEffect(() => {
-    if (!codigoSala) return;
-
-    const rankingRef = ref(db, `salas/${codigoSala}/ranking`);
-    const unsubscribe = onValue(rankingRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        setRankingAula(data);
-      } else {
-        setRankingAula({});
+    const channel = new BroadcastChannel('prl_arcade_channel');
+    channel.onmessage = (event) => {
+      const { type, payload } = event.data;
+      if (type === 'SCORE_UPDATE') {
+        setRankingAula((prev) => {
+          const nuevoRanking = {
+            ...prev,
+            [payload.equipo]: (prev[payload.equipo] || 0) + payload.pts
+          };
+          channel.postMessage({ type: 'RANKING_SYNC', payload: nuevoRanking });
+          return nuevoRanking;
+        });
+      } else if (type === 'RANKING_SYNC') {
+        setRankingAula(payload);
       }
-    });
-
-    return () => unsubscribe();
-  }, [codigoSala]);
+    };
+    return () => channel.close();
+  }, []);
 
   const reportScore = (nombreEquipo, pts) => {
-    if (!codigoSala) return;
-
-    const keyEquipo = nombreEquipo.replace(/[.#$\[\]]/g, "_");
-    const equipoRef = ref(db, `salas/${codigoSala}/ranking/${keyEquipo}`);
-    set(equipoRef, (rankingAula[keyEquipo] || 0) + pts);
+    const channel = new BroadcastChannel('prl_arcade_channel');
+    channel.postMessage({
+      type: 'SCORE_UPDATE',
+      payload: { equipo: nombreEquipo, pts }
+    });
+    channel.close();
   };
 
   const addPoints = (pts) => {
@@ -61,7 +64,7 @@ export default function App() {
   };
 
   const rankingOrdenado = Object.entries(rankingAula).sort((a, b) => b[1] - a[1]);
-  const posicionAlumno = rankingOrdenado.findIndex(([nombre]) => nombre === equipo.replace(/[.#$\[\]]/g, "_")) + 1;
+  const posicionAlumno = rankingOrdenado.findIndex(([nombre]) => nombre === equipo) + 1;
 
   const LanguageToggle = () => (
     <div className="flex bg-slate-800 p-1 rounded-xl border border-slate-700">
@@ -102,7 +105,7 @@ export default function App() {
             {txt.subtitulo}
           </p>
 
-          <form onSubmit={(e) => { e.preventDefault(); if (equipo.trim() && codigoSala.trim()) setIsStarted(true); }} className="space-y-4">
+          <form onSubmit={(e) => { e.preventDefault(); if (equipo.trim()) setIsStarted(true); }} className="space-y-4">
             <input
               type="text"
               value={equipo}
@@ -115,10 +118,9 @@ export default function App() {
               type="text"
               value={codigoSala}
               onChange={(e) => setCodigoSala(e.target.value)}
-              placeholder="Código de Aula (Ej. 1234)"
+              placeholder={txt.codigoSalaOpcional}
               maxLength={6}
               className="w-full p-3 rounded-xl bg-slate-800/60 border border-slate-700 text-slate-300 font-mono text-center text-sm"
-              required
             />
             <button type="submit" className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl uppercase tracking-wider shadow-lg shadow-blue-600/30 transition-colors">
               {txt.entrarJugar}
@@ -209,7 +211,7 @@ export default function App() {
           <h1 className="text-xl font-black tracking-wide text-white uppercase flex items-center gap-2">
             PRL <span className="text-blue-500">Challenge</span>
           </h1>
-          <p className="text-xs text-slate-400">{txt.equipo}: <span className="text-emerald-400 font-bold">{equipo}</span> • Sala: <span className="text-amber-400 font-mono font-bold">{codigoSala}</span></p>
+          <p className="text-xs text-slate-400">{txt.equipo}: <span className="text-emerald-400 font-bold">{equipo}</span></p>
         </div>
         <div className="flex items-center gap-3">
           <LanguageToggle />
@@ -248,14 +250,14 @@ export default function App() {
         {tabAlumno === 'ranking' ? (
           <div className="max-w-xl mx-auto bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
             <h2 className="text-lg font-bold text-slate-200 uppercase tracking-wider mb-4 text-center">
-              {txt.clasificacionClase} (Sala: {codigoSala})
+              {txt.clasificacionClase}
             </h2>
             {rankingOrdenado.length === 0 ? (
               <p className="text-center text-slate-500 text-sm py-8">{txt.esperandoRespuestas}</p>
             ) : (
               <div className="space-y-2">
                 {rankingOrdenado.map(([nombre, pts], index) => {
-                  const esMiEquipo = nombre === equipo.replace(/[.#$\[\]]/g, "_");
+                  const esMiEquipo = nombre === equipo;
                   return (
                     <div
                       key={nombre}
