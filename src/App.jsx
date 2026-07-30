@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import SelectorUnidad from './components/SelectorUnidad';
@@ -13,21 +14,32 @@ export default function App() {
   const [isProyectorMode, setIsProyectorMode] = useState(false);
   const [unidadeSeleccionada, setUnidadeSeleccionada] = useState(null);
   const [rankingAula, setRankingAula] = useState({});
+  const [tabAlumno, setTabAlumno] = useState('juego'); // 'juego' o 'ranking'
 
   const txt = TEXTOS_UI[lang];
   const currentUrl = window.location.href;
 
+  // Escuchar actualizaciones de puntuación y sincronizar el ranking global
   useEffect(() => {
     const channel = new BroadcastChannel('prl_arcade_channel');
+    
     channel.onmessage = (event) => {
       const { type, payload } = event.data;
       if (type === 'SCORE_UPDATE') {
-        setRankingAula((prev) => ({
-          ...prev,
-          [payload.equipo]: (prev[payload.equipo] || 0) + payload.pts
-        }));
+        setRankingAula((prev) => {
+          const nuevoRanking = {
+            ...prev,
+            [payload.equipo]: (prev[payload.equipo] || 0) + payload.pts
+          };
+          // Notificar a todos los dispositivos del nuevo estado del ranking
+          channel.postMessage({ type: 'RANKING_SYNC', payload: nuevoRanking });
+          return nuevoRanking;
+        });
+      } else if (type === 'RANKING_SYNC') {
+        setRankingAula(payload);
       }
     };
+
     return () => channel.close();
   }, []);
 
@@ -51,6 +63,10 @@ export default function App() {
     setIsStarted(true);
   };
 
+  // Calcular la posición del alumno actual en el ranking
+  const rankingOrdenado = Object.entries(rankingAula).sort((a, b) => b[1] - a[1]);
+  const posicionAlumno = rankingOrdenado.findIndex(([nombre]) => nombre === equipo) + 1;
+
   const LanguageToggle = () => (
     <div className="flex bg-slate-800 p-1 rounded-xl border border-slate-700">
       <button
@@ -72,6 +88,7 @@ export default function App() {
     </div>
   );
 
+  // Pantalla de Inicio / Registro
   if (!isStarted) {
     return (
       <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4 relative">
@@ -125,9 +142,8 @@ export default function App() {
     );
   }
 
+  // Vista Proyector Aula
   if (isProyectorMode) {
-    const rankingOrdenado = Object.entries(rankingAula).sort((a, b) => b[1] - a[1]);
-
     return (
       <div className="min-h-screen bg-slate-950 text-white p-8 flex flex-col justify-between">
         <header className="flex justify-between items-center bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
@@ -191,8 +207,10 @@ export default function App() {
     );
   }
 
+  // Vista Móvil del Alumno (Con Ranking sincronizado)
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+      {/* Header del Alumno */}
       <header className="bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center">
         <div>
           <h1 className="text-xl font-black tracking-wide text-white uppercase flex items-center gap-2">
@@ -200,30 +218,88 @@ export default function App() {
           </h1>
           <p className="text-xs text-slate-400">{txt.equipo}: <span className="text-emerald-400 font-bold">{equipo}</span></p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <LanguageToggle />
-          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-400 px-4 py-2 rounded-xl font-bold flex items-center gap-3">
-            <span className="text-2xl">🏆</span>
-            <div>
-              <div className="text-[10px] uppercase text-amber-500/80">{txt.puntuacion}</div>
-              <div className="text-2xl font-black leading-none">{score} <span className="text-xs font-normal">pts</span></div>
-            </div>
+          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1.5 rounded-xl font-bold flex items-center gap-2 text-sm">
+            <span>🏆</span>
+            <span>{score} pts</span>
+            {posicionAlumno > 0 && (
+              <span className="bg-amber-500/20 text-amber-300 text-xs px-2 py-0.5 rounded-md">
+                #{posicionAlumno}
+              </span>
+            )}
           </div>
         </div>
       </header>
 
+      {/* Navegación Móvil (Juego / Clasificación) */}
+      <div className="bg-slate-900/80 border-b border-slate-800 flex justify-center gap-4 py-2 px-4">
+        <button
+          onClick={() => setTabAlumno('juego')}
+          className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-colors ${
+            tabAlumno === 'juego' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          🎮 Preguntas
+        </button>
+        <button
+          onClick={() => setTabAlumno('ranking')}
+          className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-colors ${
+            tabAlumno === 'ranking' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          📊 Clasificación Clase ({rankingOrdenado.length})
+        </button>
+      </div>
+
+      {/* Contenido según la pestaña elegida */}
       <main className="flex-1 p-6">
-        {!unidadeSeleccionada ? (
-          <SelectorUnidad lang={lang} onSelectUnidad={(ud) => setUnidadeSeleccionada(ud)} />
+        {tabAlumno === 'ranking' ? (
+          <div className="max-w-xl mx-auto bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+            <h2 className="text-lg font-bold text-slate-200 uppercase tracking-wider mb-4 text-center">
+              {txt.clasificacionClase}
+            </h2>
+            {rankingOrdenado.length === 0 ? (
+              <p className="text-center text-slate-500 text-sm py-8">{txt.esperandoRespuestas}</p>
+            ) : (
+              <div className="space-y-2">
+                {rankingOrdenado.map(([nombre, pts], index) => {
+                  const esMiEquipo = nombre === equipo;
+                  return (
+                    <div
+                      key={nombre}
+                      className={`p-3 rounded-xl flex items-center justify-between border ${
+                        esMiEquipo
+                          ? 'bg-blue-600/20 border-blue-500 text-white font-bold'
+                          : 'bg-slate-800/60 border-slate-700/60 text-slate-300'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="font-mono font-bold w-6 text-amber-400">
+                          {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}º`}
+                        </span>
+                        <span className="text-sm">{nombre} {esMiEquipo && '(Tú)'}</span>
+                      </div>
+                      <span className="font-bold text-amber-400 text-sm">{pts} pts</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         ) : (
-          <GameQuiz
-            unidade={unidadeSeleccionada}
-            lang={lang}
-            equipo={equipo}
-            onAddPoints={addPoints}
-            onReportScore={reportScore}
-            onVolver={() => setUnidadeSeleccionada(null)}
-          />
+          !unidadeSeleccionada ? (
+            <SelectorUnidad lang={lang} onSelectUnidad={(ud) => setUnidadeSeleccionada(ud)} />
+          ) : (
+            <GameQuiz
+              unidade={unidadeSeleccionada}
+              lang={lang}
+              equipo={equipo}
+              onAddPoints={addPoints}
+              onReportScore={reportScore}
+              onVolver={() => setUnidadeSeleccionada(null)}
+            />
+          )
         )}
       </main>
     </div>
