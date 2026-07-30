@@ -1,3 +1,4 @@
+// src/components/GameQuiz.jsx
 import React, { useState, useEffect } from 'react';
 import { barajarArray, TIEMPO_POR_DEFECTO_SEGUNDOS, TEXTOS_UI } from '../data/temarioPRL';
 
@@ -9,10 +10,14 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
   const [globalTimeLeft, setGlobalTimeLeft] = useState(unidade.isTestGeneral ? 600 : null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [feedback, setFeedback] = useState(null);
+  const [isQuizFinished, setIsQuizFinished] = useState(false);
+  const [aciertos, setAciertos] = useState(0);
+  const [puntosTotalesIntento, setPuntosTotalesIntento] = useState(0);
 
   const txt = TEXTOS_UI[lang];
 
-  useEffect(() => {
+  // Carga inicial y barajado de preguntas
+  const cargarYBarajar = () => {
     if (unidade && unidade.preguntas) {
       const preguntasConOpcionesBarajadas = unidade.preguntas.map((p) => {
         const opcionesIdioma = p.opciones[lang];
@@ -30,37 +35,47 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
       const listaFinal = barajarArray(preguntasConOpcionesBarajadas);
       setPreguntasBarajadas(listaFinal);
+      setCurrentIdx(0);
+      setSelectedOption(null);
+      setIsAnswered(false);
+      setFeedback(null);
+      setIsQuizFinished(false);
+      setAciertos(0);
+      setPuntosTotalesIntento(0);
       setTimeLeft(listaFinal[0]?.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS);
+      setGlobalTimeLeft(unidade.isTestGeneral ? 600 : null);
     }
-  }, [unidade, lang]);
+  };
 
   useEffect(() => {
-    if (!unidade.isTestGeneral || globalTimeLeft === null || isAnswered) return;
+    cargarYBarajar();
+  }, [unidade, lang]);
+
+  // Temporizador global de 10 minutos (Test General)
+  useEffect(() => {
+    if (!unidade.isTestGeneral || globalTimeLeft === null || isQuizFinished) return;
 
     if (globalTimeLeft === 0) {
-      setIsAnswered(true);
-      setFeedback({
-        type: 'error',
-        text: txt.seAgototiempoGlobal
-      });
+      setIsQuizFinished(true);
       return;
     }
 
     const globalTimer = setInterval(() => setGlobalTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(globalTimer);
-  }, [globalTimeLeft, unidade.isTestGeneral, isAnswered]);
+  }, [globalTimeLeft, unidade.isTestGeneral, isQuizFinished]);
 
   const preguntaActual = preguntasBarajadas[currentIdx];
 
+  // Temporizador individual de 30s por pregunta
   useEffect(() => {
-    if (isAnswered || !preguntaActual) return;
+    if (isAnswered || isQuizFinished || !preguntaActual) return;
     if (timeLeft === 0) {
       handleTimeout();
       return;
     }
     const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
-  }, [timeLeft, isAnswered, preguntaActual]);
+  }, [timeLeft, isAnswered, isQuizFinished, preguntaActual]);
 
   const handleTimeout = () => {
     setIsAnswered(true);
@@ -81,6 +96,8 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
       const bonus = timeLeft * 5;
       const totalPuntos = preguntaActual.puntos + bonus;
       onAddPoints(totalPuntos);
+      setPuntosTotalesIntento((prev) => prev + totalPuntos);
+      setAciertos((prev) => prev + 1);
       if (onReportScore) onReportScore(equipo, totalPuntos);
 
       setFeedback({
@@ -104,23 +121,78 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
       setFeedback(null);
       setTimeLeft(preguntasBarajadas[nextIdx]?.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS);
     } else {
-      setFeedback({
-        type: 'info',
-        text: txt.unidadCompletada
-      });
+      setIsQuizFinished(true);
     }
   };
-
-  if (!preguntaActual) return null;
-
-  const maxTiempo = preguntaActual.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS;
-  const porcentajeTiempo = (timeLeft / maxTiempo) * 100;
 
   const formatMinutos = (seg) => {
     const min = Math.floor(seg / 60);
     const s = seg % 60;
     return `${min}:${s < 10 ? '0' : ''}${s}`;
   };
+
+  // --- PANTALLA FINAL DE RESULTADOS ---
+  if (isQuizFinished) {
+    const porcentajeAciertos = Math.round((aciertos / preguntasBarajadas.length) * 100) || 0;
+    const aprobado = porcentajeAciertos >= 50;
+
+    return (
+      <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-2xl mx-auto text-center space-y-6">
+        <div className="w-20 h-20 bg-blue-600/20 border-2 border-blue-500 rounded-full flex items-center justify-center text-4xl mx-auto">
+          {aprobado ? '🏆' : '📚'}
+        </div>
+
+        <h2 className="text-3xl font-black text-white uppercase tracking-wider">
+          {unidade.isTestGeneral ? 'Examen General Finalizado' : 'Unidad Didáctica Completada'}
+        </h2>
+
+        <div className="grid grid-cols-3 gap-4 bg-slate-950/60 p-4 rounded-xl border border-slate-800 text-center">
+          <div>
+            <div className="text-xs text-slate-400 uppercase font-bold">Puntuación</div>
+            <div className="text-2xl font-black text-amber-400">{puntosTotalesIntento} pts</div>
+          </div>
+          <div>
+            <div className="text-xs text-slate-400 uppercase font-bold">Aciertos</div>
+            <div className="text-2xl font-black text-emerald-400">{aciertos} / {preguntasBarajadas.length}</div>
+          </div>
+          <div>
+            <div className="text-xs text-slate-400 uppercase font-bold">Acierto %</div>
+            <div className={`text-2xl font-black ${aprobado ? 'text-emerald-400' : 'text-red-400'}`}>
+              {porcentajeAciertos}%
+            </div>
+          </div>
+        </div>
+
+        <div className={`p-4 rounded-xl font-bold border text-sm ${
+          aprobado ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-red-500/20 text-red-300 border-red-500/40'
+        }`}>
+          {aprobado
+            ? '🎉 ¡Buen trabajo! Has superado el test con éxito.'
+            : '⚠️ Necesitas repasar un poco más los conceptos del temario.'}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+          <button
+            onClick={cargarYBarajar}
+            className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-md uppercase tracking-wider shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2"
+          >
+            <span>🔄</span> Repetir Test
+          </button>
+          <button
+            onClick={onVolver}
+            className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-xl text-md uppercase tracking-wider border border-slate-700 transition-all flex items-center justify-center gap-2"
+          >
+            <span>🏠</span> Menú Principal
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!preguntaActual) return null;
+
+  const maxTiempo = preguntaActual.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS;
+  const porcentajeTiempo = (timeLeft / maxTiempo) * 100;
 
   return (
     <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-3xl mx-auto">
@@ -200,21 +272,12 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
             {feedback.text}
           </div>
 
-          {currentIdx < preguntasBarajadas.length - 1 ? (
-            <button
-              onClick={nextQuestion}
-              className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl text-lg transition-colors shadow-lg shadow-blue-600/30 uppercase tracking-wider"
-            >
-              {txt.siguientePregunta}
-            </button>
-          ) : (
-            <button
-              onClick={onVolver}
-              className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-lg transition-colors shadow-lg shadow-emerald-600/30 uppercase tracking-wider"
-            >
-              {txt.volverMenu}
-            </button>
-          )}
+          <button
+            onClick={nextQuestion}
+            className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl text-lg transition-colors shadow-lg shadow-blue-600/30 uppercase tracking-wider"
+          >
+            {currentIdx < preguntasBarajadas.length - 1 ? txt.siguientePregunta : 'Ver Resultados del Test 🏆'}
+          </button>
         </div>
       )}
     </div>
