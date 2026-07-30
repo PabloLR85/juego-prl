@@ -7,7 +7,7 @@ export const barajarArray = (array) => {
   return copia;
 };
 
-export const TIEMPO_POR_DEFECTO_SEGUNDOS = 15;
+export const TIEMPO_POR_DEFECTO_SEGUNDOS = 30;
 
 export const TEXTOS_UI = {
   gl: {
@@ -26,20 +26,24 @@ export const TEXTOS_UI = {
     apuntaCamara: "Apunta coa cámara do móbil para entrar directamente ao xogo",
     clasificacionClase: "🏆 Clasificación da Clase",
     esperandoRespuestas: "Esperando respostas dos alumnos...",
-    eligeUnidad: "Elixe a Unidade Didáctica",
-    seleccionaTemaDesc: "Selecciona o tema do manual que queres repasar para comezar a responder e sumar puntos",
+    eligeUnidad: "Elixe a Unidade Didáctica ou o Exame General",
+    seleccionaTemaDesc: "Selecciona un tema específico ou atrévete co Test Xeral de 50 preguntas",
+    testGeneralTitulo: "🔥 TEST XERAL EXAMEN (50 Preguntas Aleatorias)",
+    testGeneralDesc: "Preguntas de todo o temario baralladas. Máximo 10 minutos de tempo global.",
     preguntasDisponibles: "preguntas dispoñibles",
     cambiarTema: "⬅️ Cambiar de Tema",
     pregunta: "Pregunta",
     de: "de",
+    tiempoGlobal: "⏱️ Tempo Global Exam:",
     seAgototiempo: "⏱️ ¡Agotouse o tempo! Non sumas puntos nesta pregunta.",
+    seAgototiempoGlobal: "⏰ ¡Agotáronse os 10 minutos do Examen Xeral!",
     correctoBonus: "🎉 ¡CORRECTO! Sumas",
     puntosBase: "pts base",
     bonusTiempo: "bonus tempo",
     incorrectoRespuesta: "❌ INCORRECTO. A resposta correcta era:",
-    unidadCompletada: "🏆 ¡Unidade Didáctica completada!",
+    unidadCompletada: "🏆 ¡Examen/Unidade completada con éxito!",
     siguientePregunta: "Seguinte Pregunta ➡️",
-    volverMenu: "Volver ao Menú de Temas 🏆"
+    volverMenu: "Finalizar e Volver ao Menú (Reset de Puntos) 🔄"
   },
   es: {
     titulo: "PRL Challenge Arcade",
@@ -57,21 +61,36 @@ export const TEXTOS_UI = {
     apuntaCamara: "Apunta con la cámara del móvil para entrar directamente al juego",
     clasificacionClase: "🏆 Clasificación de la Clase",
     esperandoRespuestas: "Esperando respuestas de los alumnos...",
-    eligeUnidad: "Elige la Unidad Didáctica",
-    seleccionaTemaDesc: "Selecciona el tema que quieres repasar para comenzar a responder y sumar puntos",
+    eligeUnidad: "Elige la Unidad Didáctica o el Examen General",
+    seleccionaTemaDesc: "Selecciona un tema específico o atrévete con el Test General de 50 preguntas",
+    testGeneralTitulo: "🔥 TEST GENERAL EXAMEN (50 Preguntas Aleatorias)",
+    testGeneralDesc: "Preguntas de todo el temario barajadas. Máximo 10 minutos de tiempo global.",
     preguntasDisponibles: "preguntas disponibles",
     cambiarTema: "⬅️ Cambiar de Tema",
     pregunta: "Pregunta",
     de: "de",
+    tiempoGlobal: "⏱️ Tiempo Global Examen:",
     seAgototiempo: "⏱️ ¡Se agotó el tiempo! No sumas puntos en esta pregunta.",
+    seAgototiempoGlobal: "⏰ ¡Se agotaron los 10 minutos del Examen General!",
     correctoBonus: "🎉 ¡CORRECTO! Sumas",
     puntosBase: "pts base",
     bonusTiempo: "bonus tiempo",
     incorrectoRespuesta: "❌ INCORRECTO. La respuesta correcta era:",
-    unidadCompletada: "🏆 ¡Unidad Didáctica completada!",
+    unidadCompletada: "🏆 ¡Examen/Unidad completada con éxito!",
     siguientePregunta: "Siguiente Pregunta ➡️",
-    volverMenu: "Volver al Menú de Temas 🏆"
+    volverMenu: "Volver al Menú de Temas (Reset de Puntos) 🔄"
   }
+};
+
+export const generarTestGeneral50 = () => {
+  let todasLasPreguntas = [];
+  TEMARIO_PRL.forEach((mod) => {
+    mod.unidades.forEach((ud) => {
+      todasLasPreguntas = [...todasLasPreguntas, ...ud.preguntas];
+    });
+  });
+  const barajadas = barajarArray(todasLasPreguntas);
+  return barajadas.slice(0, 50);
 };
 
 export const TEMARIO_PRL = [
@@ -110,7 +129,7 @@ export const TEMARIO_PRL = [
               ]
             },
             respuestaCorrecta: 1,
-            tiempo: 20,
+            tiempo: 30,
             puntos: 100
           },
           {
@@ -134,69 +153,7 @@ export const TEMARIO_PRL = [
               ]
             },
             respuestaCorrecta: 2,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 103,
-            pregunta: {
-              gl: "Desde o punto de vista técnico-preventivo, que é un accidente de traballo?",
-              es: "Desde el punto de vista técnico-preventivo, ¿qué es un accidente de trabajo?"
-            },
-            opciones: {
-              gl: [
-                "Toda lesión corporal sufrida con ocasión ou a consecuencia do traballo",
-                "Un suceso anormal, brusco e inesperado que interrompe o traballo e pode causar lesións",
-                "Un deterioro lento e paulatino da saúde por exposición crónica",
-                "Calquera enfermidade contraída no centro de traballo"
-              ],
-              es: [
-                "Toda lesión corporal sufrida con ocasión o a consecuencia del trabajo",
-                "Un suceso anormal, brusco e inesperado que interrumpe el trabajo y puede causar lesiones",
-                "Un deterioro lento de la salud por exposición crónica",
-                "Cualquier enfermedad contraída en el centro de trabajo"
-              ]
-            },
-            respuestaCorrecta: 1,
-            tiempo: 20,
-            puntos: 100
-          },
-          {
-            id: 104,
-            pregunta: {
-              gl: "Que son os accidentes chamados 'in itinere'?",
-              es: "¿Qué son los accidentes llamados 'in itinere'?"
-            },
-            opciones: {
-              gl: [
-                "Os ocorridos ao desprazarse entre centros de traballo da mesma empresa",
-                "Os producidos no traxecto habitual entre o domicilio e o centro de traballo",
-                "Os sufridos durante as pausas de descanso dentro da xornada",
-                "Os accidentes graves producidos por maquinaria itinerante"
-              ],
-              es: [
-                "Los ocurridos al desplazarse entre centros de trabajo de la misma empresa",
-                "Los producidos en el trayecto habitual entre el domicilio y el centro de trabajo",
-                "Los sufridos durante las pausas de descanso en la jornada",
-                "Los accidentes graves producidos por maquinaria itinerante"
-              ]
-            },
-            respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 105,
-            pregunta: {
-              gl: "Que especialidade preventiva busca a adaptación entre o traballo e a persoa?",
-              es: "¿Qué especialidad preventiva busca la adecuación entre el trabajo y la persona?"
-            },
-            opciones: {
-              gl: ["Hixiene Industrial", "Seguridade no Traballo", "Ergonomía", "Psicoloxía Aplicada"],
-              es: ["Higiene Industrial", "Seguridad en el Trabajo", "Ergonomía", "Psicología Aplicada"]
-            },
-            respuestaCorrecta: 2,
-            tiempo: 15,
+            tiempo: 30,
             puntos: 100
           }
         ]
@@ -229,59 +186,7 @@ export const TEMARIO_PRL = [
               ]
             },
             respuestaCorrecta: 1,
-            tiempo: 20,
-            puntos: 100
-          },
-          {
-            id: 108,
-            pregunta: {
-              gl: "A partir de cantos traballadores é obrigatoria a constitución do Comité de Seguridade e Saúde?",
-              es: "¿A partir de cuántos trabajadores es obligatoria la constitución del Comité de Seguridad y Salud?"
-            },
-            opciones: {
-              gl: ["6 traballadores", "30 traballadores", "50 traballadores", "100 traballadores"],
-              es: ["6 trabajadores", "30 trabajadores", "50 trabajadores", "100 trabajadores"]
-            },
-            respuestaCorrecta: 2,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 109,
-            pregunta: {
-              gl: "Cantos Delegados de Prevención lle corresponden a unha empresa de entre 50 e 100 traballadores?",
-              es: "¿Cuántos Delegados de Prevención corresponden a una empresa de entre 50 y 100 trabajadores?"
-            },
-            opciones: {
-              gl: ["1 delegado", "2 delegados", "3 delegados", "4 delegados"],
-              es: ["1 delegado", "2 delegados", "3 delegados", "4 delegados"]
-            },
-            respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 110,
-            pregunta: {
-              gl: "Que indica o marcado 'CE' estampado sobre un producto ou equipo?",
-              es: "¿Qué indica el marcado 'CE' estampado sobre un producto o equipo?"
-            },
-            opciones: {
-              gl: [
-                "Que foi fabricado integramente en España",
-                "Que ten unha garantía de calidade de 5 anos",
-                "Que cumpre os requisitos esenciais de seguridade establecidos pola UE",
-                "Que é un Equipo de Protección Individual de Categoría III"
-              ],
-              es: [
-                "Que ha sido fabricado íntegramente en España",
-                "Que tiene una garantía de calidad de 5 años",
-                "Que cumple los requisitos esenciales de seguridad establecidos por la UE",
-                "Que es un Equipo de Protección Individual de Categoría III"
-              ]
-            },
-            respuestaCorrecta: 2,
-            tiempo: 15,
+            tiempo: 30,
             puntos: 100
           }
         ]
@@ -313,69 +218,7 @@ export const TEMARIO_PRL = [
               es: ["Contacto directo", "Contacto indirecto", "Contacto de alta tensión", "Derivación galvánica"]
             },
             respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 202,
-            pregunta: {
-              gl: "Cada canto tempo debe realizarse o retimbrado (comprobación de presión) dun extintor?",
-              es: "¿Cada cuánto tiempo debe realizarse el retimbrado (comprobación de presión) de un extintor?"
-            },
-            opciones: {
-              gl: ["Cada ano", "Cada 3 anos", "Cada 5 anos (ata un máximo de 3 veces)", "Cada 10 anos"],
-              es: ["Cada año", "Cada 3 años", "Cada 5 años (hasta un máximo de 3 veces)", "Cada 10 años"]
-            },
-            respuestaCorrecta: 2,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 203,
-            pregunta: {
-              gl: "Para traballos en instalacións eléctricas, cal é a 1ª Regla de Ouro de Seguridade?",
-              es: "Para trabajos en instalaciones eléctricas, ¿cuál es la 1ª Regla de Oro de Seguridad?"
-            },
-            opciones: {
-              gl: [
-                "Verificar a ausencia de tensión",
-                "Cortar todas as fontes en tensión",
-                "Poñer a terra e en curtocircuíto",
-                "Delimitar e sinalizar a zona"
-              ],
-              es: [
-                "Verificar la ausencia de tensión",
-                "Cortar todas las fuentes en tensión",
-                "Poner a tierra y en cortocircuito",
-                "Delimitar y señalizar la zona"
-              ]
-            },
-            respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 205,
-            pregunta: {
-              gl: "En sinalización de seguridade, que significa a cor AMARELA?",
-              es: "En señalización de seguridad, ¿qué significa el color AMARILLO?"
-            },
-            opciones: {
-              gl: [
-                "Parada, prohibición ou material de incendios",
-                "Atención, zona de perigo ou sinalización de riscos",
-                "Situación de seguridade ou primeiros auxilios",
-                "Obrigación de uso dun EPI"
-              ],
-              es: [
-                "Parada, prohibición o material de incendios",
-                "Atención, zona de peligro o señalización de riesgos",
-                "Situación de seguridad o primeros auxilios",
-                "Obligación de uso de un EPI"
-              ]
-            },
-            respuestaCorrecta: 1,
-            tiempo: 15,
+            tiempo: 30,
             puntos: 100
           }
         ]
@@ -398,35 +241,7 @@ export const TEMARIO_PRL = [
               es: ["Vía dérmica", "Vía inhalatoria o respiratoria", "Vía digestiva", "Vía parenteral"]
             },
             respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 209,
-            pregunta: {
-              gl: "A partir de que nivel de ruído diario (LAeq,d) é de uso OBRIGATORIO o protector auditivo segundo o RD 1316/1989?",
-              es: "¿A partir de qué nivel de ruido diario (LAeq,d) es de uso OBLIGATORIO el protector auditivo según el RD 1316/1989?"
-            },
-            opciones: {
-              gl: ["80 dBA", "85 dBA", "90 dBA", "95 dBA"],
-              es: ["80 dBA", "85 dBA", "90 dBA", "95 dBA"]
-            },
-            respuestaCorrecta: 2,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 210,
-            pregunta: {
-              gl: "Cal é a unidade na que se mide o nivel de iluminación recibido nunha superficie?",
-              es: "¿En qué unidad se mide el nivel de iluminación recibido en una superficie?"
-            },
-            opciones: {
-              gl: ["Candela por metro cadrado (cd/m2)", "Lux", "Lumen por segundo", "Watt fotométrico"],
-              es: ["Candela por metro cuadrado (cd/m2)", "Lux", "Lumen por segundo", "Watt fotométrico"]
-            },
-            respuestaCorrecta: 1,
-            tiempo: 15,
+            tiempo: 30,
             puntos: 100
           }
         ]
@@ -449,31 +264,7 @@ export const TEMARIO_PRL = [
               es: ["15 kg", "25 kg", "40 kg", "50 kg"]
             },
             respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 219,
-            pregunta: {
-              gl: "Para levantar unha carga do chan de forma correcta debemos:",
-              es: "Para levantar una carga del suelo de forma correcta debemos:"
-            },
-            opciones: {
-              gl: [
-                "Dobrar o lombo mantendo as pernas estiradas",
-                "Facer xiros de tronco mentres se levanta a carga",
-                "Dobrar os xeonllos, manter o lombo recto e a carga pega á corpo",
-                "Cargar todo o peso sobre un único brazo"
-              ],
-              es: [
-                "Doblar la espalda manteniendo las piernas estiradas",
-                "Hacer giros de tronco mientras se levanta la carga",
-                "Doblar las rodillas, mantener la espalda recta y la carga pegada al cuerpo",
-                "Cargar todo el peso sobre un único brazo"
-              ]
-            },
-            respuestaCorrecta: 2,
-            tiempo: 15,
+            tiempo: 30,
             puntos: 100
           }
         ]
@@ -496,21 +287,7 @@ export const TEMARIO_PRL = [
               es: ["Categoría I", "Categoría II", "Categoría III", "Categoría Especial"]
             },
             respuestaCorrecta: 2,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 224,
-            pregunta: {
-              gl: "Cal dos seguintes elementos é un medio de PROTECCIÓN COLECTIVA?",
-              es: "¿Cuál de los siguientes elementos es un medio de PROTECCIÓN COLECTIVA?"
-            },
-            opciones: {
-              gl: ["Calzado con puntera de aceiro", "Máscara autofiltrante FFP3", "Sistema de extracción localizada", "Guantes de neopreno"],
-              es: ["Calzado con puntera de acero", "Mascarilla autofiltrante FFP3", "Sistema de extracción localizada", "Guantes de neopreno"]
-            },
-            respuestaCorrecta: 2,
-            tiempo: 15,
+            tiempo: 30,
             puntos: 100
           }
         ]
@@ -533,21 +310,7 @@ export const TEMARIO_PRL = [
               es: ["Conato de emergencia", "Emergencia parcial", "Emergencia general", "Evacuación preventiva"]
             },
             respuestaCorrecta: 0,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 228,
-            pregunta: {
-              gl: "Cantas veces ao ano se deben realizar como mínimo os simulacros de emerxencia?",
-              es: "¿Cuántas veces al año se deben realizar como mínimo los simulacros de emergencia?"
-            },
-            opciones: {
-              gl: ["1 vez ao ano", "2 veces ao ano", "4 veces ao ano", "Cada 2 anos"],
-              es: ["1 vez al año", "2 veces al año", "4 veces al año", "Cada 2 años"]
-            },
-            respuestaCorrecta: 1,
-            tiempo: 15,
+            tiempo: 30,
             puntos: 100
           }
         ]
@@ -580,35 +343,7 @@ export const TEMARIO_PRL = [
               ]
             },
             respuestaCorrecta: 2,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 232,
-            pregunta: {
-              gl: "En que posición debemos colocar a un paciente inconsciente que SI respira e NON é traumático?",
-              es: "¿En qué posición debemos colocar a un paciente inconsciente que SÍ respira y NO es traumático?"
-            },
-            opciones: {
-              gl: ["Decúbito supino", "Posición Lateral de Seguridade (PLS)", "Posición de Trendelenburg", "Semisentado"],
-              es: ["Decúbito supino", "Posición Lateral de Seguridad (PLS)", "Posición de Trendelenburg", "Semisentado"]
-            },
-            respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 237,
-            pregunta: {
-              gl: "Que significa a regra PAS en emerxencias?",
-              es: "¿Qué significa la regla PAS en emergencias?"
-            },
-            opciones: {
-              gl: ["Previr, Atender, Sanar", "Protexer, Avisar, Socorrer", "Parar, Auxiliar, Solucionar", "Prontitude, Atención, Seguridade"],
-              es: ["Prevenir, Atender, Sanar", "Proteger, Avisar, Socorrer", "Parar, Auxiliar, Solucionar", "Prontitud, Atención, Seguridad"]
-            },
-            respuestaCorrecta: 1,
-            tiempo: 15,
+            tiempo: 30,
             puntos: 100
           }
         ]
@@ -641,21 +376,7 @@ export const TEMARIO_PRL = [
               ]
             },
             respuestaCorrecta: 1,
-            tiempo: 20,
-            puntos: 100
-          },
-          {
-            id: 240,
-            pregunta: {
-              gl: "Quen debe pagar o custo económico dos recoñecementos de Vixilancia da Saúde?",
-              es: "¿Quién debe pagar el coste económico de los reconocimientos de Vigilancia de la Salud?"
-            },
-            opciones: {
-              gl: ["O traballador ao 50%", "A Seguridade Social", "O empresario (debe ser totalmente gratuíto para o traballador)", "O Comité de Empresa"],
-              es: ["El trabajador al 50%", "La Seguridad Social", "El empresario (debe ser totalmente gratuito para el trabajador)", "El Comité de Empresa"]
-            },
-            respuestaCorrecta: 2,
-            tiempo: 15,
+            tiempo: 30,
             puntos: 100
           }
         ]
@@ -687,31 +408,7 @@ export const TEMARIO_PRL = [
               es: ["100 trabajadores", "250 trabajadores", "500 trabajadores", "1000 trabajadores"]
             },
             respuestaCorrecta: 2,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 302,
-            pregunta: {
-              gl: "Cando pode o empresario asumir persoalmente a actividade preventiva?",
-              es: "¿Cuándo puede el empresario asumir personalmente la actividad preventiva?"
-            },
-            opciones: {
-              gl: [
-                "En empresas de ata 100 traballadores",
-                "Cando a empresa teña menos de 6 traballadores e non sexa actividade do Anexo I",
-                "Cando o decida a Asemblea de Traballadores",
-                "Nunca, a lei prohíbeo categoricamente"
-              ],
-              es: [
-                "En empresas de hasta 100 trabajadores",
-                "Cuando la empresa tenga menos de 6 trabajadores y no sea actividad del Anexo I",
-                "Cuando lo decida la Asamblea de Trabajadores",
-                "Nunca, la ley lo prohíbe categóricamente"
-              ]
-            },
-            respuestaCorrecta: 1,
-            tiempo: 20,
+            tiempo: 30,
             puntos: 100
           }
         ]
@@ -744,21 +441,7 @@ export const TEMARIO_PRL = [
               ]
             },
             respuestaCorrecta: 2,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 307,
-            pregunta: {
-              gl: "A quen lle corresponde a función de vixilancia e control do cumprimento da normativa sobre PRL con potestade sancionadora?",
-              es: "¿A quién corresponde la función de vigilancia y control del cumplimiento de la normativa sobre PRL con potestad sancionadora?"
-            },
-            opciones: {
-              gl: ["Ao INSHT", "Á Inspección de Traballo e Seguridade Social", "Ao Comité de Seguridade e Saúde", "Ás Mutuas de Accidentes"],
-              es: ["Al INSHT", "A la Inspección de Trabajo y Seguridad Social", "Al Comité de Seguridad y Salud", "A las Mutuas de Accidentes"]
-            },
-            respuestaCorrecta: 1,
-            tiempo: 15,
+            tiempo: 30,
             puntos: 100
           }
         ]

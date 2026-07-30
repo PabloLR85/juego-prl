@@ -1,8 +1,22 @@
 import React from 'react';
-import { TEMARIO_PRL, TEXTOS_UI } from '../data/temarioPRL';
+import { TEMARIO_PRL, TEXTOS_UI, generarTestGeneral50 } from '../data/temarioPRL';
 
 export default function SelectorUnidad({ lang, onSelectUnidad }) {
   const txt = TEXTOS_UI[lang];
+
+  const handleIniciarTestGeneral = () => {
+    const preguntas50 = generarTestGeneral50();
+    const unidadTestGeneral = {
+      id: "test_general_50",
+      isTestGeneral: true,
+      titulo: {
+        gl: "🔥 TEST XERAL (50 Preguntas Aleatorias - 10 Minutos)",
+        es: "🔥 TEST GENERAL (50 Preguntas Aleatorias - 10 Minutos)"
+      },
+      preguntas: preguntas50
+    };
+    onSelectUnidad(unidadTestGeneral);
+  };
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -13,6 +27,21 @@ export default function SelectorUnidad({ lang, onSelectUnidad }) {
         <p className="text-slate-400 text-sm">
           {txt.seleccionaTemaDesc}
         </p>
+      </div>
+
+      <div className="bg-gradient-to-r from-amber-500/20 via-blue-600/20 to-amber-500/20 border-2 border-amber-500/50 rounded-2xl p-6 shadow-2xl text-center space-y-4">
+        <h3 className="text-2xl font-black text-amber-300 uppercase tracking-wide">
+          {txt.testGeneralTitulo}
+        </h3>
+        <p className="text-slate-300 text-sm max-w-xl mx-auto">
+          {txt.testGeneralDesc}
+        </p>
+        <button
+          onClick={handleIniciarTestGeneral}
+          className="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-lg uppercase tracking-wider shadow-lg shadow-amber-500/20 transition-all transform hover:scale-105"
+        >
+          🚀 Comenzar Examen 50 Preguntas (10 Min)
+        </button>
       </div>
 
       <div className="space-y-6">

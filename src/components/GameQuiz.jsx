@@ -5,7 +5,8 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
   const [preguntasBarajadas, setPreguntasBarajadas] = useState([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(15);
+  const [timeLeft, setTimeLeft] = useState(30);
+  const [globalTimeLeft, setGlobalTimeLeft] = useState(unidade.isTestGeneral ? 600 : null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
@@ -29,9 +30,25 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
       const listaFinal = barajarArray(preguntasConOpcionesBarajadas);
       setPreguntasBarajadas(listaFinal);
-      setTimeLeft(listaFinal[0]?.tiempo || unidade.tiempoPorPregunta || TIEMPO_POR_DEFECTO_SEGUNDOS);
+      setTimeLeft(listaFinal[0]?.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS);
     }
   }, [unidade, lang]);
+
+  useEffect(() => {
+    if (!unidade.isTestGeneral || globalTimeLeft === null || isAnswered) return;
+
+    if (globalTimeLeft === 0) {
+      setIsAnswered(true);
+      setFeedback({
+        type: 'error',
+        text: txt.seAgototiempoGlobal
+      });
+      return;
+    }
+
+    const globalTimer = setInterval(() => setGlobalTimeLeft((prev) => prev - 1), 1000);
+    return () => clearInterval(globalTimer);
+  }, [globalTimeLeft, unidade.isTestGeneral, isAnswered]);
 
   const preguntaActual = preguntasBarajadas[currentIdx];
 
@@ -85,7 +102,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
       setSelectedOption(null);
       setIsAnswered(false);
       setFeedback(null);
-      setTimeLeft(preguntasBarajadas[nextIdx]?.tiempo || unidade.tiempoPorPregunta || TIEMPO_POR_DEFECTO_SEGUNDOS);
+      setTimeLeft(preguntasBarajadas[nextIdx]?.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS);
     } else {
       setFeedback({
         type: 'info',
@@ -96,8 +113,14 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
   if (!preguntaActual) return null;
 
-  const maxTiempo = preguntaActual.tiempo || unidade.tiempoPorPregunta || TIEMPO_POR_DEFECTO_SEGUNDOS;
+  const maxTiempo = preguntaActual.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS;
   const porcentajeTiempo = (timeLeft / maxTiempo) * 100;
+
+  const formatMinutos = (seg) => {
+    const min = Math.floor(seg / 60);
+    const s = seg % 60;
+    return `${min}:${s < 10 ? '0' : ''}${s}`;
+  };
 
   return (
     <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-3xl mx-auto">
@@ -108,9 +131,17 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
         >
           {txt.cambiarTema}
         </button>
+
         <span className="text-xs font-black text-blue-400 uppercase tracking-widest bg-blue-500/10 border border-blue-500/20 px-3 py-1 rounded-lg">
           {txt.pregunta} {currentIdx + 1} {txt.de} {preguntasBarajadas.length}
         </span>
+
+        {unidade.isTestGeneral && globalTimeLeft !== null && (
+          <div className="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-xl font-mono font-bold text-xs">
+            {txt.tiempoGlobal} {formatMinutos(globalTimeLeft)}
+          </div>
+        )}
+
         <div className={`px-4 py-1.5 rounded-xl font-mono font-black text-lg border ${
           timeLeft <= 5 ? 'bg-red-500/20 text-red-400 border-red-500/40 animate-pulse' : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
         }`}>
