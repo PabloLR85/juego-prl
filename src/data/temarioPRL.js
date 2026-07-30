@@ -1,139 +1,287 @@
+export const barajarArray = (array) => {
+  const copia = [...array];
+  for (let i = copia.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copia[i], copia[j]] = [copia[j], copia[i]];
+  }
+  return copia;
+};
+
+export const TIEMPO_POR_DEFECTO_SEGUNDOS = 15;
+
+export const TEXTOS_UI = {
+  gl: {
+    titulo: "PRL Challenge Arcade",
+    subtitulo: "Capacitación Nivel Básico de Prevención de Riscos Laborais",
+    nombreEquipo: "Nome do Equipo ou Alumno",
+    codigoSalaOpcional: "Código de Aula (Opcional)",
+    entrarJugar: "¡Entrar a Xogar!",
+    abrirProyector: "📺 Abrir Modo Proyector Aula",
+    equipo: "Equipo",
+    puntuacion: "Puntuación",
+    pantallaAula: "PRL Arcade • Pantalla Aula",
+    instruccionesQR: "Escanea o código QR dende o teu móbil para unirte á competición",
+    codigoSala: "Código de Sala",
+    accesoQR: "Acceso Rápido Móbil",
+    apuntaCamara: "Apunta coa cámara do móbil para entrar directamente ao xogo",
+    clasificacionClase: "🏆 Clasificación da Clase",
+    esperandoRespuestas: "Esperando respostas dos alumnos...",
+    eligeUnidad: "Elixe a Unidade Didáctica",
+    seleccionaTemaDesc: "Selecciona o tema do manual que queres repasar para comezar a responder e sumar puntos",
+    preguntasDisponibles: "preguntas dispoñibles",
+    cambiarTema: "⬅️ Cambiar de Tema",
+    pregunta: "Pregunta",
+    de: "de",
+    seAgototiempo: "⏱️ ¡Agotouse o tempo! Non sumas puntos nesta pregunta.",
+    correctoBonus: "🎉 ¡CORRECTO! Sumas",
+    puntosBase: "pts base",
+    bonusTiempo: "bonus tempo",
+    incorrectoRespuesta: "❌ INCORRECTO. A resposta correcta era:",
+    unidadCompletada: "🏆 ¡Unidade Didáctica completada!",
+    siguientePregunta: "Seguinte Pregunta ➡️",
+    volverMenu: "Volver ao Menú de Temas 🏆"
+  },
+  es: {
+    titulo: "PRL Challenge Arcade",
+    subtitulo: "Capacitación Nivel Básico de Prevención de Riesgos Laborales",
+    nombreEquipo: "Nombre del Equipo o Alumno",
+    codigoSalaOpcional: "Código de Aula (Opcional)",
+    entrarJugar: "¡Entrar a Jugar!",
+    abrirProyector: "📺 Abrir Modo Proyector Aula",
+    equipo: "Equipo",
+    puntuacion: "Puntuación",
+    pantallaAula: "PRL Arcade • Pantalla Aula",
+    instruccionesQR: "Escanea el código QR desde tu móvil para unirte a la competición",
+    codigoSala: "Código de Sala",
+    accesoQR: "Acceso Rápido Móvil",
+    apuntaCamara: "Apunta con la cámara del móvil para entrar directamente al juego",
+    clasificacionClase: "🏆 Clasificación de la Clase",
+    esperandoRespuestas: "Esperando respuestas de los alumnos...",
+    eligeUnidad: "Elige la Unidad Didáctica",
+    seleccionaTemaDesc: "Selecciona el tema que quieres repasar para comenzar a responder y sumar puntos",
+    preguntasDisponibles: "preguntas disponibles",
+    cambiarTema: "⬅️ Cambiar de Tema",
+    pregunta: "Pregunta",
+    de: "de",
+    seAgototiempo: "⏱️ ¡Se agotó el tiempo! No sumas puntos en esta pregunta.",
+    correctoBonus: "🎉 ¡CORRECTO! Sumas",
+    puntosBase: "pts base",
+    bonusTiempo: "bonus tiempo",
+    incorrectoRespuesta: "❌ INCORRECTO. La respuesta correcta era:",
+    unidadCompletada: "🏆 ¡Unidad Didáctica completada!",
+    siguientePregunta: "Siguiente Pregunta ➡️",
+    volverMenu: "Volver al Menú de Temas 🏆"
+  }
+};
+
 export const TEMARIO_PRL = [
   {
     moduloId: 1,
-    tituloModulo: "Módulo 1: Conceptos Básicos sobre Seguridade e Saúde",
+    tituloModulo: {
+      gl: "Módulo 1: Conceptos Básicos sobre Seguridade e Saúde",
+      es: "Módulo 1: Conceptos Básicos sobre Seguridad y Salud"
+    },
     unidades: [
       {
         id: "m1_ud1",
-        titulo: "UD 1: Introdución á Prevención de Riscos Laborais",
+        titulo: {
+          gl: "UD 1: Introdución á Prevención de Riscos Laborais",
+          es: "UD 1: Introducción a la Prevención de Riesgos Laborales"
+        },
         preguntas: [
           {
             id: 101,
-            pregunta: "Como define a Organización Mundial da Saúde (OMS) o concepto de 'Saúde'?",
-            opciones: [
-              "A simple ausencia de dano ou enfermidade corporal",
-              "O estado de benestar físico, mental e social completo",
-              "A capacidade de traballar sen sufrir baixas médicas",
-              "O equilibrio biolóxico fronte a contaminantes químicos"
-            ],
+            pregunta: {
+              gl: "Como define a Organización Mundial da Saúde (OMS) o concepto de 'Saúde'?",
+              es: "¿Cómo define la Organización Mundial de la Salud (OMS) el concepto de 'Salud'?"
+            },
+            opciones: {
+              gl: [
+                "A simple ausencia de dano ou enfermidade corporal",
+                "O estado de benestar físico, mental e social completo",
+                "A capacidade de traballar sen sufrir baixas médicas",
+                "O equilibrio biolóxico fronte a contaminantes químicos"
+              ],
+              es: [
+                "La simple ausencia de daño o enfermedad corporal",
+                "El estado de bienestar físico, mental y social completo",
+                "La capacidad de trabajar sin sufrir bajas médicas",
+                "El equilibrio biológico frente a contaminantes químicos"
+              ]
+            },
             respuestaCorrecta: 1,
             tiempo: 20,
             puntos: 100
           },
           {
             id: 102,
-            pregunta: "Cal é o primeiro principio xeral da acción preventiva segundo o art. 15 da LPRL?",
-            opciones: [
-              "Avaliar os riscos que non se poidan evitar",
-              "Combater os riscos na orixe",
-              "Evitar os riscos",
-              "Antepoñer a protección colectiva á individual"
-            ],
+            pregunta: {
+              gl: "Cal é o primeiro principio xeral da acción preventiva segundo o art. 15 da LPRL?",
+              es: "¿Cuál es el primer principio general de la acción preventiva según el art. 15 de la LPRL?"
+            },
+            opciones: {
+              gl: [
+                "Avaliar os riscos que non se poidan evitar",
+                "Combater os riscos na orixe",
+                "Evitar os riscos",
+                "Antepoñer a protección colectiva á individual"
+              ],
+              es: [
+                "Evaluar los riesgos que no se puedan evitar",
+                "Combatir los riesgos en el origen",
+                "Evitar los riesgos",
+                "Anteponer la protección colectiva a la individual"
+              ]
+            },
             respuestaCorrecta: 2,
             tiempo: 15,
             puntos: 100
           },
           {
             id: 103,
-            pregunta: "Desde o punto de vista técnico-preventivo, que é un accidente de traballo?",
-            opciones: [
-              "Toda lesión corporal sufrida con ocasión ou a consecuencia do traballo",
-              "Un suceso anormal, brusco e inesperado que interrompe o traballo e pode causar lesións",
-              "Un deterioro lento e paulatino da saúde por exposición crónica",
-              "Calquera enfermidade contraída no centro de traballo"
-            ],
+            pregunta: {
+              gl: "Desde o punto de vista técnico-preventivo, que é un accidente de traballo?",
+              es: "Desde el punto de vista técnico-preventivo, ¿qué es un accidente de trabajo?"
+            },
+            opciones: {
+              gl: [
+                "Toda lesión corporal sufrida con ocasión ou a consecuencia do traballo",
+                "Un suceso anormal, brusco e inesperado que interrompe o traballo e pode causar lesións",
+                "Un deterioro lento e paulatino da saúde por exposición crónica",
+                "Calquera enfermidade contraída no centro de traballo"
+              ],
+              es: [
+                "Toda lesión corporal sufrida con ocasión o a consecuencia del trabajo",
+                "Un suceso anormal, brusco e inesperado que interrumpe el trabajo y puede causar lesiones",
+                "Un deterioro lento de la salud por exposición crónica",
+                "Cualquier enfermedad contraída en el centro de trabajo"
+              ]
+            },
             respuestaCorrecta: 1,
             tiempo: 20,
             puntos: 100
           },
           {
             id: 104,
-            pregunta: "Que son os accidentes chamados 'in itinere'?",
-            opciones: [
-              "Os ocorridos ao desprazarse entre centros de traballo da mesma empresa",
-              "Os producidos no traxecto habitual entre o domicilio e o centro de traballo",
-              "Os sufridos durante as pausas de descanso dentro da xornada",
-              "Os accidentes graves producidos por maquinaria itinerante"
-            ],
+            pregunta: {
+              gl: "Que son os accidentes chamados 'in itinere'?",
+              es: "¿Qué son los accidentes llamados 'in itinere'?"
+            },
+            opciones: {
+              gl: [
+                "Os ocorridos ao desprazarse entre centros de traballo da mesma empresa",
+                "Os producidos no traxecto habitual entre o domicilio e o centro de traballo",
+                "Os sufridos durante as pausas de descanso dentro da xornada",
+                "Os accidentes graves producidos por maquinaria itinerante"
+              ],
+              es: [
+                "Los ocurridos al desplazarse entre centros de trabajo de la misma empresa",
+                "Los producidos en el trayecto habitual entre el domicilio y el centro de trabajo",
+                "Los sufridos durante las pausas de descanso en la jornada",
+                "Los accidentes graves producidos por maquinaria itinerante"
+              ]
+            },
             respuestaCorrecta: 1,
             tiempo: 15,
             puntos: 100
           },
           {
             id: 105,
-            pregunta: "Que especialidade preventiva busca a adaptación entre o traballo e a persoa?",
-            opciones: ["Hixiene Industrial", "Seguridade no Traballo", "Ergonomía", "Psicoloxía Aplicada"],
+            pregunta: {
+              gl: "Que especialidade preventiva busca a adaptación entre o traballo e a persoa?",
+              es: "¿Qué especialidad preventiva busca la adecuación entre el trabajo y la persona?"
+            },
+            opciones: {
+              gl: ["Hixiene Industrial", "Seguridade no Traballo", "Ergonomía", "Psicoloxía Aplicada"],
+              es: ["Higiene Industrial", "Seguridad en el Trabajo", "Ergonomía", "Psicología Aplicada"]
+            },
             respuestaCorrecta: 2,
             tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 106,
-            pregunta: "Como se consideran a efectos legais as enfermidades derivadas do traballo non incluídas no cadro oficial de Enfermidades Profesionais?",
-            opciones: ["Patoloxías comúns", "Accidentes de traballo", "Enfermidades de orixe incerta", "Novedades biolóxicas"],
-            respuestaCorrecta: 1,
-            tiempo: 20,
             puntos: 100
           }
         ]
       },
       {
         id: "m1_ud2",
-        titulo: "UD 2: Marco Normativo Básico en materia de PRL",
+        titulo: {
+          gl: "UD 2: Marco Normativo Básico en materia de PRL",
+          es: "UD 2: Marco Normativo Básico en materia de PRL"
+        },
         preguntas: [
           {
             id: 107,
-            pregunta: "En que consiste a 'trasposición' dunha Directiva Europea?",
-            opciones: [
-              "En traducila ao castelán sen cambios legais",
-              "En adaptala e convertela nunha norma legal de obrigado cumprimento no país",
-              "En anular os convenios colectivos rexeitados pola UE",
-              "En enviar a lei española ao Consello Europeo para a súa aprobación"
-            ],
+            pregunta: {
+              gl: "En que consiste a 'trasposición' dunha Directiva Europea?",
+              es: "¿En qué consiste la 'trasposición' de una Directiva Europea?"
+            },
+            opciones: {
+              gl: [
+                "En traducila ao castelán sen cambios legais",
+                "En adaptala e convertela nunha norma legal de obrigado cumprimento no país",
+                "En anular os convenios colectivos rexeitados pola UE",
+                "En enviar a lei española ao Consello Europeo para a súa aprobación"
+              ],
+              es: [
+                "En traducirla al castellano sin cambios legales",
+                "En adaptarla y convertirla en norma legal de obligado cumplimiento en el país",
+                "En anular los convenios colectivos rechazados por la UE",
+                "En enviar la ley española al Consejo Europeo para su aprobación"
+              ]
+            },
             respuestaCorrecta: 1,
             tiempo: 20,
             puntos: 100
           },
           {
             id: 108,
-            pregunta: "A partir de cantos traballadores é obrigatoria a constitución do Comité de Seguridade e Saúde?",
-            opciones: ["6 traballadores", "30 traballadores", "50 traballadores", "100 traballadores"],
+            pregunta: {
+              gl: "A partir de cantos traballadores é obrigatoria a constitución do Comité de Seguridade e Saúde?",
+              es: "¿A partir de cuántos trabajadores es obligatoria la constitución del Comité de Seguridad y Salud?"
+            },
+            opciones: {
+              gl: ["6 traballadores", "30 traballadores", "50 traballadores", "100 traballadores"],
+              es: ["6 trabajadores", "30 trabajadores", "50 trabajadores", "100 trabajadores"]
+            },
             respuestaCorrecta: 2,
             tiempo: 15,
             puntos: 100
           },
           {
             id: 109,
-            pregunta: "Cantos Delegados de Prevención lle corresponden a unha empresa de entre 50 e 100 traballadores?",
-            opciones: ["1 delegado", "2 delegados", "3 delegados", "4 delegados"],
+            pregunta: {
+              gl: "Cantos Delegados de Prevención lle corresponden a unha empresa de entre 50 e 100 traballadores?",
+              es: "¿Cuántos Delegados de Prevención corresponden a una empresa de entre 50 y 100 trabajadores?"
+            },
+            opciones: {
+              gl: ["1 delegado", "2 delegados", "3 delegados", "4 delegados"],
+              es: ["1 delegado", "2 delegados", "3 delegados", "4 delegados"]
+            },
             respuestaCorrecta: 1,
             tiempo: 15,
             puntos: 100
           },
           {
             id: 110,
-            pregunta: "Que indica o marcado 'CE' estampado sobre un producto ou equipo?",
-            opciones: [
-              "Que foi fabricado integramente en España",
-              "Que ten unha garantía de calidade de 5 anos",
-              "Que cumpre os requisitos esenciais de seguridade establecidos pola UE",
-              "Que é un Equipo de Protección Individual de Categoría III"
-            ],
+            pregunta: {
+              gl: "Que indica o marcado 'CE' estampado sobre un producto ou equipo?",
+              es: "¿Qué indica el marcado 'CE' estampado sobre un producto o equipo?"
+            },
+            opciones: {
+              gl: [
+                "Que foi fabricado integramente en España",
+                "Que ten unha garantía de calidade de 5 anos",
+                "Que cumpre os requisitos esenciais de seguridade establecidos pola UE",
+                "Que é un Equipo de Protección Individual de Categoría III"
+              ],
+              es: [
+                "Que ha sido fabricado íntegramente en España",
+                "Que tiene una garantía de calidad de 5 años",
+                "Que cumple los requisitos esenciales de seguridad establecidos por la UE",
+                "Que es un Equipo de Protección Individual de Categoría III"
+              ]
+            },
             respuestaCorrecta: 2,
             tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 111,
-            pregunta: "A Directiva 'Marco' de Seguridade e Saúde (89/391/CEE) foi trasposta ao dereito español mediante:",
-            opciones: [
-              "O Estatuto dos Traballadores",
-              "A Lei de Prevención de Riscos Laborais (Lei 31/1995)",
-              "O Regulamento dos Servizos de Prevención",
-              "A Lei Xeral da Seguridade Social"
-            ],
-            respuestaCorrecta: 1,
-            tiempo: 20,
             puntos: 100
           }
         ]
@@ -142,74 +290,90 @@ export const TEMARIO_PRL = [
   },
   {
     moduloId: 2,
-    tituloModulo: "Módulo 2: Riscos Xerais e a súa Prevención",
+    tituloModulo: {
+      gl: "Módulo 2: Riscos Xerais e a súa Prevención",
+      es: "Módulo 2: Riesgos Generales y su Prevención"
+    },
     unidades: [
       {
         id: "m2_ud1",
-        titulo: "UD 1: Os Riscos ligados ás Condicións de Seguridade",
+        titulo: {
+          gl: "UD 1: Os Riscos ligados ás Condicións de Seguridade",
+          es: "UD 1: Los Riesgos ligados a las Condiciones de Seguridad"
+        },
         preguntas: [
           {
             id: 201,
-            pregunta: "Un contacto eléctrico producido coa masa dunha máquina posta accidentalmente en tensión é:",
-            opciones: ["Contacto directo", "Contacto indirecto", "Contacto de alta tensión", "Derivación en orixe"],
+            pregunta: {
+              gl: "Un contacto eléctrico producido coa masa dunha máquina posta accidentalmente en tensión é:",
+              es: "Un contacto eléctrico producido con la masa de una máquina puesta accidentalmente en tensión es:"
+            },
+            opciones: {
+              gl: ["Contacto directo", "Contacto indirecto", "Contacto de alta tensión", "Derivación en orixe"],
+              es: ["Contacto directo", "Contacto indirecto", "Contacto de alta tensión", "Derivación galvánica"]
+            },
             respuestaCorrecta: 1,
             tiempo: 15,
             puntos: 100
           },
           {
             id: 202,
-            pregunta: "Cada canto tempo debe realizarse o retimbrado (comprobación de presión) dun extintor?",
-            opciones: ["Cada ano", "Cada 3 anos", "Cada 5 anos (ata un máximo de 3 veces)", "Cada 10 anos"],
+            pregunta: {
+              gl: "Cada canto tempo debe realizarse o retimbrado (comprobación de presión) dun extintor?",
+              es: "¿Cada cuánto tiempo debe realizarse el retimbrado (comprobación de presión) de un extintor?"
+            },
+            opciones: {
+              gl: ["Cada ano", "Cada 3 anos", "Cada 5 anos (ata un máximo de 3 veces)", "Cada 10 anos"],
+              es: ["Cada año", "Cada 3 años", "Cada 5 años (hasta un máximo de 3 veces)", "Cada 10 años"]
+            },
             respuestaCorrecta: 2,
             tiempo: 15,
             puntos: 100
           },
           {
             id: 203,
-            pregunta: "Para traballos en instalacións eléctricas, cal é a 1ª Rela de Ouro de Seguridade?",
-            opciones: [
-              "Verificar a ausencia de tensión",
-              "Cortar todas as fontes en tensión",
-              "Poñer a terra e en curtocircuíto",
-              "Delimitar e sinalizar a zona"
-            ],
-            respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 204,
-            pregunta: "Que mecanismo desvía a corrente eléctrica cara o terreo en caso de fallo de illamento?",
-            opciones: ["Interruptor diferencial", "Posta a terra", "Fusible cerámico", "Envolventeillante"],
+            pregunta: {
+              gl: "Para traballos en instalacións eléctricas, cal é a 1ª Regla de Ouro de Seguridade?",
+              es: "Para trabajos en instalaciones eléctricas, ¿cuál es la 1ª Regla de Oro de Seguridad?"
+            },
+            opciones: {
+              gl: [
+                "Verificar a ausencia de tensión",
+                "Cortar todas as fontes en tensión",
+                "Poñer a terra e en curtocircuíto",
+                "Delimitar e sinalizar a zona"
+              ],
+              es: [
+                "Verificar la ausencia de tensión",
+                "Cortar todas las fuentes en tensión",
+                "Poner a tierra y en cortocircuito",
+                "Delimitar y señalizar la zona"
+              ]
+            },
             respuestaCorrecta: 1,
             tiempo: 15,
             puntos: 100
           },
           {
             id: 205,
-            pregunta: "En sinalización de seguridade, que significa a cor AMARELA?",
-            opciones: [
-              "Parada, prohibición ou material de incendios",
-              "Atención, zona de perigo ou sinalización de riscos",
-              "Situación de seguridade ou primeiros auxilios",
-              "Obrigación de uso dun EPI"
-            ],
-            respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 206,
-            pregunta: "En que consiste a 'consignación' dunha máquina antes da súa reparación?",
-            opciones: ["En limpar a máquina con disolventes", "En illala das redes e bloquear os interruptores con candeado", "En avisar por escrito ao servizo técnico", "En poñer a máquina a funcionar en baleiro"],
-            respuestaCorrecta: 1,
-            tiempo: 20,
-            puntos: 100
-          },
-          {
-            id: 207,
-            pregunta: "Como se chama o recinto con aberturas limitadas e ventilación natural desfavorable onde poden acumularse gases tóxicos?",
-            opciones: ["Lugar de traballo illado", "Espazo confinado", "Almacén xeral", "Nave de proceso continuo"],
+            pregunta: {
+              gl: "En sinalización de seguridade, que significa a cor AMARELA?",
+              es: "En señalización de seguridad, ¿qué significa el color AMARILLO?"
+            },
+            opciones: {
+              gl: [
+                "Parada, prohibición ou material de incendios",
+                "Atención, zona de perigo ou sinalización de riscos",
+                "Situación de seguridade ou primeiros auxilios",
+                "Obrigación de uso dun EPI"
+              ],
+              es: [
+                "Parada, prohibición o material de incendios",
+                "Atención, zona de peligro o señalización de riesgos",
+                "Situación de seguridad o primeros auxilios",
+                "Obligación de uso de un EPI"
+              ]
+            },
             respuestaCorrecta: 1,
             tiempo: 15,
             puntos: 100
@@ -218,60 +382,49 @@ export const TEMARIO_PRL = [
       },
       {
         id: "m2_ud2",
-        titulo: "UD 2: Os Riscos ligados ao Medio Ambiente de Traballo",
+        titulo: {
+          gl: "UD 2: Os Riscos ligados ao Medio Ambiente de Traballo",
+          es: "UD 2: Los Riesgos ligados al Medio Ambiente de Trabajo"
+        },
         preguntas: [
           {
             id: 208,
-            pregunta: "Cal é a vía de entrada de contaminantes químicos máis importante no ámbito laboral?",
-            opciones: ["Vía dérmica", "Vía inhalatoria ou respiratoria", "Vía dixestiva", "Vía parenteral"],
+            pregunta: {
+              gl: "Cal é a vía de entrada de contaminantes químicos máis importante no ámbito laboral?",
+              es: "¿Cuál es la vía de entrada de contaminantes químicos más importante en el ámbito laboral?"
+            },
+            opciones: {
+              gl: ["Vía dérmica", "Vía inhalatoria ou respiratoria", "Vía dixestiva", "Vía parenteral"],
+              es: ["Vía dérmica", "Vía inhalatoria o respiratoria", "Vía digestiva", "Vía parenteral"]
+            },
             respuestaCorrecta: 1,
             tiempo: 15,
             puntos: 100
           },
           {
             id: 209,
-            pregunta: "A partir de que nivel de ruído diario (LAeq,d) é de uso OBRIGATORIO o protector auditivo segundo o RD 1316/1989?",
-            opciones: ["80 dBA", "85 dBA", "90 dBA", "95 dBA"],
+            pregunta: {
+              gl: "A partir de que nivel de ruído diario (LAeq,d) é de uso OBRIGATORIO o protector auditivo segundo o RD 1316/1989?",
+              es: "¿A partir de qué nivel de ruido diario (LAeq,d) es de uso OBLIGATORIO el protector auditivo según el RD 1316/1989?"
+            },
+            opciones: {
+              gl: ["80 dBA", "85 dBA", "90 dBA", "95 dBA"],
+              es: ["80 dBA", "85 dBA", "90 dBA", "95 dBA"]
+            },
             respuestaCorrecta: 2,
             tiempo: 15,
             puntos: 100
           },
           {
             id: 210,
-            pregunta: "Cal é a unidade na que se mide o nivel de iluminación recibido nunha superficie?",
-            opciones: ["Candela por metro cadrado (cd/m2)", "Lux", "Lumen por segundo", "Watt fotométrico"],
-            respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 211,
-            pregunta: "En cantos grupos se clasifican os axentes biolóxicos segundo o seu perigo de infección e contaxio?",
-            opciones: ["En 2 categorías", "En 3 niveis", "En 4 grupos (Grupo 1 ao Grupo 4)", "En 5 clases"],
-            respuestaCorrecta: 2,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 212,
-            pregunta: "Que tamaño teñen as partículas de po ou aerosol que chegan ata o fondo do pulmón?",
-            opciones: ["Menores de 2 micrómetros (µm)", "Entre 10 e 20 micrómetros", "Superiores a 50 micrómetros", "Calquera partícula visible ao ollo"],
-            respuestaCorrecta: 0,
-            tiempo: 20,
-            puntos: 100
-          },
-          {
-            id: 213,
-            pregunta: "O 'dedo branco' ou síndrome de Raynaud ten a súa orixe na exposición a:",
-            opciones: ["Radiacións ultravioleta", "Vibracións man-brazo de elevada frecuencia", "Ambientes de frío extremo sen humidade", "Ruidos superiores a 100 dBA"],
-            respuestaCorrecta: 1,
-            tiempo: 20,
-            puntos: 100
-          },
-          {
-            id: 214,
-            pregunta: "Que técnica de control ambiental consiste en captar o contaminante no mesmo punto onde se xera?",
-            opciones: ["Ventilación por dilución", "Extracción localizada", "Rotación de persoal", "Uso de alarmas"],
+            pregunta: {
+              gl: "Cal é a unidade na que se mide o nivel de iluminación recibido nunha superficie?",
+              es: "¿En qué unidad se mide el nivel de iluminación recibido en una superficie?"
+            },
+            opciones: {
+              gl: ["Candela por metro cadrado (cd/m2)", "Lux", "Lumen por segundo", "Watt fotométrico"],
+              es: ["Candela por metro cuadrado (cd/m2)", "Lux", "Lumen por segundo", "Watt fotométrico"]
+            },
             respuestaCorrecta: 1,
             tiempo: 15,
             puntos: 100
@@ -280,63 +433,46 @@ export const TEMARIO_PRL = [
       },
       {
         id: "m2_ud3",
-        titulo: "UD 3: A Carga de Traballo, a Fatiga e a Insatisfacción Laboral",
+        titulo: {
+          gl: "UD 3: A Carga de Traballo, a Fatiga e a Insatisfacción Laboral",
+          es: "UD 3: La Carga de Trabajo, la Fatiga y la Insatisfacción Laboral"
+        },
         preguntas: [
           {
             id: 215,
-            pregunta: "Segundo a Guía Técnica do INSHT, cal é o peso máximo xeral recomendado para a manipulación manual de cargas en condicións óptimas?",
-            opciones: ["15 kg", "25 kg", "40 kg", "50 kg"],
-            respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 216,
-            pregunta: "Cando dicimos que un traballo muscular é 'estático'?",
-            opciones: [
-              "Cando hai unha sucesión periódica de tensión e relaxación",
-              "Cando se mantén un esforzo sostido e os músculos permanecen contraídos",
-              "Cando se camiña mentres se transporta un obxecto",
-              "Cando se utilizan ferramentas a motor de baja frecuencia"
-            ],
-            respuestaCorrecta: 1,
-            tiempo: 20,
-            puntos: 100
-          },
-          {
-            id: 217,
-            pregunta: "Para valorar a penosidade dun traballo dinámico, cal é o criterio máis fiable?",
-            opciones: ["A frecuencia cardíaca", "O consumo enerxético (quilocalorías)", "A presión arterial sistólica", "O número de pausas realizadas"],
-            respuestaCorrecta: 1,
-            tiempo: 20,
-            puntos: 100
-          },
-          {
-            id: 218,
-            pregunta: "Como se chama a diminución da capacidade física e mental do traballador por sobrecarga prolongada?",
-            opciones: ["Insatisfacción laboral", "Fatiga", "Estrés por frío", "Burnout estacional"],
+            pregunta: {
+              gl: "Segundo a Guía Técnica do INSHT, cal é o peso máximo xeral recomendado para a manipulación manual de cargas en condicións óptimas?",
+              es: "Según la Guía Técnica del INSHT, ¿cuál es el peso máximo general recomendado para la manipulación de cargas?"
+            },
+            opciones: {
+              gl: ["15 kg", "25 kg", "40 kg", "50 kg"],
+              es: ["15 kg", "25 kg", "40 kg", "50 kg"]
+            },
             respuestaCorrecta: 1,
             tiempo: 15,
             puntos: 100
           },
           {
             id: 219,
-            pregunta: "Para levantar unha carga do chan de forma correcta debemos:",
-            opciones: [
-              "Dobrar o lombo mantendo as pernas estiradas",
-              "Facer xiros de tronco mentres se levanta a carga",
-              "Dobrar os xeonllos, manter o lombo recto e a carga pega á corpo",
-              "Cargar todo o peso sobre un único brazo"
-            ],
+            pregunta: {
+              gl: "Para levantar unha carga do chan de forma correcta debemos:",
+              es: "Para levantar una carga del suelo de forma correcta debemos:"
+            },
+            opciones: {
+              gl: [
+                "Dobrar o lombo mantendo as pernas estiradas",
+                "Facer xiros de tronco mentres se levanta a carga",
+                "Dobrar os xeonllos, manter o lombo recto e a carga pega á corpo",
+                "Cargar todo o peso sobre un único brazo"
+              ],
+              es: [
+                "Doblar la espalda manteniendo las piernas estiradas",
+                "Hacer giros de tronco mientras se levanta la carga",
+                "Doblar las rodillas, mantener la espalda recta y la carga pegada al cuerpo",
+                "Cargar todo el peso sobre un único brazo"
+              ]
+            },
             respuestaCorrecta: 2,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 220,
-            pregunta: "A insatisfacción laboral atópase orixinada principalmente por:",
-            opciones: ["Problemas de iluminación no puesto", "Factores da organización do traballo e psicosociais", "Falta de uso de Equipos de Protección Individual", "Temperaturas ambiente extremas"],
-            respuestaCorrecta: 1,
             tiempo: 15,
             puntos: 100
           }
@@ -344,101 +480,73 @@ export const TEMARIO_PRL = [
       },
       {
         id: "m2_ud4",
-        titulo: "UD 4: Sistemas Elementais de Control. Protección Colectiva e Individual",
+        titulo: {
+          gl: "UD 4: Sistemas Elementais de Control. Protección Colectiva e Individual",
+          es: "UD 4: Sistemas Elementales de Control. Protección Colectiva e Individual"
+        },
         preguntas: [
           {
             id: 221,
-            pregunta: "Os Equipos de Protección Individual (EPI) destinados a protexer contra riscos mortais ou irreversible pertencen á:",
-            opciones: ["Categoría I", "Categoría II", "Categoría III", "Categoría Especial"],
+            pregunta: {
+              gl: "Os Equipos de Protección Individual (EPI) destinados a protexer contra riscos mortais ou irreversible pertencen á:",
+              es: "Los Equipos de Protección Individual (EPI) destinados a proteger contra riesgos mortales o irreversibles pertenecen a la:"
+            },
+            opciones: {
+              gl: ["Categoría I", "Categoría II", "Categoría III", "Categoría Especial"],
+              es: ["Categoría I", "Categoría II", "Categoría III", "Categoría Especial"]
+            },
             respuestaCorrecta: 2,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 222,
-            pregunta: "Cal é a diferenza fundamental entre Protección Colectiva e Protección Individual?",
-            opciones: [
-              "A colectiva elimina o risco e a individual aumenta a produtividade",
-              "A colectiva protexe a varias persoas simultaneamente e a individual protexe só ao usuario",
-              "A colectiva só se usa en construción e a individual en oficinas",
-              "Non hai diferenza, ambos termos son sinónimos segundo a LPRL"
-            ],
-            respuestaCorrecta: 1,
-            tiempo: 20,
-            puntos: 100
-          },
-          {
-            id: 223,
-            pregunta: "Cando deben utilizarse os Equipos de Protección Individual (EPI)?",
-            opciones: [
-              "Sempre, antes de avaliar os riscos do posto",
-              "Cando os riscos non se poidan evitar por medios de protección colectiva",
-              "Soamente cando o traballador o solicite voluntariamente",
-              "En canto o Inspector de Traballo visite a empresa"
-            ],
-            respuestaCorrecta: 1,
             tiempo: 15,
             puntos: 100
           },
           {
             id: 224,
-            pregunta: "Cal dos seguintes elementos é un medio de PROTECCIÓN COLECTIVA?",
-            opciones: ["Calzado con puntera de aceiro", "Máscara autofiltrante FFP3", "Sistema de extracción localizada", "Guantes de neopreno"],
+            pregunta: {
+              gl: "Cal dos seguintes elementos é un medio de PROTECCIÓN COLECTIVA?",
+              es: "¿Cuál de los siguientes elementos es un medio de PROTECCIÓN COLECTIVA?"
+            },
+            opciones: {
+              gl: ["Calzado con puntera de aceiro", "Máscara autofiltrante FFP3", "Sistema de extracción localizada", "Guantes de neopreno"],
+              es: ["Calzado con puntera de acero", "Mascarilla autofiltrante FFP3", "Sistema de extracción localizada", "Guantes de neopreno"]
+            },
             respuestaCorrecta: 2,
             tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 225,
-            pregunta: "Legalmente, que supón utilizar un EPI non certificado (sen marcado CE) ou caducado?",
-            opciones: ["Unha falta leve do traballador", "Equivale a non usar ningunha protección", "Unha recomendación do fabricante", "Un desconto do 10% no prezo do equipo"],
-            respuestaCorrecta: 1,
-            tiempo: 20,
             puntos: 100
           }
         ]
       },
       {
         id: "m2_ud5",
-        titulo: "UD 5: Nocións Básicas de Actuación en Emerxencias e Evacuación",
+        titulo: {
+          gl: "UD 5: Nocións Básicas de Actuación en Emerxencias e Evacuación",
+          es: "UD 5: Nociones Básicas de Actuación en Emergencias y Evacuación"
+        },
         preguntas: [
           {
             id: 226,
-            pregunta: "Unha emerxencia que pode ser neutralizada cos medios do lugar polo persoal presente é un:",
-            opciones: ["Conato de emerxencia", "Emerxencia parcial", "Emerxencia xeral", "Evacuación preventiva"],
+            pregunta: {
+              gl: "Unha emerxencia que pode ser neutralizada cos medios do lugar polo persoal presente é un:",
+              es: "Una emergencia que puede ser neutralizada con los medios del lugar por el personal presente es un:"
+            },
+            opciones: {
+              gl: ["Conato de emerxencia", "Emerxencia parcial", "Emerxencia xeral", "Evacuación preventiva"],
+              es: ["Conato de emergencia", "Emergencia parcial", "Emergencia general", "Evacuación preventiva"]
+            },
             respuestaCorrecta: 0,
             tiempo: 15,
             puntos: 100
           },
           {
-            id: 227,
-            pregunta: "Como se chaman os grupos de traballadores con formación avanzada para a loita directa (bombeiros da empresa)?",
-            opciones: ["Equipos de Primeira Intervención (EPI)", "Equipos de Segunda Intervención (ESI)", "Equipos de Alarma e Evacuación (EAE)", "Equipos de Primeiros Auxilios (EPA)"],
-            respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
             id: 228,
-            pregunta: "Cantas veces ao ano se deben realizar como mínimo os simulacros de emerxencia?",
-            opciones: ["1 vez ao ano", "2 veces ao ano", "4 veces ao ano", "Cada 2 anos"],
+            pregunta: {
+              gl: "Cantas veces ao ano se deben realizar como mínimo os simulacros de emerxencia?",
+              es: "¿Cuántas veces al año se deben realizar como mínimo los simulacros de emergencia?"
+            },
+            opciones: {
+              gl: ["1 vez ao ano", "2 veces ao ano", "4 veces ao ano", "Cada 2 anos"],
+              es: ["1 vez al año", "2 veces al año", "4 veces al año", "Cada 2 años"]
+            },
             respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 229,
-            pregunta: "A diferenza entre o Plan de Evacuación e o Plan de Emerxencia Interior (PEI) é que o de evacuación:",
-            opciones: ["Protexe só ás instalacións", "Protexe unicamente ás persoas", "Só se aplica en caso de terremoto", "Substitúe ao Plan de Autoprotección"],
-            respuestaCorrecta: 1,
-            tiempo: 20,
-            puntos: 100
-          },
-          {
-            id: 230,
-            pregunta: "Ante unha orde de evacuación nun edificio de varias plantas, NUNCA debemos utilizar:",
-            opciones: ["As vías de evacuación sinalizadas", "As escaleiras exteriores de emerxencia", "Os ascensores ou montacargas", "Os puntos de reunión exteriores"],
-            respuestaCorrecta: 2,
             tiempo: 15,
             puntos: 100
           }
@@ -446,70 +554,59 @@ export const TEMARIO_PRL = [
       },
       {
         id: "m2_ud6",
-        titulo: "UD 6: Primeiros Auxilios",
+        titulo: {
+          gl: "UD 6: Primeiros Auxilios",
+          es: "UD 6: Primeros Auxilios"
+        },
         preguntas: [
           {
             id: 231,
-            pregunta: "Na exploración primaria dos signos vitais dun accidentado, cal é a orde correcta?",
-            opciones: [
-              "Pulso -> Conciencia -> Respiración",
-              "Respiración -> Pulso -> Conciencia",
-              "Conciencia -> Respiración -> Pulso",
-              "Conciencia -> Pulso -> Hemorraxias"
-            ],
+            pregunta: {
+              gl: "Na exploración primaria dos signos vitais dun accidentado, cal é a orde correcta?",
+              es: "En la exploración primaria de los signos vitales de un accidentado, ¿cuál es el orden correcto?"
+            },
+            opciones: {
+              gl: [
+                "Pulso -> Conciencia -> Respiración",
+                "Respiración -> Pulso -> Conciencia",
+                "Conciencia -> Respiración -> Pulso",
+                "Conciencia -> Pulso -> Hemorraxias"
+              ],
+              es: [
+                "Pulso -> Conciencia -> Respiración",
+                "Respiración -> Pulso -> Conciencia",
+                "Conciencia -> Respiración -> Pulso",
+                "Conciencia -> Pulso -> Hemorragias"
+              ]
+            },
             respuestaCorrecta: 2,
             tiempo: 15,
             puntos: 100
           },
           {
             id: 232,
-            pregunta: "En que posición debemos colocar a un paciente inconsciente que SI respira e NON é traumático?",
-            opciones: ["Decúbito supino", "Posición Lateral de Seguridade (PLS)", "Posición de Trendelenburg", "Semisentado"],
+            pregunta: {
+              gl: "En que posición debemos colocar a un paciente inconsciente que SI respira e NON é traumático?",
+              es: "¿En qué posición debemos colocar a un paciente inconsciente que SÍ respira y NO es traumático?"
+            },
+            opciones: {
+              gl: ["Decúbito supino", "Posición Lateral de Seguridade (PLS)", "Posición de Trendelenburg", "Semisentado"],
+              es: ["Decúbito supino", "Posición Lateral de Seguridad (PLS)", "Posición de Trendelenburg", "Semisentado"]
+            },
             respuestaCorrecta: 1,
             tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 233,
-            pregunta: "Cal é o ritmo de Reanimación Cardiopulmonar (RCP) para un único socorrista nun adulto?",
-            opciones: ["5 compresións e 1 insuflación", "15 compresións e 2 insuflacións", "30 compresións e 2 insuflacións", "10 compresións e 5 insuflacións"],
-            respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 234,
-            pregunta: "Cal é o PRIMEIRO método que se debe empregar para deter unha hemorraxia externa nunha extremidade?",
-            opciones: ["Aplicación dun torniquete", "Compresión directa sobre o punto de sangrado e elevación", "Compresión arterial na ingua", "Lavado abundante con alcohol"],
-            respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 235,
-            pregunta: "Cando pode un socorrista afrouxar un torniquete xa colocado?",
-            opciones: ["Cada 10 minutos para que circule o sangue", "Cando a vítima diga que lle doe", "Endexamais: só debe afrouxalo o persoal médico", "Cando cese a hemorraxia visible"],
-            respuestaCorrecta: 2,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 236,
-            pregunta: "Se despois dun golpe na cabeza o accidentado sangra polo oído (otorraxia), que debemos facer?",
-            opciones: [
-              "Taponar o oído con gasas apertadas",
-              "Non deter a hemorraxia e hixienizar a zona inclinando a cabeza cara o lado que sangra",
-              "Lavar o oído con auga osixenada a presión",
-              "Aplicar un torniquete no pescozo"
-            ],
-            respuestaCorrecta: 1,
-            tiempo: 20,
             puntos: 100
           },
           {
             id: 237,
-            pregunta: "Que significa a regra PAS en emerxencias?",
-            opciones: ["Previr, Atender, Sanar", "Protexer, Avisar, Socorrer", "Parar, Auxiliar, Solucionar", "Prontitude, Atención, Seguridade"],
+            pregunta: {
+              gl: "Que significa a regra PAS en emerxencias?",
+              es: "¿Qué significa la regla PAS en emergencias?"
+            },
+            opciones: {
+              gl: ["Previr, Atender, Sanar", "Protexer, Avisar, Socorrer", "Parar, Auxiliar, Solucionar", "Prontitude, Atención, Seguridade"],
+              es: ["Prevenir, Atender, Sanar", "Proteger, Avisar, Socorrer", "Parar, Auxiliar, Solucionar", "Prontitud, Atención, Seguridad"]
+            },
             respuestaCorrecta: 1,
             tiempo: 15,
             puntos: 100
@@ -518,66 +615,47 @@ export const TEMARIO_PRL = [
       },
       {
         id: "m2_ud7",
-        titulo: "UD 7: O Control da Saúde dos Traballadores",
+        titulo: {
+          gl: "UD 7: O Control da Saúde dos Traballadores",
+          es: "UD 7: El Control de la Salud de los Trabajadores"
+        },
         preguntas: [
           {
             id: 238,
-            pregunta: "Cal é o carácter xeral da Vixilancia da Saúde segundo o artigo 22 da LPRL?",
-            opciones: [
-              "Obrigatorio en absolutamente tódolos casos",
-              "Voluntaria, salvo excepcións legais ou avaliación indispensable",
-              "Decidida exclusivamente polos Representantes dos Traballadores",
-              "Obrigatoria só para maiores de 50 anos"
-            ],
-            respuestaCorrecta: 1,
-            tiempo: 20,
-            puntos: 100
-          },
-          {
-            id: 239,
-            pregunta: "Pode o empresario coñecer os resultados médicos concretos dun recoñecemento sen consentimento do traballador?",
-            opciones: [
-              "Sí, sempre ten acceso ao historial completo",
-              "Non, só recibe as conclusións de APTITUDE e mellora de medidas",
-              "Sí, pero só se a empresa ten máis de 50 traballadores",
-              "Unicamente en caso de baixa médica por accidente"
-            ],
+            pregunta: {
+              gl: "Cal é o carácter xeral da Vixilancia da Saúde segundo o artigo 22 da LPRL?",
+              es: "¿Cuál es el carácter general de la Vigilancia de la Salud según el artículo 22 de la LPRL?"
+            },
+            opciones: {
+              gl: [
+                "Obrigatorio en absolutamente tódolos casos",
+                "Voluntaria, salvocepcións legais ou avaliación indispensable",
+                "Decidida exclusivamente polos Representantes dos Traballadores",
+                "Obrigatoria só para maiores de 50 anos"
+              ],
+              es: [
+                "Obligatorio en absolutamente todos los casos",
+                "Voluntaria, salvo excepciones legales o evaluación indispensable",
+                "Decidida exclusivamente por los Representantes de los Trabajadores",
+                "Obligatoria solo para mayores de 50 años"
+              ]
+            },
             respuestaCorrecta: 1,
             tiempo: 20,
             puntos: 100
           },
           {
             id: 240,
-            pregunta: "Quen debe pagar o custo económico dos recoñecementos de Vixilancia da Saúde?",
-            opciones: ["O traballador ao 50%", "A Seguridade Social", "O empresario (debe ser totalmente gratuíto para o traballador)", "O Comité de Empresa"],
+            pregunta: {
+              gl: "Quen debe pagar o custo económico dos recoñecementos de Vixilancia da Saúde?",
+              es: "¿Quién debe pagar el coste económico de los reconocimientos de Vigilancia de la Salud?"
+            },
+            opciones: {
+              gl: ["O traballador ao 50%", "A Seguridade Social", "O empresario (debe ser totalmente gratuíto para o traballador)", "O Comité de Empresa"],
+              es: ["El trabajador al 50%", "La Seguridad Social", "El empresario (debe ser totalmente gratuito para el trabajador)", "El Comité de Empresa"]
+            },
             respuestaCorrecta: 2,
             tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 241,
-            pregunta: "Os recoñecementos médicos de Vixilancia da Saúde deben realizarse:",
-            opciones: [
-              "Fora da xornada laboral sen compensación",
-              "Dentro da xornada laboral ou descontando o tempo invertido",
-              "Unicamente os fins de semana",
-              "Durante as vacacións anuais do traballador"
-            ],
-            respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 242,
-            pregunta: "En que casos se pode prolongar a Vixilancia da Saúde máis alá da relación laboral?",
-            opciones: [
-              "En ningún caso tras a baixa na empresa",
-              "Cando se estivera exposto a axentes cancante cancérxenos ou efectos a longo prazo",
-              "Cando o traballador o solicite para cobrar o desemprego",
-              "Só en empresas de máis de 500 traballadores"
-            ],
-            respuestaCorrecta: 1,
-            tiempo: 20,
             puntos: 100
           }
         ]
@@ -586,115 +664,100 @@ export const TEMARIO_PRL = [
   },
   {
     moduloId: 3,
-    tituloModulo: "Módulo 3: Elementos Básicos de Xestión da PRL",
+    tituloModulo: {
+      gl: "Módulo 3: Elementos Básicos de Xestión da PRL",
+      es: "Módulo 3: Elementos Básicos de Gestión de la PRL"
+    },
     unidades: [
       {
         id: "m3_ud1",
-        titulo: "UD 1: A Organización da Prevención na Empresa",
+        titulo: {
+          gl: "UD 1: A Organización da Prevención na Empresa",
+          es: "UD 1: La Organización de la Prevención en la Empresa"
+        },
         preguntas: [
           {
             id: 301,
-            pregunta: "As empresas con máis de cantos traballadores deben constituír un Servizo de Prevención Propio?",
-            opciones: ["100 traballadores", "250 traballadores", "500 traballadores", "1000 traballadores"],
+            pregunta: {
+              gl: "As empresas con máis de cantos traballadores deben constituír un Servizo de Prevención Propio?",
+              es: "¿Las empresas con más de cuántos trabajadores deben constituir un Servicio de Prevención Propio?"
+            },
+            opciones: {
+              gl: ["100 traballadores", "250 traballadores", "500 traballadores", "1000 traballadores"],
+              es: ["100 trabajadores", "250 trabajadores", "500 trabajadores", "1000 trabajadores"]
+            },
             respuestaCorrecta: 2,
             tiempo: 15,
             puntos: 100
           },
           {
             id: 302,
-            pregunta: "Cando pode o empresario asumir persoalmente a actividade preventiva?",
-            opciones: [
-              "En empresas de ata 100 traballadores",
-              "Cando a empresa teña menos de 6 traballadores e non sexa actividade do Anexo I",
-              "Cando o decida a Asemblea de Traballadores",
-              "Nunca, a lei prohíbeo categoricamente"
-            ],
+            pregunta: {
+              gl: "Cando pode o empresario asumir persoalmente a actividade preventiva?",
+              es: "¿Cuándo puede el empresario asumir personalmente la actividad preventiva?"
+            },
+            opciones: {
+              gl: [
+                "En empresas de ata 100 traballadores",
+                "Cando a empresa teña menos de 6 traballadores e non sexa actividade do Anexo I",
+                "Cando o decida a Asemblea de Traballadores",
+                "Nunca, a lei prohíbeo categoricamente"
+              ],
+              es: [
+                "En empresas de hasta 100 trabajadores",
+                "Cuando la empresa tenga menos de 6 trabajadores y no sea actividad del Anexo I",
+                "Cuando lo decida la Asamblea de Trabajadores",
+                "Nunca, la ley lo prohíbe categóricamente"
+              ]
+            },
             respuestaCorrecta: 1,
             tiempo: 20,
-            puntos: 100
-          },
-          {
-            id: 303,
-            pregunta: "Que é unha auditoría do Sistema de Xestión da Prevención?",
-            opciones: [
-              "Unha inspección da Policia Local",
-              "Unha avaliación sistemática, periódica e obxectiva da eficacia do sistema",
-              "Unha revisión médica de todos os operarios",
-              "Unha recarga periódica de extintores"
-            ],
-            respuestaCorrecta: 1,
-            tiempo: 20,
-            puntos: 100
-          },
-          {
-            id: 304,
-            pregunta: "Pode o empresario que asume a prevención realizar persoalmente a Vixilancia da Saúde?",
-            opciones: [
-              "Sí, se fai un curso de 30 horas",
-              "Non, a Vixilancia da Saúde debe cubrise por persoal sanitario cualificado",
-              "Sí, en empresas de menos de 3 traballadores",
-              "Unicamente se é un centro de oficinas"
-            ],
-            respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 305,
-            pregunta: "Como se chama o documento básico que describe o sistema de xestión adoptado pola empresa?",
-            opciones: ["Manual de Prevención de Riscos Laborais", "Libro de Visitas", "Parte de Accidentes", "Convenio Colectivo"],
-            respuestaCorrecta: 0,
-            tiempo: 15,
             puntos: 100
           }
         ]
       },
       {
         id: "m3_ud2",
-        titulo: "UD 2: Organismos Públicos relacionados coa Seguridade e Saúde",
+        titulo: {
+          gl: "UD 2: Organismos Públicos relacionados coa Seguridade e Saúde",
+          es: "UD 2: Organismos Públicos relacionados con la Seguridad y Salud"
+        },
         preguntas: [
           {
             id: 306,
-            pregunta: "Cal é o órgano científico-técnico especializado da Administración Xeral do Estado en prevención?",
-            opciones: [
-              "Inspección de Traballo e Seguridade Social (ITSS)",
-              "Comisión Nacional de Seguridade e Saúde no Traballo (CNSST)",
-              "Instituto Nacional de Seguridade e Hixiene no Traballo (INSHT)",
-              "Axencia Europea para a Seguridade e Saúde"
-            ],
+            pregunta: {
+              gl: "Cal é o órgano científico-técnico especializado da Administración Xeral do Estado en prevención?",
+              es: "¿Cuál es el órgano científico-técnico especializado de la Administración General del Estado en prevención?"
+            },
+            opciones: {
+              gl: [
+                "Inspección de Traballo e Seguridade Social (ITSS)",
+                "Comisión Nacional de Seguridade e Saúde no Traballo (CNSST)",
+                "Instituto Nacional de Seguridade e Hixiene no Traballo (INSHT)",
+                "Axencia Europea para a Seguridade e Saúde"
+              ],
+              es: [
+                "Inspección de Trabajo y Seguridad Social (ITSS)",
+                "Comisión Nacional de Seguridad y Salud en el Trabajo (CNSST)",
+                "Instituto Nacional de Seguridad e Higiene en el Trabajo (INSHT)",
+                "Agencia Europea para la Seguridad y Salud"
+              ]
+            },
             respuestaCorrecta: 2,
             tiempo: 15,
             puntos: 100
           },
           {
             id: 307,
-            pregunta: "A quen lle corresponde a función de vixilancia e control do cumprimento da normativa sobre PRL con potestade sancionadora?",
-            opciones: ["Ao INSHT", "Á Inspección de Traballo e Seguridade Social", "Ao Comité de Seguridade e Saúde", "Ás Mutuas de Accidentes"],
+            pregunta: {
+              gl: "A quen lle corresponde a función de vixilancia e control do cumprimento da normativa sobre PRL con potestade sancionadora?",
+              es: "¿A quién corresponde la función de vigilancia y control del cumplimiento de la normativa sobre PRL con potestad sancionadora?"
+            },
+            opciones: {
+              gl: ["Ao INSHT", "Á Inspección de Traballo e Seguridade Social", "Ao Comité de Seguridade e Saúde", "Ás Mutuas de Accidentes"],
+              es: ["Al INSHT", "A la Inspección de Trabajo y Seguridad Social", "Al Comité de Seguridad y Salud", "A las Mutuas de Accidentes"]
+            },
             respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 308,
-            pregunta: "Onde se atopa a sede da Axencia Europea para a Seguridade e Saúde no Traballo?",
-            opciones: ["En Xenebra (Suíza)", "En Bilbao (España)", "En Dublín (Irlanda)", "En Bruxelas (Bélxica)"],
-            respuestaCorrecta: 1,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 309,
-            pregunta: "Que organismo internacional elabora e aproba os Convenios sobre seguridade no traballo a nivel mundial?",
-            opciones: ["A Organización Internacional do Traballo (OIT)", "A Unión Europea", "A OMS", "A Comisión Nacional de PRL"],
-            respuestaCorrecta: 0,
-            tiempo: 15,
-            puntos: 100
-          },
-          {
-            id: 310,
-            pregunta: "Que órgano da Administración ten a potestade de ordenar a paralización inmediata de traballos ante un risco grave e inminente?",
-            opciones: ["A Inspección de Traballo e Seguridade Social", "O INSHT", "A Axencia Europea", "A Fundación para a Prevención"],
-            respuestaCorrecta: 0,
             tiempo: 15,
             puntos: 100
           }

@@ -1,15 +1,17 @@
 import React from 'react';
-import { TEMARIO_PRL } from '../data/temarioPRL';
+import { TEMARIO_PRL, TEXTOS_UI } from '../data/temarioPRL';
 
-export default function SelectorUnidad({ onSelectUnidad }) {
+export default function SelectorUnidad({ lang, onSelectUnidad }) {
+  const txt = TEXTOS_UI[lang];
+
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <div className="text-center">
         <h2 className="text-3xl font-black text-white uppercase tracking-wider mb-2">
-          Elixe a Unidade Didáctica
+          {txt.eligeUnidad}
         </h2>
         <p className="text-slate-400 text-sm">
-          Selecciona o tema do manual que queres xogar e competir no proyector
+          {txt.seleccionaTemaDesc}
         </p>
       </div>
 
@@ -17,7 +19,7 @@ export default function SelectorUnidad({ onSelectUnidad }) {
         {TEMARIO_PRL.map((modulo) => (
           <div key={modulo.moduloId} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
             <h3 className="text-lg font-bold text-blue-400 mb-4 pb-2 border-b border-slate-800 uppercase tracking-wide">
-              {modulo.tituloModulo}
+              {modulo.tituloModulo[lang]}
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -29,10 +31,10 @@ export default function SelectorUnidad({ onSelectUnidad }) {
                 >
                   <div>
                     <div className="font-bold text-slate-200 group-hover:text-white text-sm">
-                      {unidade.titulo}
+                      {unidade.titulo[lang]}
                     </div>
                     <div className="text-xs text-slate-400 mt-1">
-                      {unidade.preguntas.length} preguntas dispoñibles
+                      {unidade.preguntas.length} {txt.preguntasDisponibles}
                     </div>
                   </div>
                   <span className="text-xl group-hover:translate-x-1 transition-transform">➡️</span>

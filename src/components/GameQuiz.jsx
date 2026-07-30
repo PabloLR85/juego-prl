@@ -1,29 +1,55 @@
 import React, { useState, useEffect } from 'react';
+import { barajarArray, TIEMPO_POR_DEFECTO_SEGUNDOS, TEXTOS_UI } from '../data/temarioPRL';
 
-export default function GameQuiz({ unidade, onAddPoints, onVolver }) {
+export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onReportScore, equipo }) {
+  const [preguntasBarajadas, setPreguntasBarajadas] = useState([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(unidade.preguntas[0]?.tiempo || 15);
+  const [timeLeft, setTimeLeft] = useState(15);
   const [isAnswered, setIsAnswered] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
-  const preguntaActual = unidade.preguntas[currentIdx];
+  const txt = TEXTOS_UI[lang];
 
   useEffect(() => {
-    if (isAnswered) return;
+    if (unidade && unidade.preguntas) {
+      const preguntasConOpcionesBarajadas = unidade.preguntas.map((p) => {
+        const opcionesIdioma = p.opciones[lang];
+        const opcionCorrectaTexto = opcionesIdioma[p.respuestaCorrecta];
+        const opcionesMezcladas = barajarArray(opcionesIdioma);
+        const nuevaRespuestaCorrecta = opcionesMezcladas.indexOf(opcionCorrectaTexto);
+
+        return {
+          ...p,
+          preguntaTexto: p.pregunta[lang],
+          opciones: opcionesMezcladas,
+          respuestaCorrecta: nuevaRespuestaCorrecta
+        };
+      });
+
+      const listaFinal = barajarArray(preguntasConOpcionesBarajadas);
+      setPreguntasBarajadas(listaFinal);
+      setTimeLeft(listaFinal[0]?.tiempo || unidade.tiempoPorPregunta || TIEMPO_POR_DEFECTO_SEGUNDOS);
+    }
+  }, [unidade, lang]);
+
+  const preguntaActual = preguntasBarajadas[currentIdx];
+
+  useEffect(() => {
+    if (isAnswered || !preguntaActual) return;
     if (timeLeft === 0) {
       handleTimeout();
       return;
     }
     const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
-  }, [timeLeft, isAnswered]);
+  }, [timeLeft, isAnswered, preguntaActual]);
 
   const handleTimeout = () => {
     setIsAnswered(true);
     setFeedback({
       type: 'error',
-      text: '⏱️ ¡Agotouse o tempo! Non sumas puntos nesta pregunta.'
+      text: txt.seAgototiempo
     });
   };
 
@@ -38,35 +64,39 @@ export default function GameQuiz({ unidade, onAddPoints, onVolver }) {
       const bonus = timeLeft * 5;
       const totalPuntos = preguntaActual.puntos + bonus;
       onAddPoints(totalPuntos);
+      if (onReportScore) onReportScore(equipo, totalPuntos);
+
       setFeedback({
         type: 'success',
-        text: `🎉 ¡CORRECTO! Sumas ${totalPuntos} pts (${preguntaActual.puntos} base + ${bonus} bonus tempo)`
+        text: `${txt.correctoBonus} ${totalPuntos} pts (${preguntaActual.puntos} ${txt.puntosBase} + ${bonus} ${txt.bonusTiempo})`
       });
     } else {
       setFeedback({
         type: 'error',
-        text: `❌ INCORRECTO. A resposta correcta era: ${preguntaActual.opciones[preguntaActual.respuestaCorrecta]}`
+        text: `${txt.incorrectoRespuesta} ${preguntaActual.opciones[preguntaActual.respuestaCorrecta]}`
       });
     }
   };
 
   const nextQuestion = () => {
-    if (currentIdx < unidade.preguntas.length - 1) {
+    if (currentIdx < preguntasBarajadas.length - 1) {
       const nextIdx = currentIdx + 1;
       setCurrentIdx(nextIdx);
       setSelectedOption(null);
       setIsAnswered(false);
       setFeedback(null);
-      setTimeLeft(unidade.preguntas[nextIdx]?.tiempo || 15);
+      setTimeLeft(preguntasBarajadas[nextIdx]?.tiempo || unidade.tiempoPorPregunta || TIEMPO_POR_DEFECTO_SEGUNDOS);
     } else {
       setFeedback({
         type: 'info',
-        text: '🏆 ¡Unidade Didáctica completada!'
+        text: txt.unidadCompletada
       });
     }
   };
 
-  const maxTiempo = preguntaActual?.tiempo || 15;
+  if (!preguntaActual) return null;
+
+  const maxTiempo = preguntaActual.tiempo || unidade.tiempoPorPregunta || TIEMPO_POR_DEFECTO_SEGUNDOS;
   const porcentajeTiempo = (timeLeft / maxTiempo) * 100;
 
   return (
@@ -76,10 +106,10 @@ export default function GameQuiz({ unidade, onAddPoints, onVolver }) {
           onClick={onVolver}
           className="text-xs font-bold text-slate-400 hover:text-white bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700"
         >
-          ⬅️ Cambiar de Tema
+          {txt.cambiarTema}
         </button>
         <span className="text-xs font-black text-blue-400 uppercase tracking-widest bg-blue-500/10 border border-blue-500/20 px-3 py-1 rounded-lg">
-          Pregunta {currentIdx + 1} de {unidade.preguntas.length}
+          {txt.pregunta} {currentIdx + 1} {txt.de} {preguntasBarajadas.length}
         </span>
         <div className={`px-4 py-1.5 rounded-xl font-mono font-black text-lg border ${
           timeLeft <= 5 ? 'bg-red-500/20 text-red-400 border-red-500/40 animate-pulse' : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
@@ -98,7 +128,7 @@ export default function GameQuiz({ unidade, onAddPoints, onVolver }) {
       </div>
 
       <h2 className="text-2xl font-bold text-white mb-8 text-center leading-relaxed">
-        {preguntaActual.pregunta}
+        {preguntaActual.preguntaTexto}
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -139,19 +169,19 @@ export default function GameQuiz({ unidade, onAddPoints, onVolver }) {
             {feedback.text}
           </div>
 
-          {currentIdx < unidade.preguntas.length - 1 ? (
+          {currentIdx < preguntasBarajadas.length - 1 ? (
             <button
               onClick={nextQuestion}
               className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl text-lg transition-colors shadow-lg shadow-blue-600/30 uppercase tracking-wider"
             >
-              Seguinte Pregunta ➡️
+              {txt.siguientePregunta}
             </button>
           ) : (
             <button
               onClick={onVolver}
               className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-lg transition-colors shadow-lg shadow-emerald-600/30 uppercase tracking-wider"
             >
-              Volver ao Menú de Temas 🏆
+              {txt.volverMenu}
             </button>
           )}
         </div>
