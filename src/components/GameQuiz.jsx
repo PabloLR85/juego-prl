@@ -1,4 +1,3 @@
-// src/components/GameQuiz.jsx
 import React, { useState, useEffect } from 'react';
 import { barajarArray, TIEMPO_POR_DEFECTO_SEGUNDOS, TEXTOS_UI } from '../data/temarioPRL';
 
@@ -13,10 +12,12 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
   const [isQuizFinished, setIsQuizFinished] = useState(false);
   const [aciertos, setAciertos] = useState(0);
   const [puntosTotalesIntento, setPuntosTotalesIntento] = useState(0);
+  const [historialRespuestas, setHistorialRespuestas] = useState([]);
+  const [mostrarRevision, setMostrarRevision] = useState(false);
+  const [mostrarModalConfirmacion, setMostrarModalConfirmacion] = useState(false);
 
   const txt = TEXTOS_UI[lang];
 
-  // Carga inicial y barajado de preguntas
   const cargarYBarajar = () => {
     if (unidade && unidade.preguntas) {
       const preguntasConOpcionesBarajadas = unidade.preguntas.map((p) => {
@@ -28,6 +29,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
         return {
           ...p,
           preguntaTexto: p.pregunta[lang],
+          explicacionTexto: p.explicacion ? p.explicacion[lang] : null,
           opciones: opcionesMezcladas,
           respuestaCorrecta: nuevaRespuestaCorrecta
         };
@@ -42,6 +44,8 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
       setIsQuizFinished(false);
       setAciertos(0);
       setPuntosTotalesIntento(0);
+      setHistorialRespuestas([]);
+      setMostrarRevision(false);
       setTimeLeft(listaFinal[0]?.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS);
       setGlobalTimeLeft(unidade.isTestGeneral ? 600 : null);
     }
@@ -51,7 +55,6 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
     cargarYBarajar();
   }, [unidade, lang]);
 
-  // Temporizador global de 10 minutos (Test General)
   useEffect(() => {
     if (!unidade.isTestGeneral || globalTimeLeft === null || isQuizFinished) return;
 
@@ -66,7 +69,6 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
   const preguntaActual = preguntasBarajadas[currentIdx];
 
-  // Temporizador individual de 30s por pregunta
   useEffect(() => {
     if (isAnswered || isQuizFinished || !preguntaActual) return;
     if (timeLeft === 0) {
@@ -79,6 +81,18 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
   const handleTimeout = () => {
     setIsAnswered(true);
+    
+    setHistorialRespuestas((prev) => [
+      ...prev,
+      {
+        pregunta: preguntaActual.preguntaTexto,
+        opciones: preguntaActual.opciones,
+        seleccionada: -1,
+        correcta: preguntaActual.respuestaCorrecta,
+        explicacion: preguntaActual.explicacionTexto
+      }
+    ]);
+
     setFeedback({
       type: 'error',
       text: txt.seAgototiempo
@@ -91,6 +105,17 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
     setIsAnswered(true);
 
     const esCorrecta = index === preguntaActual.respuestaCorrecta;
+
+    setHistorialRespuestas((prev) => [
+      ...prev,
+      {
+        pregunta: preguntaActual.preguntaTexto,
+        opciones: preguntaActual.opciones,
+        seleccionada: index,
+        correcta: preguntaActual.respuestaCorrecta,
+        explicacion: preguntaActual.explicacionTexto
+      }
+    ]);
 
     if (esCorrecta) {
       const bonus = timeLeft * 5;
@@ -131,7 +156,6 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
     return `${min}:${s < 10 ? '0' : ''}${s}`;
   };
 
-  // --- PANTALLA FINAL DE RESULTADOS ---
   if (isQuizFinished) {
     const porcentajeAciertos = Math.round((aciertos / preguntasBarajadas.length) * 100) || 0;
     const aprobado = porcentajeAciertos >= 50;
@@ -163,12 +187,39 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
           </div>
         </div>
 
-        <div className={`p-4 rounded-xl font-bold border text-sm ${
-          aprobado ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-red-500/20 text-red-300 border-red-500/40'
-        }`}>
-          {aprobado
-            ? '🎉 ¡Buen trabajo! Has superado el test con éxito.'
-            : '⚠️ Necesitas repasar un poco más los conceptos del temario.'}
+        <div className="pt-2">
+          <button
+            onClick={() => setMostrarRevision(!mostrarRevision)}
+            className="text-xs font-bold text-blue-400 hover:text-blue-300 underline uppercase tracking-wider"
+          >
+            {mostrarRevision ? '🙈 Ocultar desglose de respuestas' : '🔍 Revisar historial de respuestas y explicaciones'}
+          </button>
+
+          {mostrarRevision && (
+            <div className="mt-4 text-left space-y-4 max-h-96 overflow-y-auto pr-2 bg-slate-950/80 p-4 rounded-xl border border-slate-800">
+              {historialRespuestas.map((h, i) => {
+                const esCorrecta = h.seleccionada === h.correcta;
+                return (
+                  <div key={i} className={`p-4 rounded-xl border ${esCorrecta ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-red-500/30 bg-red-500/5'}`}>
+                    <p className="font-bold text-sm text-white mb-2">{i + 1}. {h.pregunta}</p>
+                    <p className="text-xs text-slate-300">
+                      <strong>Tu respuesta:</strong> {h.seleccionada === -1 ? '⏱️ Tiempo agotado' : h.opciones[h.seleccionada]}
+                    </p>
+                    {!esCorrecta && (
+                      <p className="text-xs text-emerald-400 mt-1">
+                        <strong>Respuesta correcta:</strong> {h.opciones[h.correcta]}
+                      </p>
+                    )}
+                    {h.explicacion && (
+                      <p className="text-xs text-slate-400 mt-2 bg-slate-900 p-2 rounded border border-slate-800 italic">
+                        💡 <strong>Justificación:</strong> {h.explicacion}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
@@ -195,10 +246,33 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
   const porcentajeTiempo = (timeLeft / maxTiempo) * 100;
 
   return (
-    <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-3xl mx-auto">
+    <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-3xl mx-auto relative">
+      {mostrarModalConfirmacion && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-sm w-full text-center space-y-4 shadow-2xl">
+            <h3 className="text-lg font-bold text-white uppercase">¿Abandonar el examen?</h3>
+            <p className="text-xs text-slate-400">Si sales ahora perderás el progreso y la puntuación de este intento.</p>
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={() => setMostrarModalConfirmacion(false)}
+                className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold border border-slate-700"
+              >
+                Continuar jugando
+              </button>
+              <button
+                onClick={onVolver}
+                className="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-bold"
+              >
+                Sí, salir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-between items-center mb-6">
         <button
-          onClick={onVolver}
+          onClick={() => setMostrarModalConfirmacion(true)}
           className="text-xs font-bold text-slate-400 hover:text-white bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700"
         >
           {txt.cambiarTema}
@@ -269,7 +343,13 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
             feedback.type === 'success' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' :
             feedback.type === 'error' ? 'bg-red-500/20 text-red-300 border-red-500/30' : 'bg-blue-500/20 text-blue-300 border-blue-500/30'
           }`}>
-            {feedback.text}
+            <div>{feedback.text}</div>
+            
+            {preguntaActual.explicacionTexto && (
+              <div className="mt-3 pt-3 border-t border-slate-700/50 text-xs font-normal text-slate-300 text-left bg-slate-950/40 p-3 rounded-lg">
+                💡 <strong>Justificación Didáctica:</strong> {preguntaActual.explicacionTexto}
+              </div>
+            )}
           </div>
 
           <button
