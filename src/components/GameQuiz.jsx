@@ -19,7 +19,6 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
   const txt = TEXTOS_UI[lang];
 
-  // Carga inicial al seleccionar el tema (solo la primera vez)
   useEffect(() => {
     if (unidade && unidade.preguntas && preguntasBarajadas.length === 0) {
       inicializarPreguntas(unidade.preguntas);
@@ -28,13 +27,11 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
   const inicializarPreguntas = (rawPreguntas) => {
     const preguntasConOpcionesBarajadas = rawPreguntas.map((p) => {
-      // Guardamos la referencia de los textos originales en ambos idiomas para poder cambiar dinámicamente
       const opcionesGl = p.opciones.gl;
       const opcionesEs = p.opciones.es;
       const opcionCorrectaTextoGl = opcionesGl[p.respuestaCorrecta];
       const opcionCorrectaTextoEs = opcionesEs[p.respuestaCorrecta];
 
-      // Barajamos ambos idiomas de forma independiente pero manteniendo el mapeo correcto
       const opMezcladasGl = barajarArray(opcionesGl);
       const nuevaCorrectaGl = opMezcladasGl.indexOf(opcionCorrectaTextoGl);
 
@@ -73,7 +70,6 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
     inicializarPreguntas(unidade.preguntas);
   };
 
-  // Reloj Global de 10 minutos (Test General)
   useEffect(() => {
     if (!unidade.isTestGeneral || globalTimeLeft === null || isQuizFinished) return;
 
@@ -88,7 +84,6 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
   const preguntaActual = preguntasBarajadas[currentIdx];
 
-  // Reloj Individual de 30s por pregunta
   useEffect(() => {
     if (isAnswered || isQuizFinished || !preguntaActual) return;
     if (timeLeft === 0) {
@@ -196,24 +191,30 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
         </div>
 
         <h2 className="text-3xl font-black text-white uppercase tracking-wider">
-          {unidade.isTestGeneral ? 'Examen General Finalizado' : 'Unidad Didáctica Completada'}
+          {unidade.isTestGeneral ? txt.examenFinalizado : txt.unidadFinalizada}
         </h2>
 
         <div className="grid grid-cols-3 gap-4 bg-slate-950/60 p-4 rounded-xl border border-slate-800 text-center">
           <div>
-            <div className="text-xs text-slate-400 uppercase font-bold">Puntuación</div>
+            <div className="text-xs text-slate-400 uppercase font-bold">{txt.puntuacion}</div>
             <div className="text-2xl font-black text-amber-400">{puntosTotalesIntento} pts</div>
           </div>
           <div>
-            <div className="text-xs text-slate-400 uppercase font-bold">Aciertos</div>
+            <div className="text-xs text-slate-400 uppercase font-bold">{txt.aciertos}</div>
             <div className="text-2xl font-black text-emerald-400">{aciertos} / {preguntasBarajadas.length}</div>
           </div>
           <div>
-            <div className="text-xs text-slate-400 uppercase font-bold">Acierto %</div>
+            <div className="text-xs text-slate-400 uppercase font-bold">{txt.aciertoPorcentaje}</div>
             <div className={`text-2xl font-black ${aprobado ? 'text-emerald-400' : 'text-red-400'}`}>
               {porcentajeAciertos}%
             </div>
           </div>
+        </div>
+
+        <div className={`p-4 rounded-xl font-bold border text-sm ${
+          aprobado ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-red-500/20 text-red-300 border-red-500/40'
+        }`}>
+          {aprobado ? txt.aprobadoMsg : txt.suspensoMsg}
         </div>
 
         <div className="pt-2">
@@ -221,7 +222,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
             onClick={() => setMostrarRevision(!mostrarRevision)}
             className="text-xs font-bold text-blue-400 hover:text-blue-300 underline uppercase tracking-wider"
           >
-            {mostrarRevision ? '🙈 Ocultar desglose de respuestas' : '🔍 Revisar historial de respuestas y explicaciones'}
+            {mostrarRevision ? txt.ocultarDesglose : txt.revisarHistorial}
           </button>
 
           {mostrarRevision && (
@@ -232,16 +233,16 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
                   <div key={i} className={`p-4 rounded-xl border ${esCorrecta ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-red-500/30 bg-red-500/5'}`}>
                     <p className="font-bold text-sm text-white mb-2">{i + 1}. {h.pregunta}</p>
                     <p className="text-xs text-slate-300">
-                      <strong>Tu respuesta:</strong> {h.seleccionada === -1 ? '⏱️ Tiempo agotado' : h.opciones[h.seleccionada]}
+                      <strong>{txt.tuRespuesta}</strong> {h.seleccionada === -1 ? txt.tiempoAgotado : h.opciones[h.seleccionada]}
                     </p>
                     {!esCorrecta && (
                       <p className="text-xs text-emerald-400 mt-1">
-                        <strong>Respuesta correcta:</strong> {h.opciones[h.correcta]}
+                        <strong>{txt.respuestaCorrectaLabel}</strong> {h.opciones[h.correcta]}
                       </p>
                     )}
                     {h.explicacion && (
                       <p className="text-xs text-slate-400 mt-2 bg-slate-900 p-2 rounded border border-slate-800 italic">
-                        💡 <strong>Justificación:</strong> {h.explicacion}
+                        {txt.justificacionDidactica} {h.explicacion}
                       </p>
                     )}
                   </div>
@@ -256,13 +257,13 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
             onClick={reiniciarTest}
             className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-md uppercase tracking-wider shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2"
           >
-            <span>🔄</span> Repetir Test
+            <span>🔄</span> {txt.repetirTest}
           </button>
           <button
             onClick={onVolver}
             className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-xl text-md uppercase tracking-wider border border-slate-700 transition-all flex items-center justify-center gap-2"
           >
-            <span>🏠</span> Menú Principal
+            <span>🏠</span> {txt.menuPrincipal}
           </button>
         </div>
       </div>
@@ -284,20 +285,20 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
       {mostrarModalConfirmacion && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <h3 className="text-lg font-bold text-white uppercase">¿Abandonar el examen?</h3>
-            <p className="text-xs text-slate-400">Si sales ahora perderás el progreso y la puntuación de este intento.</p>
+            <h3 className="text-lg font-bold text-white uppercase">{txt.abandonarExamen}</h3>
+            <p className="text-xs text-slate-400">{txt.avisoAbandono}</p>
             <div className="flex gap-3 pt-2">
               <button
                 onClick={() => setMostrarModalConfirmacion(false)}
                 className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold border border-slate-700"
               >
-                Continuar jugando
+                {txt.continuarJugando}
               </button>
               <button
                 onClick={onVolver}
                 className="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-bold"
               >
-                Sí, salir
+                {txt.siSalir}
               </button>
             </div>
           </div>
@@ -381,7 +382,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
             
             {explicacionActual && (
               <div className="mt-3 pt-3 border-t border-slate-700/50 text-xs font-normal text-slate-300 text-left bg-slate-950/40 p-3 rounded-lg">
-                💡 <strong>Justificación Didáctica:</strong> {explicacionActual}
+                {txt.justificacionDidactica} {explicacionActual}
               </div>
             )}
           </div>
@@ -390,7 +391,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
             onClick={nextQuestion}
             className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl text-lg transition-colors shadow-lg shadow-blue-600/30 uppercase tracking-wider"
           >
-            {currentIdx < preguntasBarajadas.length - 1 ? txt.siguientePregunta : 'Ver Resultados del Test 🏆'}
+            {currentIdx < preguntasBarajadas.length - 1 ? txt.siguientePregunta : txt.verResultados}
           </button>
         </div>
       )}

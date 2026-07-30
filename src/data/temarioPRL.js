@@ -45,7 +45,30 @@ export const TEXTOS_UI = {
     incorrectoRespuesta: "❌ INCORRECTO. A resposta correcta era:",
     unidadCompletada: "🏆 ¡Examen/Unidade completada con éxito!",
     siguientePregunta: "Seguinte Pregunta ➡️",
-    volverMenu: "Finalizar e Volver ao Menú 🔄"
+    volverMenu: "Finalizar e Volver ao Menú 🔄",
+    sala: "Sala",
+    preguntasTab: "🎮 Preguntas",
+    rankingTab: "📊 Clasificación Clase",
+    tuEres: "(Ti)",
+    justificacionDidactica: "💡 Xustificación Didáctica:",
+    verResultados: "Ver Resultados do Test 🏆",
+    examenFinalizado: "Examen Xeral Rematado",
+    unidadFinalizada: "Unidade Didáctica Rematada",
+    aciertos: "Aciertos",
+    aciertoPorcentaje: "Acierto %",
+    repetirTest: "Repetir Test",
+    menuPrincipal: "Menú Principal",
+    ocultarDesglose: "🙈 Ocultar desglose de respostas",
+    revisarHistorial: "🔍 Revisar historial de respostas e xustificacións",
+    tuRespuesta: "A túa resposta:",
+    respuestaCorrectaLabel: "Resposta correcta:",
+    tiempoAgotado: "⏱️ Tempo esgotado",
+    abandonarExamen: "¿Abandonar o exame?",
+    avisoAbandono: "Se saes agora perderás o progreso e a puntuación deste intento.",
+    continuarJugando: "Continuar xogando",
+    siSalir: "Si, saír",
+    aprobadoMsg: "🎉 ¡Bo traballo! Superaches o test con éxito.",
+    suspensoMsg: "⚠️ Necesitas repasar un pouco máis os conceptos do temario."
   },
   es: {
     titulo: "PRL Challenge Arcade",
@@ -80,7 +103,30 @@ export const TEXTOS_UI = {
     incorrectoRespuesta: "❌ INCORRECTO. La respuesta correcta era:",
     unidadCompletada: "🏆 ¡Examen/Unidad completada con éxito!",
     siguientePregunta: "Siguiente Pregunta ➡️",
-    volverMenu: "Volver al Menú de Temas 🔄"
+    volverMenu: "Volver al Menú de Temas 🔄",
+    sala: "Sala",
+    preguntasTab: "🎮 Preguntas",
+    rankingTab: "📊 Clasificación Clase",
+    tuEres: "(Tú)",
+    justificacionDidactica: "💡 Justificación Didáctica:",
+    verResultados: "Ver Resultados del Test 🏆",
+    examenFinalizado: "Examen General Finalizado",
+    unidadFinalizada: "Unidad Didáctica Completada",
+    aciertos: "Aciertos",
+    aciertoPorcentaje: "Acierto %",
+    repetirTest: "Repetir Test",
+    menuPrincipal: "Menú Principal",
+    ocultarDesglose: "🙈 Ocultar desglose de respuestas",
+    revisarHistorial: "🔍 Revisar historial de respuestas y explicaciones",
+    tuRespuesta: "Tu respuesta:",
+    respuestaCorrectaLabel: "Respuesta correcta:",
+    tiempoAgotado: "⏱️ Tiempo agotado",
+    abandonarExamen: "¿Abandonar el examen?",
+    avisoAbandono: "Si sales ahora perderás el progreso y la puntuación de este intento.",
+    continuarJugando: "Continuar jugando",
+    siSalir: "Sí, salir",
+    aprobadoMsg: "🎉 ¡Buen trabajo! Has superado el éxito con éxito.",
+    suspensoMsg: "⚠️ Necesitas repasar un poco más los conceptos del temario."
   }
 };
 
@@ -399,17 +445,13 @@ export const TEMARIO_PRL = [
         preguntas: [
           {
             id: 201,
-            pregunta: { gl: "Un contacto eléctrico producido coa masa dunha máquina posta accidentalmente en tensión é:", es: "Un contacto eléctrico producido con la masa de una máquina puesta accidentalmente en tensión es:" },
+            pregunta: { gl: "Un contacto eléctrico producido coa masa dunha máquina posta accidentalmente en tensión é:", es: "¿Cómo se denomina un contacto eléctrico producido con la masa de una máquina?" },
             opciones: {
               gl: ["Contacto directo", "Contacto indirecto", "Contacto de alta tensión", "Derivación en orixe"],
               es: ["Contacto directo", "Contacto indirecto", "Contacto de alta tensión", "Derivación galvánica"]
             },
             respuestaCorrecta: 1,
-            explicacion: {
-              gl: "O contacto directo ocorre con partes activas en tensión. O indirecto acontece ao tocar masas metálicas postas accidentalmente en tensión.",
-              es: "El contacto directo ocurre con partes activas en tensión. El indirecto acontece al tocar masas metálicas puestas accidentalmente en tensión."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "O contacto indirecto acontece ao tocar elementos que non deberían estar en tensión pero que o están por un fallo.", es: "El contacto indirecto acontece al tocar elementos que no deberían estar en tensión pero que lo están por un fallo." }, tiempo: 30, puntos: 100
           },
           {
             id: 202,
@@ -419,11 +461,7 @@ export const TEMARIO_PRL = [
               es: ["Cada año", "Cada 3 años", "Cada 5 años", "Cada 10 años"]
             },
             respuestaCorrecta: 2,
-            explicacion: {
-              gl: "A proba de presión ou retimbrado de extintores realízase cada 5 anos segundo o Regulamento de Protección Contra Incendios.",
-              es: "La prueba de presión o retimbrado de extintores se realiza cada 5 años según el Reglamento de Protección Contra Incendios."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "A proba de presión ou retimbrado de extintores realízase cada 5 anos segundo o Regulamento de Protección Contra Incendios.", es: "La prueba de presión o retimbrado de extintores se realiza cada 5 años según el Reglamento de Protección Contra Incendios." }, tiempo: 30, puntos: 100
           },
           {
             id: 203,
@@ -453,7 +491,7 @@ export const TEMARIO_PRL = [
               es: ["Obligación", "Prohibición", "Información de salvamento", "Advertencia de peligro"]
             },
             respuestaCorrecta: 1,
-            explicacion: { gl: "Os sinais de prohibición caracterízase por ser circulares cun pictograma negro sobre fondo branco, bordo vermello e banda transversal.", es: "Las señales de prohibición se caracterizan por ser circulares con un pictograma negro sobre fondo blanco, borde rojo y banda transversal." }, tiempo: 30, puntos: 100
+            explicacion: { gl: "Os sinais de prohibición caracteríza-se por ser circulares cun pictograma negro sobre fondo branco, bordo vermello e banda transversal.", es: "Las señales de prohibición se caracterizan por ser circulares con un pictograma negro sobre fondo blanco, borde rojo y banda transversal." }, tiempo: 30, puntos: 100
           },
           {
             id: 206,
@@ -479,7 +517,7 @@ export const TEMARIO_PRL = [
             id: 208,
             pregunta: { gl: "Como se denominan os traballos realizados a unha altura superior a 2 metros con respecto ao nivel inferior?", es: "¿Cómo se denominan los trabajos realizados a una altura superior a 2 metros con respecto al nivel inferior?" },
             opciones: {
-              gl: ["Traballos en altura", "Traballos verticais sinxel", "Manexo de cargas elevadas", "Operacións en andamios móbiles"],
+              gl: ["Traballos en altura", "Traballos verticais sinxelos", "Manexo de cargas elevadas", "Operacións en andamios móbiles"],
               es: ["Trabajos en altura", "Trabajos verticales sencillos", "Manejo de cargas elevadas", "Operaciones en andamios móviles"]
             },
             respuestaCorrecta: 0,
@@ -499,7 +537,7 @@ export const TEMARIO_PRL = [
             id: 210,
             pregunta: { gl: "Cal é a causa principal das caídas de persoas ao mesmo nivel?", es: "¿Cuál es la causa principal de las caídas de personas al mismo nivel?" },
             opciones: {
-              gl: ["Falta de orde, limpeza, chans esvaradíos ou obstáculos nos pasos", "Deffectos estruturais nos teitos", "Fallo no sistema de elevación", "Falta de iluminación exterior en noites de verán"],
+              gl: ["Falta de orde, limpeza, chans esvaradíos ou obstáculos nos pasos", "Defectos estruturais nos teitos", "Fallo no sistema de elevación", "Falta de iluminación exterior en noites de verán"],
               es: ["Falta de orden, limpieza, suelos resbaladizos u obstáculos en los pasos", "Defectos estructurales en los techos", "Fallo en el sistema de elevación", "Falta de iluminación exterior en noches de verano"]
             },
             respuestaCorrecta: 0,
@@ -522,11 +560,7 @@ export const TEMARIO_PRL = [
               es: ["Vía dérmica", "Vía inhalatoria o respiratoria", "Vía digestiva", "Vía parenteral"]
             },
             respuestaCorrecta: 1,
-            explicacion: {
-              gl: "A inhalación de gases, vapores ou aerosols é a vía pola que penetran maioritariamente os tóxicos químicos nos pulmóns.",
-              es: "La inhalación de gases, vapores o aerosoles es la vía por la que penetran mayoritariamente los tóxicos químicos en los pulmones."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "A inhalación de gases, vapores ou aerosols é a vía pola que penetran maioritariamente os tóxicos químicos nos pulmóns.", es: "La inhalación de gases, vapores o aerosoles es la vía por la que penetran mayoritariamente los tóxicos químicos en los pulmones." }, tiempo: 30, puntos: 100
           },
           {
             id: 212,
@@ -536,11 +570,7 @@ export const TEMARIO_PRL = [
               es: ["80 dBA", "85 dBA", "90 dBA", "95 dBA"]
             },
             respuestaCorrecta: 1,
-            explicacion: {
-              gl: "Os valores superiores que fan obrigatorio o uso de protectores auditivos sitúanse nos 85 dBA (RD 286/2006).",
-              es: "Los valores superiores que hacen obligatorio el uso de protectores auditivos se sitúan en los 85 dBA (RD 286/2006)."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "Os valores superiores que fan obrigatorio o uso de protectores auditivos sitúanse nos 85 dBA (RD 286/2006).", es: "Los valores superiores que hacen obligatorio el uso de protectores auditivos se sitúan en los 85 dBA (RD 286/2006)." }, tiempo: 30, puntos: 100
           },
           {
             id: 213,
@@ -639,11 +669,7 @@ export const TEMARIO_PRL = [
               es: ["15 kg", "25 kg", "40 kg", "50 kg"]
             },
             respuestaCorrecta: 1,
-            explicacion: {
-              gl: "O peso xeral de referencia recomendado é de 25 kg, reduciéndose a 15 kg para mulleres, traballadores novos ou maiores.",
-              es: "El peso general de referencia recomendado es de 25 kg, reduciéndose a 15 kg para mujeres, trabajadores jóvenes o mayores."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "O peso xeral de referencia recomendado é de 25 kg, reduciéndose a 15 kg para mulleres, traballadores novos ou maiores.", es: "El peso general de referencia recomendado es de 25 kg, reduciéndose a 15 kg para mujeres, trabajadores jóvenes o mayores." }, tiempo: 30, puntos: 100
           },
           {
             id: 222,
@@ -653,11 +679,7 @@ export const TEMARIO_PRL = [
               es: ["Cuando hay movimientos rítmicos continuados", "Cuando se mantiene un esfuerzo muscular sostenido en el tiempo sin períodos de relajación", "Cuando se camina largas distancias sin carga", "Cuando se emplean herramientas ligeras"]
             },
             respuestaCorrecta: 1,
-            explicacion: {
-              gl: "O traballo estático comprime os vasos sanguíneos, dificultando a achega de osíxeno e xerando fatiga muscular moi intensa.",
-              es: "El trabajo estático comprime los vasos sanguíneos, dificultando el aporte de oxígeno y generando fatiga muscular muy intensa."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "O traballo estático comprime os vasos sanguíneos, dificultando a achega de osíxeno e xerando fatiga muscular moi intensa.", es: "El trabajo estático comprime los vasos sanguíneos, dificultando el aporte de oxígeno y generando fatiga muscular muy intensa." }, tiempo: 30, puntos: 100
           },
           {
             id: 223,
@@ -667,11 +689,7 @@ export const TEMARIO_PRL = [
               es: ["Doblar la espalda manteniendo las piernas rígidas", "Hacer un giro brusco de cintura para ganar impulso", "Doblar las rodillas, mantener la espalda recta y acercar la carga al cuerpo", "Levantar con un único brazo lateralmente"]
             },
             respuestaCorrecta: 2,
-            explicacion: {
-              gl: "Flexionar as pernas protexe a columna vertebral, delegando o esforzo nos muslos e mantendo a carga pegada ao centro de gravidade.",
-              es: "Flexionar las piernas protege la columna vertebral, delegando el esfuerzo en los muslos y manteniendo la carga pegada al centro de gravedad."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "Flexionar as pernas protexe a columna vertebral, delegando o esforzo nos muslos e mantendo a carga pegada ao centro de gravidade.", es: "Flexionar las piernas protege la columna vertebral, delegando el esfuerzo en los muslos y manteniendo la carga pegada al centro de gravedad." }, tiempo: 30, puntos: 100
           },
           {
             id: 224,
@@ -760,11 +778,7 @@ export const TEMARIO_PRL = [
               es: ["Categoría I", "Categoría II", "Categoría III", "Categoría Especial"]
             },
             respuestaCorrecta: 2,
-            explicacion: {
-              gl: "A Categoría III abarca os EPIs de deseño complexo destinados a protexer contra perigos mortais ou lesións graves permanentes.",
-              es: "La Categoría III abarca los EPIs de diseño complejo destinados a proteger contra peligros mortales o lesiones graves permanentes."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "A Categoría III abarca os EPIs de deseño complexo destinados a protexer contra perigos mortais ou lesións graves permanentes.", es: "La Categoría III abarca los EPIs de diseño complejo destinados a proteger contra peligros mortales o lesiones graves permanentes." }, tiempo: 30, puntos: 100
           },
           {
             id: 232,
@@ -774,11 +788,7 @@ export const TEMARIO_PRL = [
               es: ["La colectiva protege a varios trabajadores simultáneamente y la individual protege únicamente al portador", "La individual es más barata y obligatoria", "La colectiva solo sirve para oficinas", "No hay diferencia legal entre ambas"]
             },
             respuestaCorrecta: 0,
-            explicacion: {
-              gl: "Os sistemas colectivos (redes, barandillas, extractores) actúan sobre o contorno protexendo a todos por igual.",
-              es: "Los sistemas colectivos (redes, barandillas, extractores) actúan sobre el entorno protegiendo a todos por igual."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "Os sistemas colectivos (redes, barandillas, extractores) actúan sobre o contorno protexendo a todos por igual.", es: "Los sistemas colectivos (redes, barandillas, extractores) actúan sobre el entorno protegiendo a todos por igual." }, tiempo: 30, puntos: 100
           },
           {
             id: 233,
@@ -788,18 +798,14 @@ export const TEMARIO_PRL = [
               es: ["Siempre como primera opción preventiva", "Cuando los riesgos no se puedan evitar o limitar suficientemente mediante protección colectiva o métodos organizativos", "Unicamente cuando el trabajador lo desee voluntariamente", "Cuando lo visite un cliente importante"]
             },
             respuestaCorrecta: 1,
-            explicacion: {
-              gl: "Os EPIs teñen carácter subsidiario: empréganse cando non é posible eliminar o risco por outros medios técnicos.",
-              es: "Los EPIs tienen carácter subsidiario: se emplean cuando no es posible eliminar el riesgo por otros medios técnicos."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "Os EPIs teñen carácter subsidiario: empréganse cando non é posible eliminar o risco por outros medios técnicos.", es: "Los EPIs tienen carácter subsidiario: se emplean cuando no es posible eliminar el riesgo por otros medios técnicos." }, tiempo: 30, puntos: 100
           },
           {
             id: 234,
             pregunta: { gl: "Cal dos seguintes elementos constitúe un medio de protección colectiva?", es: "¿Cuál de los siguientes elementos constituye un medio de protección colectiva?" },
             opciones: {
               gl: ["Unha barandilla de seguridade nun oco de escaleira", "Unhas botas de seguridade con puntera de aceiro", "Unha máscara autofiltrante FFP2", "Un casco de obra con barbuqueixo"],
-              es: ["Una barandilla de seguridad en un hueco de escalera", "Unas botas de seguridad con puntera de acero", "Una mascarilla autofiltrante FFP2", "Un casco de obra con barbuquejo"]
+              es: ["Una barandilla de seguridad en un hueco de escalera", "Unas botas de seguridad con puntera de acero", "Unha máscara autofiltrante FFP2", "Un casco de obra con barbuquejo"]
             },
             respuestaCorrecta: 0,
             explicacion: { gl: "A barandilla evita que calquera persoa caia ao baleiro sen necesidade de portar ningún elemento persoal.", es: "La barandilla evita que cualquier persona caiga al vacío sin necesidad de portar ningún elemento personal." }, tiempo: 30, puntos: 100
@@ -881,11 +887,7 @@ export const TEMARIO_PRL = [
               es: ["Conato de emergencia", "Emergencia parcial", "Emergencia general", "Evacuación masiva"]
             },
             respuestaCorrecta: 0,
-            explicacion: {
-              gl: "O conato é a fase inicial dunha emerxencia que se domina facilmente cos extintores portátiles dispoñibles no sector.",
-              es: "El conato es la fase inicial de una emergencia que se domina fácilmente con los extintores portátiles disponibles en el sector."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "O conato é a fase inicial dunha emerxencia que se domina facilmente cos extintores portátiles dispoñibles no sector.", es: "El conato es la fase inicial de una emergencia que se domina fácilmente con los extintores portátiles disponibles en el sector." }, tiempo: 30, puntos: 100
           },
           {
             id: 242,
@@ -895,11 +897,7 @@ export const TEMARIO_PRL = [
               es: ["Equipos de Primera Intervención (EPI)", "Equipos de Segunda Intervención (ESI)", "Equipos de Alarma y Evacuación (EAE)", "Equipos de Primeros Auxilios"]
             },
             respuestaCorrecta: 1,
-            explicacion: {
-              gl: "Os ESI están formados por persoal con adestramentos específicos e equipos pesados de loita contra incendios.",
-              es: "Los ESI están formados por personal con adiestramientos específicos y equipos pesados de lucha contra incendios."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "Os ESI están formados por persoal con adestramentos específicos e equipos pesados de loita contra incendios.", es: "Los ESI están formados por personal con adestramientos específicos y equipos pesados de lucha contra incendios." }, tiempo: 30, puntos: 100
           },
           {
             id: 243,
@@ -998,11 +996,7 @@ export const TEMARIO_PRL = [
               es: ["Proteger, Avisar, Socorrer", "Parar, Analizar, Sanar", "Previr, Actuar, Suster", "Procurar asistencia, Asumir, Salvar"]
             },
             respuestaCorrecta: 0,
-            explicacion: {
-              gl: "Protexer o lugar para evitar novos accidentes, Avisar aos servizos de emerxencia (112) e Socorrer á vítima.",
-              es: "Proteger el lugar para evitar nuevos accidentes, Avisar a los servicios de emergencia (112) y Socorrer a la víctima."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "Protexer o lugar para evitar novos accidentes, Avisar aos servizos de emerxencia (112) e Socorrer á vítima.", es: "Proteger el lugar para evitar nuevos accidentes, Avisar a los servicios de emergencia (112) y Socorrer a la víctima." }, tiempo: 30, puntos: 100
           },
           {
             id: 252,
@@ -1012,11 +1006,7 @@ export const TEMARIO_PRL = [
               es: ["Posición Lateral de Seguridad (PLS)", "Decúbito supino estrito", "Posición de Trendelenburg", "Sentado en una silla"]
             },
             respuestaCorrecta: 0,
-            explicacion: {
-              gl: "A PLS mantén a vía aérea permeable evitando que a lingua caia cara atrás ou a persoa se afogue co seu vómito.",
-              es: "La PLS mantiene la vía aérea permeable evitando que la lengua caiga hacia atrás o la persona se ahogue con su vómito."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "A PLS mantén a vía aérea permeable evitando que a lingua caia cara atrás ou a persoa se afogue co seu vómito.", es: "La PLS mantiene la vía aérea permeable evitando que la lengua caiga hacia atrás o la persona se ahogue con su vómito." }, tiempo: 30, puntos: 100
           },
           {
             id: 253,
@@ -1073,7 +1063,7 @@ export const TEMARIO_PRL = [
             pregunta: { gl: "Que é un desmaio ou lipotimia?", es: "¿Qué es un desmayo o lipotimia?" },
             opciones: {
               gl: ["Unha perda de conciencia breve, superficial e transitoria por falta temporal de achegamento sanguíneo ao cerebro", "Un paro cardiorrespiratorio irreversible", "Unha fractura ósea pechada", "Un ataque de epilepsia crónica"],
-              es: ["Una pérdida de conciencia breve, superficial y transitoria por falta temporal de aporte sanguíneo al cerebro", "Un paro cardiorrespiratorio irreversible", "Una fractura ósea cerrada", "Un ataque de epilepsia crónica"]
+              es: ["Una pérdida de conciencia breve, superficial y transitoria por falta temporal de aporte sanguíneo al cerebro", "Un paro cardiorrespiratorio irreversible", "Unha fractura ósea cerrada", "Un ataque de epilepsia crónica"]
             },
             respuestaCorrecta: 0,
             explicacion: { gl: "A lipotimia recuperase rapidamente tumbando á persoa e elevando lixeiramente as súas pernas para favorecer o retorno venoso.", es: "La lipotimia se recupera rápidamente tumbando a la persona y elevando ligeramente sus piernas para favorecer el retorno venoso." }, tiempo: 30, puntos: 100
@@ -1115,11 +1105,7 @@ export const TEMARIO_PRL = [
               es: ["Voluntario para el trabajador, salvo excepciones legales específicas", "Obligatorio en cualquier circunstancia sin excepción", "Decidido por votación en la asamblea de empleados", "Opcional solo para directivos"]
             },
             respuestaCorrecta: 0,
-            explicacion: {
-              gl: "O consentimento do traballador rexe a vixilancia, agás que existan perigos graves para terceiros ou disposición legal expresa.",
-              es: "El consentimiento del trabajador rige la vigilancia, salvo que existan peligros graves para terceros o disposición legal expresa."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "O consentimento do traballador rexe a vixilancia, agás que existan perigos graves para terceiros ou disposición legal expresa.", es: "El consentimiento del trabajador rige la vigilancia, salvo que existan peligros graves para terceros o disposición legal expresa." }, tiempo: 30, puntos: 100
           },
           {
             id: 262,
@@ -1129,11 +1115,7 @@ export const TEMARIO_PRL = [
               es: ["No, el empresario solo recibe un informe de aptitud o limitaciones sin detalles médicos", "Sí, tiene derecho a ver todo el historial clínico", "Solamente si el trabajador firma un permiso por escrito", "Sí, el servicio de prevención remite el expediente completo a recursos humanos"]
             },
             respuestaCorrecta: 0,
-            explicacion: {
-              gl: "O segredo profesional médico impide que a empresa coñeza patoloxías íntimas, limitando a comunicación a se o empregado é apte.",
-              es: "El secreto profesional médico impide que la empresa conozca patologías íntimas, limitando la comunicación a si el empleado es apto."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "O segredo profesional médico impide que a empresa coñeza patoloxías íntimas, limitando a comunicación a se o empregado é apte.", es: "El secreto profesional médico impide que la empresa conozca patologías íntimas, limitando la comunicación a si el empleado es apto." }, tiempo: 30, puntos: 100
           },
           {
             id: 263,
@@ -1180,7 +1162,7 @@ export const TEMARIO_PRL = [
             pregunta: { gl: "Que finalidade preventiva principal persegue a vixilancia da saúde?", es: "¿Qué finalidad preventiva principal persigue la vigilancia de la salud?" },
             opciones: {
               gl: ["Detectar danos precozmente e comprobar a eficacia das medidas preventivas adoptadas", "Despedir traballadores con baixa forma física", "Aumentar a recaudación fiscal da mutua", "Xerar estatísticas sen aplicación práctica"],
-              es: ["Detectar daños precozmente y comprobar la eficacia de las medidas preventivas adoptadas", "Despedir trabajadores con baja forma física", "Aumentar la recaudación fiscal de la mutua", "Generar estadísticas sin aplicación práctica"]
+              es: ["Detectar danos precozmente e comprobar a eficacia das medidas preventivas adoptadas", "Despedir trabajadores con baja forma física", "Aumentar la recaudación fiscal de la mutua", "Generar estadísticas sin aplicación práctica"]
             },
             respuestaCorrecta: 0,
             explicacion: { gl: "Busca recoñecer sinais temperáns de alteración da saúde e avaliar se a prevención do posto está funcionando.", es: "Busca reconocer señales tempranas de alteración de la salud y evaluar si la prevención del puesto está funcionando." }, tiempo: 30, puntos: 100
@@ -1241,11 +1223,7 @@ export const TEMARIO_PRL = [
               es: ["100 trabajadores", "250 trabajadores", "500 trabajadores", "1000 trabajadores"]
             },
             respuestaCorrecta: 2,
-            explicacion: {
-              gl: "O art. 14 do Regulamento dos Servizos de Prevención fixa en 500 traballadores o limiar para servizo propio (ou 250 en actividades perigosas).",
-              es: "El art. 14 del Reglamento de los Servicios de Prevención fija en 500 trabajadores el umbral para servicio propio (o 250 en actividades peligrosas)."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "O art. 14 do Regulamento dos Servizos de Prevención fixa en 500 traballadores o limiar para servizo propio (ou 250 en actividades perigosas).", es: "El art. 14 del Reglamento de los Servicios de Prevención fija en 500 trabajadores el umbral para servicio propio (o 250 en actividades peligrosas)." }, tiempo: 30, puntos: 100
           },
           {
             id: 302,
@@ -1255,11 +1233,7 @@ export const TEMARIO_PRL = [
               es: ["En empresas de hasta 10 trabajadores (o 25 en un único centro) siempre que desarrolle su labor allí y tenga formación requerida", "En cualquier empresa sin límite de personal", "Solamente si la empresa se dedica a la construcción pesada", "Está prohibido en todos los casos"]
             },
             respuestaCorrecta: 0,
-            explicacion: {
-              gl: "O empresario individual pode asumir a prevención se traballa habitualmente no centro e posúe a capacitación de nivel básico.",
-              es: "El empresario individual puede asumir la prevención si trabaja habitualmente en el centro y posee la capacitación de nivel básico."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "O empresario individual pode asumir a prevención se traballa habitualmente no centro e posúe a capacitación de nivel básico.", es: "El empresario individual puede asumir la prevención si trabaja habitualmente en el centro y posee la capacitación de nivel básico." }, tiempo: 30, puntos: 100
           },
           {
             id: 303,
@@ -1269,11 +1243,7 @@ export const TEMARIO_PRL = [
               es: ["Una revisión externa, sistemática y objetiva para evaluar la eficacia del sistema preventivo", "Una inspección fiscal de impuestos", "Un control de stock de materiales", "Un examen médico anual a los directivos"]
             },
             respuestaCorrecta: 0,
-            explicacion: {
-              gl: "A auditoría legal externa axuda a comprobar se a integración da prevención na empresa é real e eficiente.",
-              es: "La auditoría legal externa ayuda a comprobar si la integración de la prevención en la empresa es real y eficiente."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "A auditoría legal externa axuda a comprobar se a integración da prevención na empresa é real e eficiente.", es: "La auditoría legal externa ayuda a comprobar si la integración de la prevención en la empresa es real y eficiente." }, tiempo: 30, puntos: 100
           },
           {
             id: 304,
@@ -1313,7 +1283,7 @@ export const TEMARIO_PRL = [
               es: ["Trabajadores de la propia empresa con capacidad y formación adecuada a los que se les asignan tareas preventivas", "Empleados externos de una subcontrata", "Inspectores de trabajo temporales", "Miembros de la directiva financiera"]
             },
             respuestaCorrecta: 0,
-            explicacion: { gl: "Constitúen unha modalidade preventiva interna cando o tamaño da empresa non xustifica un servizo propio.", es: "Constituyen una modalidad preventiva interna cuando el tamaño de la empresa no justifica un servicio propio." }, tiempo: 30, puntos: 100
+            explicacion: { gl: "Constitúean unha modalidade preventiva interna cando o tamaño da empresa non xustifica un servizo propio.", es: "Constituyen una modalidad preventiva interna cuando el tamaño de la empresa no justifica un servicio propio." }, tiempo: 30, puntos: 100
           },
           {
             id: 308,
@@ -1339,7 +1309,7 @@ export const TEMARIO_PRL = [
             id: 310,
             pregunta: { gl: "Que papel xoga a coordinación de actividades empresariais (CAE)?", es: "¿Qué papel juega la coordinación de actividades empresariales (CAE)?" },
             opciones: {
-              gl: ["Garantir a aplicación segura da normativa cando traballan varias empresas nun mesmo centro", "Fixar os prezos de mercado dos materiais", "Xestionar as nóminas conxuntas dos subcontratados", "Organizar eventos festivos corporativos"],
+              gl: ["Garantir a aplicación segura da normativa cando traballaran varias empresas nun mesmo centro", "Fixar os prezos de mercado dos materiais", "Xestionar as nóminas conxuntas dos subcontratados", "Organizar eventos festivos corporativos"],
               es: ["Garantizar la aplicación segura de la normativa cuando trabajan varias empresas en un mismo centro", "Fijar los precios de mercado de los materiales", "Gestionar las nóminas conjuntas de los subcontratados", "Organizar eventos festivos corporativos"]
             },
             respuestaCorrecta: 0,
@@ -1363,11 +1333,7 @@ export const TEMARIO_PRL = [
               es: ["El Instituto Nacional de Seguridad y Salud en el Trabajo (INSST)", "La Inspección de Trabajo y Seguridad Social", "La Guardia Civil de Tráfico", "La Agencia Tributaria"]
             },
             respuestaCorrecta: 0,
-            explicacion: {
-              gl: "O INSST (antigo INSHT) é o organismo autónomo encargado do asesoramento técnico, investigación e divulgación preventiva.",
-              es: "El INSST (antiguo INSHT) es el organismo autónomo encargado del asesoramiento técnico, investigación y divulgación preventiva."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "O INSST (antigo INSHT) é o organismo autónomo encargado do asesoramento técnico, investigación e divulgación preventiva.", es: "El INSST (antiguo INSHT) es el organismo autónomo encargado del asesoramiento técnico, investigación y divulgación preventiva." }, tiempo: 30, puntos: 100
           },
           {
             id: 312,
@@ -1377,11 +1343,7 @@ export const TEMARIO_PRL = [
               es: ["A la Inspección de Trabajo y Seguridad Social (ITSS)", "Al INSST exclusivamente", "A los colegios de médicos", "A las mutuas de accidentes"]
             },
             respuestaCorrecta: 0,
-            explicacion: {
-              gl: "A ITSS é a autoridade con potestade inspectora e sancionadora en caso de infraccións de seguridade.",
-              es: "La ITSS es la autoridad con potestad inspectora y sancionadora en caso de infracciones de seguridad."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "A ITSS é a autoridade con potestade inspectora e sancionadora en caso de infraccións de seguridade.", es: "La ITSS es la autoridad con potestad inspectora y sancionadora en caso de infracciones de seguridad." }, tiempo: 30, puntos: 100
           },
           {
             id: 313,
@@ -1391,11 +1353,7 @@ export const TEMARIO_PRL = [
               es: ["En Bilbao (España)", "En París (Francia)", "En Berlín (Alemania)", "En Roma (Italia)"]
             },
             respuestaCorrecta: 0,
-            explicacion: {
-              gl: "A axencia comunitaria EU-OSHA ten a súa sede central situada na cidade de Bilbao.",
-              es: "La agencia comunitaria EU-OSHA tiene su sede central situada en la ciudad de Bilbao."
-            },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "A axencia comunitaria EU-OSHA ten a súa sede central situada na cidade de Bilbao.", es: "La agencia comunitaria EU-OSHA tiene su sede central situada en la ciudad de Bilbao." }, tiempo: 30, puntos: 100
           },
           {
             id: 314,
@@ -1445,8 +1403,7 @@ export const TEMARIO_PRL = [
               es: ["El asesoramiento, formación y asistencia en la gestión de accidentes de trabajo y enfermedades profesionales", "El cobro de multas de tráfico", "La emisión de pasaportes laborales", "La gestión de pensiones de jubilación ordinaria"]
             },
             respuestaCorrecta: 0,
-            explicacion: { gl: "As mutuas son entidades privadas asociadas á Seguridade Social que cobren continxencias profesionais e apoian ás empresas asociadas.", es: "Las mutuas son entidades privadas asociadas a la Seguridad Social que cubren contingencias profesionales y apoyan a las empresas asociadas." },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "As mutuas son entidades privadas asociadas á Seguridade Social que cobren continxencias profesionais e apoian ás empresas asociadas.", es: "Las mutuas son entidades privadas asociadas a la Seguridad Social que cubren contingencias profesionales y apoyan a las empresas asociadas." }, tiempo: 30, puntos: 100
           },
           {
             id: 319,
@@ -1466,8 +1423,7 @@ export const TEMARIO_PRL = [
               es: ["Canalizar el debate territorial y sectorial de mejora de las condiciones de trabajo", "Emitir sentencias penales judiciales", "Sugerir aumentos de capital de sociedades anónimas", "Dirigir equipos de bomberos municipales"]
             },
             respuestaCorrecta: 0,
-            explicacion: { gl: "Son foros de participación e estudo descentralizados para adaptar políticas preventivas ás características de cada zona.", es: "Son foros de participación y estudio descentralizados para adaptar políticas preventivas a las características de cada zona." },
-            tiempo: 30, puntos: 100
+            explicacion: { gl: "Son foros de participación e estudo descentralizados para adaptar políticas preventivas ás características de cada zona.", es: "Son foros de participación y estudio descentralizados para adaptar políticas preventivas a las características de cada zona." }, tiempo: 30, puntos: 100
           }
         ]
       }
