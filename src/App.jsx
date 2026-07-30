@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { ref, onValue, set } from 'firebase/database';
@@ -253,7 +254,23 @@ export default function App() {
       </div>
 
       <main className="flex-1 p-6">
-        {tabAlumno === 'ranking' ? (
+        {/* Mantener montado el bloque de juego/selector usando 'hidden' para evitar que se reinicie al cambiar de pestaña */}
+        <div className={tabAlumno === 'juego' ? 'block' : 'hidden'}>
+          {!unidadeSeleccionada ? (
+            <SelectorUnidad lang={lang} onSelectUnidad={(ud) => setUnidadeSeleccionada(ud)} />
+          ) : (
+            <GameQuiz
+              unidade={unidadeSeleccionada}
+              lang={lang}
+              equipo={equipo}
+              onAddPoints={addPoints}
+              onReportScore={reportScore}
+              onVolver={handleVolverAlMenu}
+            />
+          )}
+        </div>
+
+        {tabAlumno === 'ranking' && (
           <div className="max-w-xl mx-auto bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
             <h2 className="text-lg font-bold text-slate-200 uppercase tracking-wider mb-4 text-center">
               {txt.clasificacionClase} (Sala: {codigoSala})
@@ -286,19 +303,6 @@ export default function App() {
               </div>
             )}
           </div>
-        ) : (
-          !unidadeSeleccionada ? (
-            <SelectorUnidad lang={lang} onSelectUnidad={(ud) => setUnidadeSeleccionada(ud)} />
-          ) : (
-            <GameQuiz
-              unidade={unidadeSeleccionada}
-              lang={lang}
-              equipo={equipo}
-              onAddPoints={addPoints}
-              onReportScore={reportScore}
-              onVolver={handleVolverAlMenu}
-            />
-          )
         )}
       </main>
     </div>
