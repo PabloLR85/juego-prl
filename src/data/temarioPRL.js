@@ -29,9 +29,9 @@ export const TEXTOS_UI = {
     clasificacionClase: "Clasificación da Sesión",
     esperandoRespuestas: "Agardando respostas dos participantes...",
     eligeUnidad: "Selecciona a Unidade Didáctica ou Test Xeral",
-    seleccionaTemaDesc: "Escolle un tema específico ou realiza o exame xeral de 50 preguntas",
-    testGeneralTitulo: "EXAME XERAL (50 Preguntas Aleatorias)",
-    testGeneralDesc: "Preguntas de todo o temario evaluable. Máximo 10 minutos de tempo global.",
+    seleccionaTemaDesc: "Escolle un tema específico ou realiza o exame xeral",
+    testGeneralTitulo: "EXAME XERAL (Preguntas Aleatorias)",
+    testGeneralDesc: "Preguntas do temario seleccionado polo profesor.",
     preguntasDisponibles: "preguntas dispoñibles",
     cambiarTema: "Cambiar de Tema",
     pregunta: "Pregunta",
@@ -52,7 +52,7 @@ export const TEXTOS_UI = {
     tuEres: "(Ti)",
     justificacionDidactica: "Xustificación Normativa e Técnica:",
     verResultados: "Ver Resultados Finais",
-    examenFinalizado: "Exame Xeral Finalizado",
+    examenFinalizado: "Exame Xeral Rematado",
     unidadFinalizada: "Unidade Didáctica Finalizada",
     aciertos: "Aciertos",
     aciertoPorcentaje: "Taxa de Acierto %",
@@ -74,8 +74,8 @@ export const TEXTOS_UI = {
     modoClasicoDesc: "Acumulación de puntos e bonus por rapidez sen límite de erros.",
     modoJuicioTitulo: "Modo Eliminatoria (3 Vidas)",
     modoJuicioDesc: "Superación con 3 oportunidades máximas. Cada erro ou tempo límite resta unha vida.",
-    gestionTemarioProfesor: "Xestión de Temario para a Aula",
-    guardarConfiguracion: "Gardar Configuración e Abrir Sala",
+    gestionTemarioProfesor: "Configuración de Temario do Profesor",
+    guardarConfiguracion: "Gardar Configuración na Sala",
     todasUnidadesSeleccionadas: "Todas as unidades seleccionadas"
   },
   es: {
@@ -95,9 +95,9 @@ export const TEXTOS_UI = {
     clasificacionClase: "Clasificación de la Sesión",
     esperandoRespuestas: "Esperando respuestas de los participantes...",
     eligeUnidad: "Seleccione la Unidad Didáctica o Test General",
-    seleccionaTemaDesc: "Elija un tema específico o realice el examen general de 50 preguntas",
-    testGeneralTitulo: "EXAMEN GENERAL (50 Preguntas Aleatorias)",
-    testGeneralDesc: "Preguntas de todo el temario evaluable. Máximo 10 minutos de tiempo global.",
+    seleccionaTemaDesc: "Elija un tema específico o realice el examen general",
+    testGeneralTitulo: "EXAMEN GENERAL (Preguntas Aleatorias)",
+    testGeneralDesc: "Preguntas del temario seleccionado por el profesor.",
     preguntasDisponibles: "preguntas disponibles",
     cambiarTema: "Cambiar de Tema",
     pregunta: "Pregunta",
@@ -140,8 +140,8 @@ export const TEXTOS_UI = {
     modoClasicoDesc: "Acumulación de puntos y bonificación por rapidez sin límite de errores.",
     modoJuicioTitulo: "Modo Eliminatoria (3 Vidas)",
     modoJuicioDesc: "Superación con 3 oportunidades máximas. Cada error o tiempo límite resta una vida.",
-    gestionTemarioProfesor: "Gestión de Temario para la Sesión",
-    guardarConfiguracion: "Guardar Configuración y Abrir Sala",
+    gestionTemarioProfesor: "Configuración de Temario del Profesor",
+    guardarConfiguracion: "Guardar Configuración en Sala",
     todasUnidadesSeleccionadas: "Todas las unidades seleccionadas"
   }
 };
@@ -150,7 +150,7 @@ export const generarTestGeneral50 = (unidadesFiltradasIds = null) => {
   let todasLasPreguntas = [];
   TEMARIO_PRL.forEach((mod) => {
     mod.unidades.forEach((ud) => {
-      if (!unidadesFiltradasIds || unidadesFiltradasIds.includes(ud.id)) {
+      if (!unidadesFiltradasIds || unidadesFiltradasIds.length === 0 || unidadesFiltradasIds.includes(ud.id)) {
         todasLasPreguntas = [...todasLasPreguntas, ...ud.preguntas];
       }
     });
@@ -274,7 +274,7 @@ export const TEMARIO_PRL = [
           },
           {
             id: 108,
-            pregunta: { gl: "Que disciplina preventiva encárgase de estudar a contorna ambiental de traballo (ruído, po, substancias químicas)?", es: "¿Qué disciplina preventiva se encarga de estudiar el entorno ambiental de trabajo (ruido, polvo, sustancias químicas)?" },
+            pregunta: { gl: "Que disciplina preventiva encárgase de estudar a contorna ambiental de traballo (ruído, po, substancias químicas)?", es: "¿Qué disciplina preventiva se encargada de estudiar el entorno ambiental de trabajo (ruido, polvo, sustancias químicas)?" },
             opciones: {
               gl: ["Seguridade no Traballo", "Hixiene Industrial", "Ergonomía", "Psicosocioloxía Aplicada"],
               es: ["Seguridad en el Trabajo", "Higiene Industrial", "Ergonomía", "Psicosociología Aplicada"]
@@ -863,7 +863,7 @@ export const TEMARIO_PRL = [
             pregunta: { gl: "Cal é a obriga principal do traballador respecto aos EPIs que lle entrega a empresa?", es: "¿Cuál es la obligación principal del trabajador respecto a los EPIs que le entrega la empresa?" },
             opciones: {
               gl: ["Utilizalos correctamente e coidalos segundo as instrucións do fabricante", "Vendelos se non os utiliza", "Modificalos esteticamente ao seu gusto", "Gardalos na súa casa permanentemente"],
-              es: ["Utilizarlos correctamente y cuidarlos según las instrucciones del fabricante", "Vendelos si no los utiliza", "Modificarlos estéticamente a su gusto", "Guardarlos en su casa permanentemente"]
+              es: ["Utilizarlos correctamente y cuidarlos según las instrucciones del fabricante", "Vendelos si no os utiliza", "Modificarlos estéticamente a su gusto", "Guardarlos en su casa permanentemente"]
             },
             respuestaCorrecta: 0,
             explicacion: { gl: "O traballador debe empregar os EPIs conforme ás pautas formativas e avisar de calquera anomalía ou deterioro.", es: "El trabajador debe emplear los EPIs conforme a las pautas formativas y avisar de cualquier anomalía o deterioro." }, tiempo: 30, puntos: 100
@@ -1094,7 +1094,7 @@ export const TEMARIO_PRL = [
               es: ["Ante una parada cardiorrespiratoria cuando la persona no respira con normalidad", "Solamente en heridas abiertas con hemorragia", "Para tratar quemaduras solares graves", "En cualquier dolor de cabeza leve"]
             },
             respuestaCorrecta: 0,
-            explicacion: { gl: "O DESA analiza o ritmo cardíaco e aplica descargas eléctricas se detecta fibrilación ventricular desfibrilable.", es: "El DESA analiza el ritmo cardíaco y aplica descargas eléctricas si detecta fibrilación ventricular desfibrilable." }, tiempo: 30, puntos: 100
+            explicacion: { gl: "O DESA analiza o ritmo cardíaco e aplica descargas eléctricas se detecta fibrilación ventricular desfibrilable.", es: "El DESA analiza el ritmo cardíaco y aplica descargas eléctricas se detecta fibrilación ventricular desfibrilable." }, tiempo: 30, puntos: 100
           },
           {
             id: 260,
@@ -1167,7 +1167,7 @@ export const TEMARIO_PRL = [
           },
           {
             id: 266,
-            pregunta: { gl: "Quen é o responsable legal de custodiar a documentación médica derivada da vixilancia da saúde?", es: "¿Quién es el responsable legal de custodiar la documentación médica derivada de la vigilancia de la salud?" },
+            pregunta: { gl: "Quen é o responsable legal de custodiar a documentación médica derivada da vixilancia da saúde?", es: "¿Quién es el responsable legal de custodiar a documentación médica derivada de la vigilancia de la salud?" },
             opciones: {
               gl: ["O persoal sanitario do servizo de prevención", "O departamento de administración de recursos humanos", "O comité de empresa sindical", "A policía local do concello"],
               es: ["El personal sanitario del servicio de prevención", "El departamento de administración de recursos humanos", "El comité de empresa sindical", "La policía local del concello"]
@@ -1258,7 +1258,7 @@ export const TEMARIO_PRL = [
             pregunta: { gl: "Que é unha auditoría do Sistema de Xestión da Prevención de Riscos Laborais?", es: "¿Qué es una auditoría del Sistema de Gestión de la Prevención de Riesgos Laborales?" },
             opciones: {
               gl: ["Unha revisión externa, sistemática e obxectiva para avaliar a eficacia do sistema preventivo", "Unha inspección fiscal de impostos", "Un control de stock de materiais", "Un exame médico anual aos directivos"],
-              es: ["Una revisión externa, sistemática y objetiva para evaluar la eficacia del sistema preventivo", "Una inspección fiscal de impuestos", "Un control de stock de materiales", "Un examen médico anual a los directivos"]
+              es: ["Una revisión externa, sistemática y objetiva para evaluar la eficacia del sistema preventivo", "Unha inspección fiscal de impostos", "Un control de stock de materiais", "Un exame médico anual aos directivos"]
             },
             respuestaCorrecta: 0,
             explicacion: { gl: "A auditoría legal externa axuda a comprobar se a integración da prevención na empresa é real e eficiente.", es: "La auditoría legal externa ayuda a comprobar si la integración de la prevención en la empresa es real y eficiente." }, tiempo: 30, puntos: 100
@@ -1278,7 +1278,7 @@ export const TEMARIO_PRL = [
             pregunta: { gl: "Que é un Servizo de Prevención Alleo (SPA)?", es: "¿Qué es un Servicio de Prevención Ajeno (SPA)?" },
             opciones: {
               gl: ["Unha entidade especializada acreditada que a empresa contrata para cubrir as disciplinas preventivas", "Un departamento interno da propia empresa", "Un organismo de control público da policía", "Unha mutua de seguros de coches"],
-              es: ["Una entidad especializada acreditada que la empresa contrata para cubrir las disciplinas preventivas", "Un departamento interno de la propia empresa", "Un organismo de control público de la policía", "Unha mutua de seguros de coches"]
+              es: ["Una entidad especializada acreditada que la empresa contrata para cubrir las disciplinas preventivas", "Un departamento interno da propia empresa", "Un organismo de control público da policía", "Unha mutua de seguros de coches"]
             },
             respuestaCorrecta: 0,
             explicacion: { gl: "O SPA substitúe ou complementa os recursos cando a empresa non dispón de servizo propio nin modalidade designada.", es: "El SPA sustituye o complementa los recursos cuando la empresa no dispone de servicio propio ni modalidad designada." }, tiempo: 30, puntos: 100
@@ -1391,7 +1391,7 @@ export const TEMARIO_PRL = [
               es: ["El ISSGA (Instituto Galego de Seguridade e Saúde Laboral)", "El SERGAS", "La CRTVG", "El IGAPE"]
             },
             respuestaCorrecta: 0,
-            explicacion: { gl: "O ISSGA é o órgano técnico da Xunta de Galicia que fomenta a mellora das condicións de traballo na comunidade.", es: "El ISSGA es el órgano técnico de la Xunta de Galicia que fomenta la mejora de las condiciones de trabajo en la comunidad." }, tiempo: 30, puntos: 100
+            explicacion: { gl: "O ISSGA é o órgano técnico da Xunta de Galicia que fomenta a mellora das condicións de traballo na comunidade.", es: "El ISSGA é o órgano técnico de la Xunta de Galicia que fomenta a mellora das condicións de traballo na comunidade." }, tiempo: 30, puntos: 100
           },
           {
             id: 316,
