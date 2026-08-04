@@ -6,7 +6,7 @@ import { db } from './firebase';
 import SelectorModo from './components/SelectorModo';
 import SelectorUnidad from './components/SelectorUnidad';
 import GameQuiz from './components/GameQuiz';
-import { TEXTOS_UI } from './data/temarioPRL';
+import { TEXTOS_UI, TEMARIO_PRL, generarTestGeneral50 } from './data/temarioPRL';
 
 export default function App() {
   const [lang, setLang] = useState('gl');
@@ -20,6 +20,9 @@ export default function App() {
   const [rankingAula, setRankingAula] = useState({});
   const [vidasAula, setVidasAula] = useState({});
   const [tabAlumno, setTabAlumno] = useState('juego');
+
+  // Estados para que el profesor seleccione las unidades en el modo proyector
+  const [unidadesSeleccionadasProfesor, setUnidadesSeleccionadasProfesor] = useState([]);
 
   const txt = TEXTOS_UI[lang];
   const currentUrl = window.location.href;
@@ -97,8 +100,24 @@ export default function App() {
     }
   };
 
+  const toggleUnidadProfesor = (id) => {
+    if (unidadesSeleccionadasProfesor.includes(id)) {
+      setUnidadesSeleccionadasProfesor(unidadesSeleccionadasProfesor.filter(uId => uId !== id));
+    } else {
+      setUnidadesSeleccionadasProfesor([...unidadesSeleccionadasProfesor, id]);
+    }
+  };
+
   const rankingOrdenado = Object.entries(rankingAula).sort((a, b) => b[1] - a[1]);
   const posicionAlumno = rankingOrdenado.findIndex(([nombre]) => nombre === equipo.trim().replace(/[.#$\[\]]/g, "_")) + 1;
+
+  // Obtener todas las unidades para el panel del profesor
+  const todasLasUnidades = [];
+  TEMARIO_PRL.forEach((m) => {
+    m.unidades.forEach((u) => {
+      todasLasUnidades.push({ id: u.id, titulo: u.titulo[lang] });
+    });
+  });
 
   const LanguageToggle = () => (
     <div className="flex bg-slate-800 p-1 rounded-lg border border-slate-700">
@@ -151,10 +170,36 @@ export default function App() {
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-4 flex-1 items-start">
-          <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-lg">
-            <h3 className="text-xs font-bold text-white mb-3 uppercase tracking-wide">{txt.accesoQR}</h3>
-            <div className="bg-white p-3 rounded-xl shadow-md border-2 border-blue-500"><QRCodeSVG value={currentUrl} size={140} /></div>
-            <p className="text-[11px] text-slate-400 mt-3">{txt.apuntaCamara}</p>
+          <div className="space-y-4">
+            <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-lg">
+              <h3 className="text-xs font-bold text-white mb-3 uppercase tracking-wide">{txt.accesoQR}</h3>
+              <div className="bg-white p-3 rounded-xl shadow-md border-2 border-blue-500"><QRCodeSVG value={currentUrl} size={130} /></div>
+              <p className="text-[11px] text-slate-400 mt-3">{txt.apuntaCamara}</p>
+            </div>
+
+            {/* Panel de Configuración de Unidades para el Profesor */}
+            <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg space-y-2 text-xs">
+              <h3 className="font-bold text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
+                <span>⚙️</span> {txt.gestionTemarioProfesor}
+              </h3>
+              <p className="text-[10px] text-slate-400">Seleccione las unidades para la sesión (si no marca ninguna, entrarán todas):</p>
+              <div className="max-h-40 overflow-y-auto space-y-1.5 pr-1">
+                {todasLasUnidades.map((u) => {
+                  const sel = unidadesSeleccionadasProfesor.includes(u.id);
+                  return (
+                    <label key={u.id} className={`flex items-center gap-2 p-1.5 rounded border cursor-pointer ${sel ? 'bg-blue-600/30 border-blue-500 text-white font-bold' : 'bg-slate-800 border-slate-700 text-slate-300'}`}>
+                      <input type="checkbox" checked={sel} onChange={() => toggleUnidadProfesor(u.id)} className="rounded border-slate-700 text-blue-600 w-3.5 h-3.5" />
+                      <span className="truncate text-[11px]">{u.titulo}</span>
+                    </label>
+                  );
+                })}
+              </div>
+              {unidadesSeleccionadasProfesor.length > 0 && (
+                <button onClick={() => setUnidadesSeleccionadasProfesor([])} className="text-[10px] text-red-400 hover:underline uppercase font-bold pt-1">
+                  Limpiar filtro (Todas)
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="md:col-span-2 bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg">
@@ -223,7 +268,11 @@ export default function App() {
               <button onClick={() => setModoJuegoSeleccionado(null)} className="text-xs font-bold text-blue-400 hover:underline">
                 ⬅️ Cambiar Modalidade
               </button>
-              <SelectorUnidad lang={lang} onSelectUnidad={(ud) => setUnidadeSeleccionada(ud)} />
+              <SelectorUnidad
+                lang={lang}
+                unidadesProfesor={unidadesSeleccionadasProfesor}
+                onSelectUnidad={(ud) => setUnidadeSeleccionada(ud)}
+              />
             </div>
           ) : (
             <GameQuiz
