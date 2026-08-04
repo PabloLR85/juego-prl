@@ -1,10 +1,9 @@
-// src/components/GameQuiz.jsx
 import React, { useState, useEffect } from 'react';
 import { barajarArray, TIEMPO_POR_DEFECTO_SEGUNDOS, TEXTOS_UI } from '../data/temarioPRL';
 import { ref, set } from 'firebase/database';
 import { db } from '../firebase';
 
-export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onReportScore, equipo, codigoSala }) {
+export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onReportScore, equipo, codigoSala, modoJuego }) {
   const [preguntasBarajadas, setPreguntasBarajadas] = useState([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -19,7 +18,6 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
   const [mostrarRevision, setMostrarRevision] = useState(false);
   const [mostrarModalConfirmacion, setMostrarModalConfirmacion] = useState(false);
   
-  // Variables del Modo Juicio Final (3 vidas)
   const [vidas, setVidas] = useState(3);
   const [eliminadoJuicioFinal, setEliminadoJuicioFinal] = useState(false);
 
@@ -70,13 +68,13 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
     setMostrarRevision(false);
     setVidas(3);
     setEliminadoJuicioFinal(false);
-    sincronizarVidasFirebase(3, false);
+    if (modoJuego === 'juicio') sincronizarVidasFirebase(3, false);
     setTimeLeft(listaFinal[0]?.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS);
     setGlobalTimeLeft(unidade.isTestGeneral ? 600 : null);
   };
 
   const sincronizarVidasFirebase = (numVidas, estadoEliminado) => {
-    if (!codigoSala || !equipo) return;
+    if (!codigoSala || !equipo || modoJuego !== 'juicio') return;
     const keyEquipo = equipo.trim().replace(/[.#$\[\]]/g, "_");
     const vidasRef = ref(db, `salas/${codigoSala.trim()}/vidas/${keyEquipo}`);
     set(vidasRef, { vidas: numVidas, eliminado: estadoEliminado });
@@ -88,12 +86,10 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
   useEffect(() => {
     if (!unidade.isTestGeneral || globalTimeLeft === null || isQuizFinished || eliminadoJuicioFinal) return;
-
     if (globalTimeLeft === 0) {
       setIsQuizFinished(true);
       return;
     }
-
     const globalTimer = setInterval(() => setGlobalTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(globalTimer);
   }, [globalTimeLeft, unidade.isTestGeneral, isQuizFinished, eliminadoJuicioFinal]);
@@ -111,12 +107,13 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
   }, [timeLeft, isAnswered, isQuizFinished, preguntaActual, eliminadoJuicioFinal]);
 
   const restarVidaPorFallo = () => {
+    if (modoJuego !== 'juicio') return;
     const novasVidas = vidas - 1;
     setVidas(novasVidas);
     if (novasVidas <= 0) {
       setEliminadoJuicioFinal(true);
       sincronizarVidasFirebase(0, true);
-      setIsQuizFinished(true); // Termina su partida y pasa a modo espectador
+      setIsQuizFinished(true);
     } else {
       sincronizarVidasFirebase(novasVidas, false);
     }
@@ -143,7 +140,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
     setFeedback({
       type: 'error',
-      text: `${txt.seAgototiempo} (Perdes 1 vida ❤️)`
+      text: modoJuego === 'juicio' ? `${txt.seAgototiempo} (-1 vida)` : txt.seAgototiempo
     });
   };
 
@@ -186,7 +183,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
       restarVidaPorFallo();
       setFeedback({
         type: 'error',
-        text: `${txt.incorrectoRespuesta} ${opActuales[corrActual]} (-1 Vida ❤️)`
+        text: modoJuego === 'juicio' ? `${txt.incorrectoRespuesta} ${opActuales[corrActual]} (-1 vida)` : `${txt.incorrectoRespuesta} ${opActuales[corrActual]}`
       });
     }
   };
@@ -215,48 +212,42 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
     const aprobado = porcentajeAciertos >= 50 && !eliminadoJuicioFinal;
 
     return (
-      <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-2xl mx-auto text-center space-y-6">
-        <div className="w-20 h-20 bg-blue-600/20 border-2 border-blue-500 rounded-full flex items-center justify-center text-4xl mx-auto">
-          {eliminadoJuicioFinal ? '💀' : aprobado ? '🏆' : '📚'}
+      <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl max-w-lg mx-auto text-center space-y-4">
+        <div className="w-14 h-14 bg-blue-600/20 border border-blue-500 rounded-full flex items-center justify-center text-2xl mx-auto">
+          {eliminadoJuicioFinal ? '⚠️' : aprobado ? '🏆' : '📚'}
         </div>
 
-        <h2 className="text-3xl font-black text-white uppercase tracking-wider">
-          {eliminadoJuicioFinal ? '💀 Eliminado no Xuízo Final' : unidade.isTestGeneral ? txt.examenFinalizado : txt.unidadFinalizada}
+        <h2 className="text-xl font-bold text-white uppercase tracking-wider">
+          {eliminadoJuicioFinal ? 'Eliminado na Proba' : unidade.isTestGeneral ? txt.examenFinalizado : txt.unidadFinalizada}
         </h2>
 
         {eliminadoJuicioFinal && (
-          <p className="text-red-400 text-sm font-bold">Quedáchesen sen vidas (❤️❤️❤️). Pasaches a modo espectador.</p>
+          <p className="text-slate-400 text-xs">Quedou sen oportunidades nesta modalidade. Consulte a clasificación xeral na pestana superior.</p>
         )}
 
-        <div className="grid grid-cols-3 gap-4 bg-slate-950/60 p-4 rounded-xl border border-slate-800 text-center">
+        <div className="grid grid-cols-3 gap-2 bg-slate-950 p-3 rounded-xl border border-slate-800 text-center text-xs">
           <div>
-            <div className="text-xs text-slate-400 uppercase font-bold">{txt.puntuacion}</div>
-            <div className="text-2xl font-black text-amber-400">{puntosTotalesIntento} pts</div>
+            <div className="text-slate-500 uppercase font-bold">{txt.puntuacion}</div>
+            <div className="text-base font-bold text-amber-400">{puntosTotalesIntento} pts</div>
           </div>
           <div>
-            <div className="text-xs text-slate-400 uppercase font-bold">{txt.aciertos}</div>
-            <div className="text-2xl font-black text-emerald-400">{aciertos} / {preguntasBarajadas.length}</div>
+            <div className="text-slate-500 uppercase font-bold">{txt.aciertos}</div>
+            <div className="text-base font-bold text-emerald-400">{aciertos} / {preguntasBarajadas.length}</div>
           </div>
           <div>
-            <div className="text-xs text-slate-400 uppercase font-bold">{txt.aciertoPorcentaje}</div>
-            <div className={`text-2xl font-black ${aprobado ? 'text-emerald-400' : 'text-red-400'}`}>
-              {porcentajeAciertos}%
-            </div>
+            <div className="text-slate-500 uppercase font-bold">{txt.aciertoPorcentaje}</div>
+            <div className={`text-base font-bold ${aprobado ? 'text-emerald-400' : 'text-red-400'}`}>{porcentajeAciertos}%</div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-          <button
-            onClick={reiniciarTest}
-            className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-md uppercase tracking-wider shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2"
-          >
-            <span>🔄</span> {txt.repetirTest}
-          </button>
-          <button
-            onClick={onVolver}
-            className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-xl text-md uppercase tracking-wider border border-slate-700 transition-all flex items-center justify-center gap-2"
-          >
-            <span>🏠</span> {txt.menuPrincipal}
+        <div className="grid grid-cols-1 gap-2 pt-2">
+          {(!eliminadoJuicioFinal || modoJuego === 'clasico') && (
+            <button onClick={reiniciarTest} className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs uppercase tracking-wider transition-all">
+              {txt.repetirTest}
+            </button>
+          )}
+          <button onClick={onVolver} className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider border border-slate-700 transition-all">
+            {txt.menuPrincipal}
           </button>
         </div>
       </div>
@@ -274,66 +265,44 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
   const explicacionActual = lang === 'gl' ? preguntaActual.explGl : preguntaActual.explEs;
 
   return (
-    <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-3xl mx-auto relative">
-      {/* Marcador de Vidas en Vivo */}
-      <div className="flex justify-between items-center mb-4 bg-slate-950 p-3 rounded-xl border border-slate-800">
-        <button
-          onClick={() => setMostrarModalConfirmacion(true)}
-          className="text-xs font-bold text-slate-400 hover:text-white bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700"
-        >
+    <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl max-w-2xl mx-auto relative text-sm">
+      <div className="flex justify-between items-center mb-3 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+        <button onClick={() => setMostrarModalConfirmacion(true)} className="text-xs font-bold text-slate-400 hover:text-white bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700">
           {txt.cambiarTema}
         </button>
 
-        <div className="flex items-center gap-1 text-lg">
-          <span className="text-xs font-bold text-slate-400 uppercase mr-2">Vidas Xuízo Final:</span>
-          {['❤️', '❤️', '❤️'].map((corazon, i) => (
-            <span key={i} className={`transition-opacity ${i < vidas ? 'opacity-100 scale-110' : 'opacity-25 grayscale'}`}>
-              {corazon}
-            </span>
-          ))}
-        </div>
+        {modoJuego === 'juicio' && (
+          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300">
+            <span>Vidas:</span>
+            <span>{vidas === 3 ? '3 / 3' : vidas === 2 ? '2 / 3' : '1 / 3'}</span>
+          </div>
+        )}
 
-        <div className={`px-4 py-1.5 rounded-xl font-mono font-black text-lg border ${
-          timeLeft <= 5 ? 'bg-red-500/20 text-red-400 border-red-500/40 animate-pulse' : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-        }`}>
-          ⏱️ {timeLeft}s
+        <div className={`px-3 py-1 rounded-lg font-mono font-bold text-xs border ${timeLeft <= 5 ? 'bg-red-500/20 text-red-400 border-red-500/40 animate-pulse' : 'bg-amber-500/10 text-amber-400 border-amber-500/30'}`}>
+          {timeLeft}s
         </div>
       </div>
 
-      <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden mb-8 border border-slate-700/50">
-        <div
-          className={`h-full transition-all duration-1000 ${
-            porcentajeTiempo > 50 ? 'bg-emerald-500' : porcentajeTiempo > 20 ? 'bg-amber-500' : 'bg-red-500'
-          }`}
-          style={{ width: `${porcentajeTiempo}%` }}
-        />
+      <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden mb-4 border border-slate-700/50">
+        <div className={`h-full transition-all duration-1000 ${porcentajeTiempo > 50 ? 'bg-emerald-500' : porcentajeTiempo > 20 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${porcentajeTiempo}%` }} />
       </div>
 
-      <h2 className="text-2xl font-bold text-white mb-8 text-center leading-relaxed">
+      <h2 className="text-base font-bold text-white mb-4 text-center leading-snug">
         {textoPreguntaActual}
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 gap-2 mb-4">
         {opcionesActuales.map((opcion, idx) => {
           let btnStyle = "bg-slate-800/80 border-slate-700 text-slate-200 hover:bg-slate-800 hover:border-blue-500";
           if (isAnswered) {
-            if (idx === correctaActual) {
-              btnStyle = "bg-emerald-500/20 border-emerald-500 text-emerald-200 font-bold";
-            } else if (idx === selectedOption) {
-              btnStyle = "bg-red-500/20 border-red-500 text-red-200";
-            } else {
-              btnStyle = "bg-slate-800/30 border-slate-800 text-slate-600";
-            }
+            if (idx === correctaActual) btnStyle = "bg-emerald-500/20 border-emerald-500 text-emerald-200 font-bold";
+            else if (idx === selectedOption) btnStyle = "bg-red-500/20 border-red-500 text-red-200";
+            else btnStyle = "bg-slate-800/30 border-slate-800 text-slate-600";
           }
 
           return (
-            <button
-              key={idx}
-              disabled={isAnswered}
-              onClick={() => handleSelectOption(idx)}
-              className={`p-5 rounded-xl border text-left text-lg font-medium transition-all flex items-center gap-4 ${btnStyle}`}
-            >
-              <span className="w-8 h-8 rounded-lg bg-slate-700 text-white flex items-center justify-center font-bold text-sm">
+            <button key={idx} disabled={isAnswered} onClick={() => handleSelectOption(idx)} className={`p-3 rounded-xl border text-left text-xs font-medium transition-all flex items-center gap-3 ${btnStyle}`}>
+              <span className="w-6 h-6 rounded-lg bg-slate-700 text-white flex items-center justify-center font-bold text-xs shrink-0">
                 {String.fromCharCode(65 + idx)}
               </span>
               <span className="flex-1">{opcion}</span>
@@ -343,24 +312,17 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
       </div>
 
       {feedback && (
-        <div className="space-y-4">
-          <div className={`p-4 rounded-xl text-center font-bold text-lg border ${
-            feedback.type === 'success' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' :
-            feedback.type === 'error' ? 'bg-red-500/20 text-red-300 border-red-500/30' : 'bg-blue-500/20 text-blue-300 border-blue-500/30'
-          }`}>
+        <div className="space-y-3">
+          <div className={`p-3 rounded-xl text-center font-bold text-xs border ${feedback.type === 'success' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-red-500/20 text-red-300 border-red-500/30'}`}>
             <div>{feedback.text}</div>
-            
             {explicacionActual && (
-              <div className="mt-3 pt-3 border-t border-slate-700/50 text-xs font-normal text-slate-300 text-left bg-slate-950/40 p-3 rounded-lg">
+              <div className="mt-2 pt-2 border-t border-slate-700/50 text-[11px] font-normal text-slate-300 text-left bg-slate-950/40 p-2 rounded-lg leading-normal">
                 {txt.justificacionDidactica} {explicacionActual}
               </div>
             )}
           </div>
 
-          <button
-            onClick={nextQuestion}
-            className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl text-lg transition-colors shadow-lg shadow-blue-600/30 uppercase tracking-wider"
-          >
+          <button onClick={nextQuestion} className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs transition-colors uppercase tracking-wider shadow-md">
             {currentIdx < preguntasBarajadas.length - 1 ? txt.siguientePregunta : txt.verResultados}
           </button>
         </div>

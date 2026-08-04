@@ -13,128 +13,146 @@ export const TIEMPO_POR_DEFECTO_SEGUNDOS = 30;
 
 export const TEXTOS_UI = {
   gl: {
-    titulo: "PRL Challenge Arcade",
+    titulo: "PRL Challenge",
     subtitulo: "Capacitación Nivel Básico de Prevención de Riscos Laborais",
-    nombreEquipo: "Nome do Equipo ou Alumno",
+    nombreEquipo: "Nome do Alumno ou Equipo",
     codigoSalaOpcional: "Código de Aula (Opcional)",
-    entrarJugar: "¡Entrar a Xogar!",
-    abrirProyector: "📺 Abrir Modo Proyector Aula",
-    equipo: "Equipo",
+    entrarJugar: "Acceder ao Xogo",
+    abrirProyector: "Abrir Modo Proxector Aula",
+    equipo: "Participante",
     puntuacion: "Puntuación",
     pantallaAula: "PRL Arcade • Pantalla Aula",
-    instruccionesQR: "Escanea o código QR dende o teu móbil para unirte á competición",
+    instruccionesQR: "Escanea o código QR dende o móbil para unirte á sesión",
     codigoSala: "Código de Sala",
-    accesoQR: "Acceso Rápido Móbil",
-    apuntaCamara: "Apunta coa cámara do móbil para entrar directamente ao xogo",
-    clasificacionClase: "🏆 Clasificación da Clase",
-    esperandoRespuestas: "Esperando respostas dos alumnos...",
-    eligeUnidad: "Elixe a Unidade Didáctica ou o Exame Xeral",
-    seleccionaTemaDesc: "Selecciona un tema específico ou atrévete co Test Xeral de 50 preguntas",
-    testGeneralTitulo: "🔥 TEST XERAL EXAMEN (50 Preguntas Aleatorias)",
-    testGeneralDesc: "Preguntas de todo o temario baralladas. Máximo 10 minutos de tempo global.",
+    accesoQR: "Acceso Rápido",
+    apuntaCamara: "Apunta coa cámara do móbil para acceder directamente",
+    clasificacionClase: "Clasificación da Sesión",
+    esperandoRespuestas: "Agardando respostas dos participantes...",
+    eligeUnidad: "Selecciona a Unidade Didáctica ou Test Xeral",
+    seleccionaTemaDesc: "Escolle un tema específico ou realiza o exame xeral de 50 preguntas",
+    testGeneralTitulo: "EXAME XERAL (50 Preguntas Aleatorias)",
+    testGeneralDesc: "Preguntas de todo o temario evaluable. Máximo 10 minutos de tempo global.",
     preguntasDisponibles: "preguntas dispoñibles",
-    cambiarTema: "⬅️ Cambiar de Tema",
+    cambiarTema: "Cambiar de Tema",
     pregunta: "Pregunta",
     de: "de",
-    tiempoGlobal: "⏱️ Tempo Global Exam:",
-    seAgototiempo: "⏱️ ¡Agotouse o tempo! Non sumas puntos nesta pregunta.",
-    seAgototiempoGlobal: "⏰ ¡Agotáronse os 10 minutos do Examen Xeral!",
-    correctoBonus: "🎉 ¡CORRECTO! Sumas",
+    tiempoGlobal: "Tempo Global Exame:",
+    seAgototiempo: "Tempo esgotado. Non se suman puntos nesta pregunta.",
+    seAgototiempoGlobal: "Remataron os 10 minutos do Exame Xeral.",
+    correctoBonus: "CORRECTO. Puntuación sumada:",
     puntosBase: "pts base",
     bonusTiempo: "bonus tempo",
-    incorrectoRespuesta: "❌ INCORRECTO. A resposta correcta era:",
-    unidadCompletada: "🏆 ¡Examen/Unidade completada con éxito!",
-    siguientePregunta: "Seguinte Pregunta ➡️",
-    volverMenu: "Finalizar e Volver ao Menú 🔄",
+    incorrectoRespuesta: "INCORRECTO. A resposta válida era:",
+    unidadCompletada: "Unidade completada con éxito.",
+    siguientePregunta: "Seguinte Pregunta",
+    volverMenu: "Finalizar e Volver ao Menú",
     sala: "Sala",
-    preguntasTab: "🎮 Preguntas",
-    rankingTab: "📊 Clasificación Clase",
+    preguntasTab: "Preguntas",
+    rankingTab: "Clasificación",
     tuEres: "(Ti)",
-    justificacionDidactica: "💡 Xustificación Didáctica:",
-    verResultados: "Ver Resultados do Test 🏆",
-    examenFinalizado: "Examen Xeral Rematado",
-    unidadFinalizada: "Unidade Didáctica Rematada",
+    justificacionDidactica: "Xustificación Normativa e Técnica:",
+    verResultados: "Ver Resultados Finais",
+    examenFinalizado: "Exame Xeral Finalizado",
+    unidadFinalizada: "Unidade Didáctica Finalizada",
     aciertos: "Aciertos",
-    aciertoPorcentaje: "Acierto %",
-    repetirTest: "Repetir Test",
+    aciertoPorcentaje: "Taxa de Acierto %",
+    repetirTest: "Repetir Proba",
     menuPrincipal: "Menú Principal",
-    ocultarDesglose: "🙈 Ocultar desglose de respostas",
-    revisarHistorial: "🔍 Revisar historial de respostas e xustificacións",
+    ocultarDesglose: "Ocultar desglose de respostas",
+    revisarHistorial: "Revisar historial e xustificacións",
     tuRespuesta: "A túa resposta:",
     respuestaCorrectaLabel: "Resposta correcta:",
-    tiempoAgotado: "⏱️ Tempo esgotado",
-    abandonarExamen: "¿Abandonar o exame?",
-    avisoAbandono: "Se saes agora perderás o progreso e a puntuación deste intento.",
-    continuarJugando: "Continuar xogando",
+    tiempoAgotado: "Tempo esgotado",
+    abandonarExamen: "¿Abandonar a proba?",
+    avisoAbandono: "Se saes agora perderás o progreso e a puntuación acumulada.",
+    continuarJugando: "Continuar proba",
     siSalir: "Si, saír",
-    aprobadoMsg: "🎉 ¡Bo traballo! Superaches o test con éxito.",
-    suspensoMsg: "⚠️ Necesitas repasar un pouco máis os conceptos do temario."
+    aprobadoMsg: "Proba superada satisfactoriamente.",
+    suspensoMsg: "Precisa repasar os conceptos fundamentais do temario.",
+    seleccionaModoJuego: "Selecciona a Modalidade de Proba",
+    modoClasicoTitulo: "Modo Puntuación Clásica",
+    modoClasicoDesc: "Acumulación de puntos e bonus por rapidez sen límite de erros.",
+    modoJuicioTitulo: "Modo Eliminatoria (3 Vidas)",
+    modoJuicioDesc: "Superación con 3 oportunidades máximas. Cada erro ou tempo límite resta unha vida.",
+    gestionTemarioProfesor: "Xestión de Temario para a Aula",
+    guardarConfiguracion: "Gardar Configuración e Abrir Sala",
+    todasUnidadesSeleccionadas: "Todas as unidades seleccionadas"
   },
   es: {
-    titulo: "PRL Challenge Arcade",
+    titulo: "PRL Challenge",
     subtitulo: "Capacitación Nivel Básico de Prevención de Riesgos Laborales",
-    nombreEquipo: "Nombre del Equipo o Alumno",
+    nombreEquipo: "Nombre del Alumno o Equipo",
     codigoSalaOpcional: "Código de Aula (Opcional)",
-    entrarJugar: "¡Entrar a Jugar!",
-    abrirProyector: "📺 Abrir Modo Proyector Aula",
-    equipo: "Equipo",
+    entrarJugar: "Acceder al Juego",
+    abrirProyector: "Abrir Modo Proyector Aula",
+    equipo: "Participante",
     puntuacion: "Puntuación",
     pantallaAula: "PRL Arcade • Pantalla Aula",
-    instruccionesQR: "Escanea el código QR desde tu móvil para unirte a la competición",
+    instruccionesQR: "Escanee el código QR desde el móvil para unirse a la sesión",
     codigoSala: "Código de Sala",
-    accesoQR: "Acceso Rápido Móvil",
-    apuntaCamara: "Apunta con la cámara del móvil para entrar directamente al juego",
-    clasificacionClase: "🏆 Clasificación de la Clase",
-    esperandoRespuestas: "Esperando respuestas de los alumnos...",
-    eligeUnidad: "Elige la Unidad Didáctica o el Examen General",
-    seleccionaTemaDesc: "Selecciona un tema específico o atrévete con el Test General de 50 preguntas",
-    testGeneralTitulo: "🔥 TEST GENERAL EXAMEN (50 Preguntas Aleatorias)",
-    testGeneralDesc: "Preguntas de todo el temario barajadas. Máximo 10 minutos de tiempo global.",
+    accesoQR: "Acceso Rápido",
+    apuntaCamara: "Apunte con la cámara del móvil para acceder directamente",
+    clasificacionClase: "Clasificación de la Sesión",
+    esperandoRespuestas: "Esperando respuestas de los participantes...",
+    eligeUnidad: "Seleccione la Unidad Didáctica o Test General",
+    seleccionaTemaDesc: "Elija un tema específico o realice el examen general de 50 preguntas",
+    testGeneralTitulo: "EXAMEN GENERAL (50 Preguntas Aleatorias)",
+    testGeneralDesc: "Preguntas de todo el temario evaluable. Máximo 10 minutos de tiempo global.",
     preguntasDisponibles: "preguntas disponibles",
-    cambiarTema: "⬅️ Cambiar de Tema",
+    cambiarTema: "Cambiar de Tema",
     pregunta: "Pregunta",
     de: "de",
-    tiempoGlobal: "⏱️ Tiempo Global Examen:",
-    seAgototiempo: "⏱️ ¡Se agotó el tiempo! No sumas puntos en esta pregunta.",
-    seAgototiempoGlobal: "⏰ ¡Se agotaron los 10 minutos del Examen General!",
-    correctoBonus: "🎉 ¡CORRECTO! Sumas",
+    tiempoGlobal: "Tiempo Global Examen:",
+    seAgototiempo: "Tiempo agotado. No se suman puntos en esta pregunta.",
+    seAgototiempoGlobal: "Han finalizado los 10 minutos del Examen General.",
+    correctoBonus: "CORRECTO. Puntuación sumada:",
     puntosBase: "pts base",
     bonusTiempo: "bonus tiempo",
-    incorrectoRespuesta: "❌ INCORRECTO. La respuesta correcta era:",
-    unidadCompletada: "🏆 ¡Examen/Unidad completada con éxito!",
-    siguientePregunta: "Siguiente Pregunta ➡️",
-    volverMenu: "Volver al Menú de Temas 🔄",
+    incorrectoRespuesta: "INCORRECTO. La respuesta válida era:",
+    unidadCompletada: "Unidad completada con éxito.",
+    siguientePregunta: "Siguiente Pregunta",
+    volverMenu: "Finalizar y Volver al Menú",
     sala: "Sala",
-    preguntasTab: "🎮 Preguntas",
-    rankingTab: "📊 Clasificación Clase",
+    preguntasTab: "Preguntas",
+    rankingTab: "Clasificación",
     tuEres: "(Tú)",
-    justificacionDidactica: "💡 Justificación Didáctica:",
-    verResultados: "Ver Resultados del Test 🏆",
+    justificacionDidactica: "Justificación Normativa y Técnica:",
+    verResultados: "Ver Resultados Finales",
     examenFinalizado: "Examen General Finalizado",
-    unidadFinalizada: "Unidad Didáctica Completada",
+    unidadFinalizada: "Unidad Didáctica Finalizada",
     aciertos: "Aciertos",
-    aciertoPorcentaje: "Acierto %",
-    repetirTest: "Repetir Test",
+    aciertoPorcentaje: "Tasa de Acierto %",
+    repetirTest: "Repetir Prueba",
     menuPrincipal: "Menú Principal",
-    ocultarDesglose: "🙈 Ocultar desglose de respuestas",
-    revisarHistorial: "🔍 Revisar historial de respuestas y explicaciones",
+    ocultarDesglose: "Ocultar desglose de respuestas",
+    revisarHistorial: "Revisar historial y justificaciones",
     tuRespuesta: "Tu respuesta:",
     respuestaCorrectaLabel: "Respuesta correcta:",
-    tiempoAgotado: "⏱️ Tiempo agotado",
-    abandonarExamen: "¿Abandonar el examen?",
-    avisoAbandono: "Si sales ahora perderás el progreso y la puntuación de este intento.",
-    continuarJugando: "Continuar jugando",
+    tiempoAgotado: "Tiempo agotado",
+    abandonarExamen: "¿Abandonar la prueba?",
+    avisoAbandono: "Si sale ahora perderá el progreso y la puntuación acumulada.",
+    continuarJugando: "Continuar prueba",
     siSalir: "Sí, salir",
-    aprobadoMsg: "🎉 ¡Buen trabajo! Has superado el éxito con éxito.",
-    suspensoMsg: "⚠️ Necesitas repasar un poco más los conceptos del temario."
+    aprobadoMsg: "Prueba superada satisfactoriamente.",
+    suspensoMsg: "Precisa repasar los conceptos fundamentales del temario.",
+    seleccionaModoJuego: "Seleccione la Modalidad de Prueba",
+    modoClasicoTitulo: "Modo Puntuación Clásica",
+    modoClasicoDesc: "Acumulación de puntos y bonificación por rapidez sin límite de errores.",
+    modoJuicioTitulo: "Modo Eliminatoria (3 Vidas)",
+    modoJuicioDesc: "Superación con 3 oportunidades máximas. Cada error o tiempo límite resta una vida.",
+    gestionTemarioProfesor: "Gestión de Temario para la Sesión",
+    guardarConfiguracion: "Guardar Configuración y Abrir Sala",
+    todasUnidadesSeleccionadas: "Todas las unidades seleccionadas"
   }
 };
 
-export const generarTestGeneral50 = () => {
+export const generarTestGeneral50 = (unidadesFiltradasIds = null) => {
   let todasLasPreguntas = [];
   TEMARIO_PRL.forEach((mod) => {
     mod.unidades.forEach((ud) => {
-      todasLasPreguntas = [...todasLasPreguntas, ...ud.preguntas];
+      if (!unidadesFiltradasIds || unidadesFiltradasIds.includes(ud.id)) {
+        todasLasPreguntas = [...todasLasPreguntas, ...ud.preguntas];
+      }
     });
   });
   const barajadas = barajarArray(todasLasPreguntas);
@@ -445,7 +463,7 @@ export const TEMARIO_PRL = [
         preguntas: [
           {
             id: 201,
-            pregunta: { gl: "Un contacto eléctrico producido coa masa dunha máquina posta accidentalmente en tensión é:", es: "¿Cómo se denomina un contacto eléctrico producido con la masa de una máquina?" },
+            pregunta: { gl: "Un contacto eléctrico producido coa masa dunha máquina posta accidentalmente en tensión é:", es: "Un contacto eléctrico producido con la masa de una máquina puesta accidentalmente en tensión es:" },
             opciones: {
               gl: ["Contacto directo", "Contacto indirecto", "Contacto de alta tensión", "Derivación en orixe"],
               es: ["Contacto directo", "Contacto indirecto", "Contacto de alta tensión", "Derivación galvánica"]
@@ -515,7 +533,7 @@ export const TEMARIO_PRL = [
           },
           {
             id: 208,
-            pregunta: { gl: "Como se denominan os traballos realizados a unha altura superior a 2 metros con respecto ao nivel inferior?", es: "¿Cómo se denominan los trabajos realizados a una altura superior a 2 metros con respecto al nivel inferior?" },
+            pregunta: { gl: "Como se denominan os traballadores realizados a unha altura superior a 2 metros con respecto ao nivel inferior?", es: "¿Cómo se denominan los trabajos realizados a una altura superior a 2 metros con respecto al nivel inferior?" },
             opciones: {
               gl: ["Traballos en altura", "Traballos verticais sinxelos", "Manexo de cargas elevadas", "Operacións en andamios móbiles"],
               es: ["Trabajos en altura", "Trabajos verticales sencillos", "Manejo de cargas elevadas", "Operaciones en andamios móviles"]
@@ -580,7 +598,7 @@ export const TEMARIO_PRL = [
               es: ["Candela por metro", "Lux", "Lumen segundo", "Vatio fotométrico"]
             },
             respuestaCorrecta: 1,
-            explicacion: { gl: "O lux é a unidade de iluminancia que mide o fluxo luminoso recibido por unidade de superficie.", es: "El lux es la unidad de iluminancia que mide el flujo luminoso recibido por unidad de superficie." }, tiempo: 30, puntos: 100
+            explicacion: { gl: "O lux é a unidade de iluminancia que mide o fluxo luminoso recibido por unidade de superficie.", es: "El lux es la unidad de iluminancia que mide el flujo luminoso recibido por superficie." }, tiempo: 30, puntos: 100
           },
           {
             id: 214,
@@ -746,7 +764,7 @@ export const TEMARIO_PRL = [
             pregunta: { gl: "O mobbing ou acoso laboral caracterízase por:", es: "El mobbing o acoso laboral se caracteriza por:" },
             opciones: {
               gl: ["Unha conduta hostil e sistemática contra un traballador no seo da empresa", "Unha única discusión puntual entre compañeiros", "Un desacordo salarial coa xerencia", "Unha inspección laboral rutinaria"],
-              es: ["Una conducta hostil y sistemática contra un trabajador en el seno de la empresa", "Una única discusión puntual entre compañeros", "Un desacuerdo salarial con la gerencia", "Una inspección laboral rutinaria"]
+              es: ["Una conducta hostil y sistemática contra un trabajador en el seno de la empresa", "Unha única discusión puntual entre compañeiros", "Un desacordo salarial coa xerencia", "Unha inspección laboral rutinaria"]
             },
             respuestaCorrecta: 0,
             explicacion: { gl: "Trátase dun comportamento de maltracto psicolóxico reiterado e prolongado no tempo que dana a saúde do empregado.", es: "Se trata de un comportamiento de maltrato psicológico reiterado y prolongado en el tiempo que daña la salud del empleado." }, tiempo: 30, puntos: 100
@@ -904,7 +922,7 @@ export const TEMARIO_PRL = [
             pregunta: { gl: "Cal é a frecuencia mínima esixida para a realización de simulacros de evacuación nun centro de traballo?", es: "¿Cuál es la frecuencia mínima exigida para la realización de simulacros de evacuación en un centro de trabajo?" },
             opciones: {
               gl: ["Unha vez ao ano", "Unha vez cada mes", "Unha vez cada 5 anos", "Soamente cando o solicite un sindicato"],
-              es: ["Una vez al año", "Una vez cada mes", "Una vez cada 5 años", "Solamente cuando lo solicite un sindicato"]
+              es: ["Una vez al año", "Una vez cada mes", "Unha vez cada 5 anos", "Solamente cuando lo solicite un sindicato"]
             },
             respuestaCorrecta: 0,
             explicacion: { gl: "Os plans de emerxencia debuxan a obriga de realizar polo menos un simulacro anual para comprobar tempos e eficacias.", es: "Los planes de emergencia dibujan la obligación de realizar al menos un simulacro anual para comprobar tiempos y eficacias." }, tiempo: 30, puntos: 100
@@ -947,7 +965,7 @@ export const TEMARIO_PRL = [
               es: ["Afectar a un sector o área concreta del centro, exigiendo la actuación de los equipos especiales sin requerir la evacuación total", "Afectar a toda la región geográfica del país", "Ser un simple susto sin consecuencias", "No requerir ningún tipo de acción"]
             },
             respuestaCorrecta: 0,
-            explicacion: { gl: "O sinistro circunscribese a unha zona pero supera os medios do conato, mobilizando equipos de intervención parcial.", es: "El siniestro se circunscribe a una zona pero supera los medios del conato, movilizando equipos de intervención parcial." }, tiempo: 30, puntos: 100
+            explicacion: { gl: "O sinistro circunscribese a unha zona pero supera os medios do conato, mobilizando equipos de intervención parcial.", es: "El siniestro se circunscribe a una zona pero supera los medios del conato, mobilizando equipos de intervención parcial." }, tiempo: 30, puntos: 100
           },
           {
             id: 248,
@@ -1046,7 +1064,7 @@ export const TEMARIO_PRL = [
               es: ["No taponar el oído bajo ningún concepto y dejar salir el fluido", "Taponar herméticamente con algodón apretado", "Inyectar analgésicos líquidos en el conducto", "Tender al paciente boca abajo"]
             },
             respuestaCorrecta: 0,
-            explicacion: { gl: "Taponar un sangrado cranial pode xerar presión intracraneal moi perigosa; debe deixarse fluír libremente.", es: "Taponar un sangrado craneal puede generar presión intracraneal muy peligrosa; debe dejarse fluir libremente." }, tiempo: 30, puntos: 100
+            explicacion: { gl: "Taponar un sangrado cranial pode xerar presión intracraneal moi perigosa; debe deixarse fluír libremente.", es: "Taponar un sangrado cranial puede generar presión intracraneal muy peligrosa; debe dejarse fluir libremente." }, tiempo: 30, puntos: 100
           },
           {
             id: 257,
@@ -1122,7 +1140,7 @@ export const TEMARIO_PRL = [
             pregunta: { gl: "Quen debe asumir o custo económico dos exames de Vixilancia da Saúde?", es: "¿Quién debe asumir el coste económico de los exámenes de Vigilancia de la Salud?" },
             opciones: {
               gl: ["O empresario na súa totalidade", "O traballador mediante copago na nómina", "A Seguridade Social", "As mutuas ao 50% co empregado"],
-              es: ["El empresario en su totalidad", "El trabajador mediante copago en la nómina", "La Seguridad Social", "Las mutuas al 50% con el empleado"]
+              es: ["El empresario en su totalidad", "El trabajador mediante copago en la nómina", "A Seguridade Social", "Las mutuas al 50% con el empleado"]
             },
             respuestaCorrecta: 0,
             explicacion: { gl: "O custo das probas médicas preventivas recae enteiramente sobre o empresario, sendo gratuítas para o persoal.", es: "El coste de las pruebas médicas preventivas recae enteramente sobre el empresario, siendo gratuitas para el personal." }, tiempo: 30, puntos: 100
@@ -1182,7 +1200,7 @@ export const TEMARIO_PRL = [
             pregunta: { gl: "Que sucede se un traballador se nega por completo a calquera revisión médica nun posto con riscos especiais obrigatorios?", es: "¿Qué sucede si un trabajador se niega por completo a cualquier revisión médica en un puesto con riesgos especiales obligatorios?" },
             opciones: {
               gl: ["Emítese un informe de non aptitude por falta de comprobación se o impón a lexislación ou a xustificación sanitaria", "O traballador é ascendido automaticamente", "A empresa non pode tomar ningunha medida", "A Seguridade Social paga unha indemnización"],
-              es: ["Se emite un informe de no aptitud por falta de comprobación si lo impone la legislación o la justificación sanitaria", "El trabajador es ascendido automáticamente", "La empresa no puede tomar ninguna medida", "La Seguridad Social paga una indemnización"]
+              es: ["Se emite un informe de no aptitud por falta de comprobación si lo impone la legislación o la justificación sanitaria", "El trabajador es ascendido automáticamente", "La empresa no puede tomar ninguna medida", "A Seguridade Social paga unha indemnización"]
             },
             respuestaCorrecta: 0,
             explicacion: { gl: "Se a lexislación o declara obrigatorio por risco crítico para terceiros, a negativa inxustificada impide ocupar o posto.", es: "Si la legislación lo declara obligatorio por riesgo crítico para terceros, la negativa injustificada impide ocupar el puesto." }, tiempo: 30, puntos: 100
@@ -1260,7 +1278,7 @@ export const TEMARIO_PRL = [
             pregunta: { gl: "Que é un Servizo de Prevención Alleo (SPA)?", es: "¿Qué es un Servicio de Prevención Ajeno (SPA)?" },
             opciones: {
               gl: ["Unha entidade especializada acreditada que a empresa contrata para cubrir as disciplinas preventivas", "Un departamento interno da propia empresa", "Un organismo de control público da policía", "Unha mutua de seguros de coches"],
-              es: ["Una entidad especializada acreditada que la empresa contrata para cubrir las disciplinas preventivas", "Un departamento interno de la propia empresa", "Un organismo de control público de la policía", "Una mutua de seguros de coches"]
+              es: ["Una entidad especializada acreditada que la empresa contrata para cubrir las disciplinas preventivas", "Un departamento interno de la propia empresa", "Un organismo de control público de la policía", "Unha mutua de seguros de coches"]
             },
             respuestaCorrecta: 0,
             explicacion: { gl: "O SPA substitúe ou complementa os recursos cando a empresa non dispón de servizo propio nin modalidade designada.", es: "El SPA sustituye o complementa los recursos cuando la empresa no dispone de servicio propio ni modalidad designada." }, tiempo: 30, puntos: 100
@@ -1423,7 +1441,8 @@ export const TEMARIO_PRL = [
               es: ["Canalizar el debate territorial y sectorial de mejora de las condiciones de trabajo", "Emitir sentencias penales judiciales", "Sugerir aumentos de capital de sociedades anónimas", "Dirigir equipos de bomberos municipales"]
             },
             respuestaCorrecta: 0,
-            explicacion: { gl: "Son foros de participación e estudo descentralizados para adaptar políticas preventivas ás características de cada zona.", es: "Son foros de participación y estudio descentralizados para adaptar políticas preventivas a las características de cada zona." }, tiempo: 30, puntos: 100
+            explicacion: { gl: "Son foros de participación e estudo descentralizados para adaptar políticas preventivas ás características de cada zona.", es: "Son foros de participación y estudio descentralizados para adaptar políticas preventivas a las características de cada zona." },
+            tiempo: 30, puntos: 100
           }
         ]
       }
