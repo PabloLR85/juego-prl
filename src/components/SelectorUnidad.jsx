@@ -1,7 +1,8 @@
+// src/components/SelectorUnidad.jsx
 import React, { useState } from 'react';
 import { TEMARIO_PRL, TEXTOS_UI, generarTestGeneral50 } from '../data/temarioPRL';
 
-export default function SelectorUnidad({ lang, onSelectUnidad, onFiltrarUnidades }) {
+export default function SelectorUnidad({ lang, onSelectUnidad }) {
   const txt = TEXTOS_UI[lang];
   const [unidadesSeleccionadas, setUnidadesSeleccionadas] = useState([]);
   const [modoFiltradoActivo, setModoFiltradoActivo] = useState(false);
@@ -23,13 +24,15 @@ export default function SelectorUnidad({ lang, onSelectUnidad, onFiltrarUnidades
   };
 
   const handleIniciarTestGeneral = () => {
+    // Si hay unidades seleccionadas, pasamos el filtro. Si no, entran todas.
     const idsFiltro = unidadesSeleccionadas.length > 0 ? unidadesSeleccionadas : null;
     const preguntas50 = generarTestGeneral50(idsFiltro);
+    
     const unidadTestGeneral = {
       id: "test_general_50",
       isTestGeneral: true,
       titulo: {
-        gl: unidadesSeleccionadas.length > 0 ? "EXAMEN XERAL (Unidades Seleccionadas)" : "EXAME XERAL (50 Preguntas Aleatorias - 10 Minutos)",
+        gl: unidadesSeleccionadas.length > 0 ? "EXAME XERAL (Unidades Seleccionadas)" : "EXAME XERAL (50 Preguntas Aleatorias - 10 Minutos)",
         es: unidadesSeleccionadas.length > 0 ? "EXAMEN GENERAL (Unidades Seleccionadas)" : "EXAMEN GENERAL (50 Preguntas Aleatorias - 10 Minutos)"
       },
       preguntas: preguntas50
@@ -63,7 +66,7 @@ export default function SelectorUnidad({ lang, onSelectUnidad, onFiltrarUnidades
 
         {modoFiltradoActivo && (
           <div className="pt-2 border-t border-slate-800 space-y-2">
-            <p className="text-[11px] text-slate-400">Selecciona que unidades formarán parte do Examen Xeral o aleatorias:</p>
+            <p className="text-[11px] text-slate-400">Selecciona que unidades formarán parte do Exame Xeral (Se non marcas ningunha, entraran todas):</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
               {todasLasUnidades.map((u) => {
                 const seleccionada = unidadesSeleccionadas.includes(u.id);
@@ -97,7 +100,7 @@ export default function SelectorUnidad({ lang, onSelectUnidad, onFiltrarUnidades
           {txt.testGeneralTitulo}
         </h3>
         <p className="text-slate-300 text-xs max-w-lg mx-auto">
-          {txt.testGeneralDesc}
+          {txt.testGeneralDesc} {unidadesSeleccionadas.length > 0 && `(Filtrado por ${unidadesSeleccionadas.length} unidades)`}
         </p>
         <button
           onClick={handleIniciarTestGeneral}
@@ -116,14 +119,11 @@ export default function SelectorUnidad({ lang, onSelectUnidad, onFiltrarUnidades
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
               {modulo.unidades.map((unidade) => {
-                const isFilteredOut = unidadesSeleccionadas.length > 0 && !unidadesSeleccionadas.includes(unidade.id);
                 return (
                   <button
                     key={unidade.id}
                     onClick={() => handleSeleccionarUnidadIndividual(unidade)}
-                    className={`p-3 rounded-xl border text-left transition-all duration-200 flex items-center justify-between ${
-                      isFilteredOut ? 'opacity-40 bg-slate-900/40 border-slate-800' : 'border-slate-700/60 bg-slate-800/60 hover:bg-blue-600/20 hover:border-blue-500 group'
-                    }`}
+                    className="p-3 rounded-xl border border-slate-700/60 bg-slate-800/60 hover:bg-blue-600/20 hover:border-blue-500 text-left transition-all duration-200 flex items-center justify-between group"
                   >
                     <div>
                       <div className="font-bold text-slate-200 group-hover:text-white text-xs">
