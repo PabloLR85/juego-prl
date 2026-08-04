@@ -1,9 +1,9 @@
-// src/App.jsx
 import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { ref, onValue, set, get, update } from 'firebase/database';
 import { db } from './firebase';
 import GameQuiz from './components/GameQuiz';
+import SelectorUnidad from './components/SelectorUnidad';
 import { TEXTOS_UI, TEMARIO_PRL, generarTestGeneral50 } from './data/temarioPRL';
 
 export default function App() {
@@ -12,6 +12,7 @@ export default function App() {
   const [equipo, setEquipo] = useState('');
   const [codigoSala, setCodigoSala] = useState('');
   const [isStarted, setIsStarted] = useState(false);
+  const [isLibreMode, setIsLibreMode] = useState(false);
   const [isProyectorMode, setIsProyectorMode] = useState(false);
   const [unidadeSeleccionada, setUnidadeSeleccionada] = useState(null);
   const [rankingAula, setRankingAula] = useState({});
@@ -29,7 +30,7 @@ export default function App() {
   const currentUrl = window.location.href;
 
   useEffect(() => {
-    if (!codigoSala) return;
+    if (!codigoSala || isLibreMode) return;
 
     const rankingRef = ref(db, `salas/${codigoSala}/ranking`);
     const unsubscribeRanking = onValue(rankingRef, (snapshot) => {
@@ -66,7 +67,7 @@ export default function App() {
       unsubscribeVidas();
       unsubscribeConfig();
     };
-  }, [codigoSala]);
+  }, [codigoSala, isLibreMode]);
 
   const handleEntrarAlumno = (e) => {
     e.preventDefault();
@@ -74,12 +75,21 @@ export default function App() {
       const keyEquipo = equipo.trim().replace(/[.#$\[\]]/g, "_");
       set(ref(db, `salas/${codigoSala.trim()}/ranking/${keyEquipo}`), 0);
       set(ref(db, `salas/${codigoSala.trim()}/vidas/${keyEquipo}`), { vidas: 3, eliminado: false });
+      setIsLibreMode(false);
+      setIsStarted(true);
+    }
+  };
+
+  const handleEntrarLibre = (e) => {
+    e.preventDefault();
+    if (equipo.trim()) {
+      setIsLibreMode(true);
       setIsStarted(true);
     }
   };
 
   const reportScore = (nombreEquipo, pts) => {
-    if (!codigoSala) return;
+    if (!codigoSala || isLibreMode) return;
     const keyEquipo = nombreEquipo.trim().replace(/[.#$\[\]]/g, "_");
     const puntosActuales = rankingAula[keyEquipo] || 0;
     set(ref(db, `salas/${codigoSala}/ranking/${keyEquipo}`), puntosActuales + pts);
@@ -90,6 +100,7 @@ export default function App() {
   const handleVolverAlMenu = () => {
     setScore(0);
     setUnidadeSeleccionada(null);
+    if (isLibreMode) setIsLibreMode(false);
   };
 
   const iniciarProyector = () => {
@@ -161,17 +172,26 @@ export default function App() {
     return (
       <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-3 relative text-sm">
         <div className="absolute top-3 right-3"><LanguageToggle /></div>
-        <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl max-w-sm w-full text-center">
-          <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-xl mx-auto mb-3 shadow-md">🛡️</div>
+        <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl max-w-sm w-full text-center space-y-4">
+          <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-xl mx-auto shadow-md">🛡️</div>
           <h1 className="text-xl font-bold uppercase tracking-wider text-white mb-1">{txt.titulo}</h1>
-          <p className="text-slate-400 text-xs mb-4">{txt.subtitulo}</p>
-          <form onSubmit={handleEntrarAlumno} className="space-y-3">
-            <input type="text" value={equipo} onChange={(e) => setEquipo(e.target.value)} placeholder={txt.nombreEquipo} className="w-full p-3 rounded-xl bg-slate-800 border border-slate-700 text-white font-medium focus:outline-none focus:border-blue-500 text-center text-sm" required />
+          <p className="text-slate-400 text-xs mb-2">{txt.subtitulo}</p>
+          
+          <form onSubmit={handleEntrarAlumno} className="space-y-3 pt-2 border-t border-slate-800">
+            <div className="text-xs font-bold text-amber-400 uppercase">Modo Competición Aula</div>
+            <input type="text" value={equipo} onChange={(e) => setEquipo(e.target.value)} placeholder={txt.nombreEquipo} className="w-full p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-center text-xs" required />
             <input type="text" value={codigoSala} onChange={(e) => setCodigoSala(e.target.value)} placeholder="Código de Aula (Ej. 1234)" maxLength={6} className="w-full p-2.5 rounded-xl bg-slate-800/60 border border-slate-700 text-slate-300 font-mono text-center text-xs" required />
-            <button type="submit" className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl uppercase tracking-wider text-xs shadow-md transition-colors">{txt.entrarJugar}</button>
+            <button type="submit" className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl uppercase tracking-wider text-xs shadow-md">Entrar en Sala</button>
           </form>
-          <div className="mt-4 pt-4 border-t border-slate-800">
-            <button onClick={iniciarProyector} className="w-full py-2.5 bg-slate-800 border border-slate-700 text-slate-300 font-bold rounded-xl text-xs hover:bg-slate-700 transition-colors">
+
+          <form onSubmit={handleEntrarLibre} className="space-y-2 pt-3 border-t border-slate-800">
+            <div className="text-xs font-bold text-emerald-400 uppercase">Modo Práctica Libre</div>
+            <input type="text" value={equipo} onChange={(e) => setEquipo(e.target.value)} placeholder={txt.nombreEquipo} className="w-full p-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-center text-xs" required />
+            <button type="submit" className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl uppercase tracking-wider text-xs shadow-md">Practicar Libremente</button>
+          </form>
+
+          <div className="pt-3 border-t border-slate-800">
+            <button onClick={iniciarProyector} className="w-full py-2 bg-slate-800 border border-slate-700 text-slate-300 font-bold rounded-xl text-xs hover:bg-slate-700">
               {txt.abrirProyector}
             </button>
           </div>
@@ -289,7 +309,7 @@ export default function App() {
                         <div>
                           <span className="font-bold text-white">{nombre}</span>
                           <div className="text-[10px] text-slate-400">
-                            {infoVidas.eliminado ? '⚠️ Eliminado (Sin vidas)' : `Oportunidades: ${infoVidas.vidas} / 3`}
+                            {infoVidas.eliminado ? '⚠️ Eliminado' : `Oportunidades: ${infoVidas.vidas} / 3`}
                           </div>
                         </div>
                       </div>
@@ -312,7 +332,7 @@ export default function App() {
           <h1 className="text-sm font-bold tracking-wide text-white uppercase">
             PRL <span className="text-blue-500">Challenge</span>
           </h1>
-          <p className="text-[11px] text-slate-400">{txt.equipo}: <span className="text-emerald-400 font-bold">{equipo}</span></p>
+          <p className="text-[11px] text-slate-400">{txt.equipo}: <span className="text-emerald-400 font-bold">{equipo}</span> {isLibreMode && <span className="text-emerald-400 font-semibold">(Modo Libre)</span>}</p>
         </div>
         <div className="flex items-center gap-2">
           <LanguageToggle />
@@ -322,18 +342,19 @@ export default function App() {
         </div>
       </header>
 
-      <div className="bg-slate-900 border-b border-slate-800 flex justify-center gap-2 py-1.5 px-3">
-        <button onClick={() => setTabAlumno('juego')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${tabAlumno === 'juego' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}>
-          {txt.preguntasTab}
-        </button>
-        <button onClick={() => setTabAlumno('ranking')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${tabAlumno === 'ranking' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}>
-          {txt.rankingTab} ({rankingOrdenado.length})
-        </button>
-      </div>
+      {isLibreMode && (
+        <div className="bg-slate-900 border-b border-slate-800 flex justify-center gap-2 py-1.5 px-3">
+          <button onClick={() => setTabAlumno('juego')} className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${tabAlumno === 'juego' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}>
+            {txt.preguntasTab}
+          </button>
+        </div>
+      )}
 
       <main className="flex-1 p-4">
         <div className={tabAlumno === 'juego' ? 'block' : 'hidden'}>
-          {!unidadeSeleccionada ? (
+          {isLibreMode && !unidadeSeleccionada ? (
+            <SelectorUnidad lang={lang} onSelectUnidad={(ud) => setUnidadeSeleccionada(ud)} />
+          ) : !unidadeSeleccionada && !isLibreMode ? (
             <div className="max-w-md mx-auto bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center space-y-4 shadow-xl my-8">
               <h2 className="text-base font-bold text-white uppercase tracking-wider">Agardando á configuración do profesor...</h2>
               <p className="text-xs text-slate-400">O profesor está a configurar a sesión para esta sala ({codigoSala}). O xogo comezará en breve.</p>
@@ -344,9 +365,9 @@ export default function App() {
               unidade={unidadeSeleccionada}
               lang={lang}
               equipo={equipo}
-              codigoSala={codigoSala}
-              modoJuego={configSesion.modoJuego || 'clasico'}
-              tiempoPersonalizado={configSesion.tiempoPregunta || 30}
+              codigoSala={isLibreMode ? null : codigoSala}
+              modoJuego={isLibreMode ? 'clasico' : (configSesion.modoJuego || 'clasico')}
+              tiempoPersonalizado={isLibreMode ? 30 : (configSesion.tiempoPregunta || 30)}
               onAddPoints={addPoints}
               onReportScore={reportScore}
               onVolver={handleVolverAlMenu}
@@ -354,7 +375,7 @@ export default function App() {
           )}
         </div>
 
-        {tabAlumno === 'ranking' && (
+        {tabAlumno === 'ranking' && !isLibreMode && (
           <div className="max-w-md mx-auto bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl">
             <h2 className="text-xs font-bold text-slate-200 uppercase tracking-wider mb-3 text-center">
               {txt.clasificacionClase}

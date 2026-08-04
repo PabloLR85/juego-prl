@@ -1,22 +1,39 @@
-// src/components/SelectorUnidad.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { TEMARIO_PRL, TEXTOS_UI, generarTestGeneral50 } from '../data/temarioPRL';
 
 export default function SelectorUnidad({ lang, onSelectUnidad }) {
   const txt = TEXTOS_UI[lang];
+  const [unidadesSeleccionadas, setUnidadesSeleccionadas] = useState([]);
 
-  const handleIniciarTestGeneral = () => {
-    const preguntas50 = generarTestGeneral50(null);
-    const unidadTestGeneral = {
-      id: "test_general_50",
+  const todasLasUnidades = [];
+  TEMARIO_PRL.forEach((m) => {
+    m.unidades.forEach((u) => {
+      todasLasUnidades.push({ id: u.id, titulo: u.titulo[lang] });
+    });
+  });
+
+  const toggleUnidad = (id) => {
+    if (unidadesSeleccionadas.includes(id)) {
+      setUnidadesSeleccionadas(unidadesSeleccionadas.filter(uId => uId !== id));
+    } else {
+      setUnidadesSeleccionadas([...unidadesSeleccionadas, id]);
+    }
+  };
+
+  const handleIniciarMixPersonalizado = () => {
+    const idsFiltro = unidadesSeleccionadas.length > 0 ? unidadesSeleccionadas : null;
+    const preguntasMix = generarTestGeneral50(idsFiltro, unidadesSeleccionadas.length > 0 ? 25 : 50);
+    
+    const unidadMixPersonalizado = {
+      id: "mix_personalizado",
       isTestGeneral: true,
       titulo: {
-        gl: "EXAME XERAL (Todas as unidades)",
-        es: "EXAMEN GENERAL (Todas las unidades)"
+        gl: unidadesSeleccionadas.length > 0 ? `MIX TEMARIO (${unidadesSeleccionadas.length} unidades seleccionadas)` : "EXAME XERAL (Todas as unidades)",
+        es: unidadesSeleccionadas.length > 0 ? `MIX TEMARIO (${unidadesSeleccionadas.length} unidades seleccionadas)` : "EXAMEN GENERAL (Todas las unidades)"
       },
-      preguntas: preguntas50
+      preguntas: preguntasMix
     };
-    onSelectUnidad(unidadTestGeneral);
+    onSelectUnidad(unidadMixPersonalizado);
   };
 
   return (
@@ -30,24 +47,55 @@ export default function SelectorUnidad({ lang, onSelectUnidad }) {
         </p>
       </div>
 
-      <div className="bg-gradient-to-r from-amber-500/10 via-blue-600/10 to-amber-500/10 border border-amber-500/40 rounded-2xl p-5 shadow-xl text-center space-y-3">
-        <h3 className="text-lg font-bold text-amber-300 uppercase tracking-wide">
-          {txt.testGeneralTitulo}
-        </h3>
-        <p className="text-slate-300 text-xs max-w-lg mx-auto">
-          {txt.testGeneralDesc}
-        </p>
-        <button
-          onClick={handleIniciarTestGeneral}
-          className="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs uppercase tracking-wider shadow-md transition-all transform hover:scale-105"
-        >
-          Iniciar Examen 50 Preguntas (10 Min)
-        </button>
+      <div className="bg-slate-900 border border-blue-500/40 rounded-2xl p-4 shadow-lg space-y-3">
+        <div className="flex justify-between items-center">
+          <div className="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center gap-2">
+            <span>⚙️</span> Seleccionar Unidades (Mix)
+          </div>
+          <span className="text-xs text-amber-400 font-bold">
+            {unidadesSeleccionadas.length === 0 ? txt.todasUnidadesSeleccionadas : `${unidadesSeleccionadas.length} unidades marcadas`}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1">
+          {todasLasUnidades.map((u) => {
+            const seleccionada = unidadesSeleccionadas.includes(u.id);
+            return (
+              <label key={u.id} className={`flex items-center gap-2.5 p-2.5 rounded-xl border text-xs cursor-pointer transition-colors ${seleccionada ? 'bg-blue-600/30 border-blue-500 text-white font-bold' : 'bg-slate-800/80 border-slate-700 text-slate-300'}`}>
+                <input
+                  type="checkbox"
+                  checked={seleccionada}
+                  onChange={() => toggleUnidad(u.id)}
+                  className="rounded border-slate-700 text-blue-600 focus:ring-blue-500 w-4 h-4"
+                />
+                <span className="truncate">{u.titulo}</span>
+              </label>
+            );
+          })}
+        </div>
+
+        <div className="flex justify-between items-center pt-2 border-t border-slate-800">
+          {unidadesSeleccionadas.length > 0 ? (
+            <button
+              onClick={() => setUnidadesSeleccionadas([])}
+              className="text-[11px] text-red-400 hover:underline uppercase font-bold"
+            >
+              Limpiar selección
+            </button>
+          ) : <span />}
+          
+          <button
+            onClick={handleIniciarMixPersonalizado}
+            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-md transition-all"
+          >
+            Iniciar con Selección ➡️
+          </button>
+        </div>
       </div>
 
       <div className="space-y-3 pt-2">
         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-          O seleccione una Unidad Didáctica Individual:
+          O bien, seleccione una Unidad Didáctica Individual:
         </h3>
 
         {TEMARIO_PRL.map((modulo) => (

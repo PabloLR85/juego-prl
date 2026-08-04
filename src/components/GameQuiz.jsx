@@ -1,4 +1,3 @@
-// src/components/GameQuiz.jsx
 import React, { useState, useEffect } from 'react';
 import { barajarArray, TEXTOS_UI } from '../data/temarioPRL';
 import { ref, set } from 'firebase/database';
@@ -219,7 +218,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
                   </div>
 
                   <div className="space-y-1 text-[11px] text-slate-300">
-                    <div><strong className="text-slate-400">{txt.tuRespuesta}</strong> <span className={esAcertada ? 'text-emerald-300 font-bold' : 'text-red-300 font-bold'}>{item.seleccionada >= 0 ? item.opciones[item.seleccionada] : txt.tempoAgotado}</span></div>
+                    <div><strong className="text-slate-400">{txt.tuRespuesta}</strong> <span className={esAcertada ? 'text-emerald-300 font-bold' : 'text-red-300 font-bold'}>{item.seleccionada >= 0 ? item.opciones[item.seleccionada] : txt.tiempoAgotado}</span></div>
                     {!esAcertada && (
                       <div><strong className="text-slate-400">{txt.respuestaCorrectaLabel}</strong> <span className="text-emerald-300 font-bold">{item.opciones[item.correcta]}</span></div>
                     )}

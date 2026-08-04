@@ -421,7 +421,7 @@ export const TEMARIO_PRL = [
             respuestaCorrecta: 0,
             explicacion: {
               gl: "Os Reales Decretos detallan aspectos técnicos en seguridade en máquinas, lugares de traballo, EPIs, etc.",
-              es: "Los Reales Decretos detallan aspectos técnicos en seguridad en máquinas, lugares de trabajo, EPIs, etc."
+              es: "Los Real Decreto detallan aspectos técnicos en seguridad en máquinas, lugares de trabajo, EPIs, etc."
             },
             tiempo: 30, puntos: 100
           },
@@ -1105,7 +1105,7 @@ export const TEMARIO_PRL = [
             respuestaCorrecta: 1,
             explicacion: {
               gl: "Os ESI están formados por persoal con adestramentos específicos e equipos pesados de loita contra incendios.",
-              es: "Los ESI están formados por personal con adiestramientos específicos y equipos pesados de lucha contra incendios."
+              es: "Los ESI están formados por personal con adestramientos específicos y equipos pesados de lucha contra incendios."
             },
             tiempo: 30, puntos: 100
           },
@@ -1170,7 +1170,7 @@ export const TEMARIO_PRL = [
             pregunta: { gl: "Unha emerxencia parcial caracterízase por:", es: "Una emergencia parcial se caracteriza por:" },
             opciones: {
               gl: ["Afectar a un sector ou área concreta do centro, exixindo a actuación dos equipos especiais sen requirir a evacuación total", "Afectar a toda a rexión xeográfica do país", "Ser un simple susto sen consecuencias", "Non requirir ningún tipo de acción"],
-              es: ["Afectar a un sector o área concreta del centro, exigiendo la actuación de los equipos especiales sin requerir la evacuación total", "Afectar a toda la región geográfica del país", "Ser un simple susto sin consecuencias", "No requerir ningún tipo de acción"]
+              es: ["Afectar a un sector o área concreta del centro, exigiendo la actuación de los equipos especiales sin requerir la evacuación total", "Afectar a toda la región geográfica del país", "Ser un simple susto sen consecuencias", "No requerir ningún tipo de acción"]
             },
             respuestaCorrecta: 0,
             explicacion: {
@@ -1496,7 +1496,7 @@ export const TEMARIO_PRL = [
             pregunta: { gl: "Que sucede se un traballador se nega por completo a calquera revisión médica nun posto con riscos especiais obrigatorios?", es: "¿Qué sucede si un trabajador se niega por completo a cualquier revisión médica en un puesto con riesgos especiales obligatorios?" },
             opciones: {
               gl: ["Emítese un informe de non aptitude por falta de comprobación se o impón a lexislación ou a xustificación sanitaria", "O traballador é ascendido automaticamente", "A empresa non pode tomar ningunha medida", "A Seguridade Social paga unha indemnización"],
-              es: ["Se emite un informe de no aptitud por falta de comprobación si lo impone la legislación o la justificación sanitaria", "El trabajador es ascendido automáticamente", "La empresa no puede tomar ninguna medida", "La Seguridad Social paga una indemnización"]
+              es: ["Se emite un informe de no aptitud por falta de comprobación si lo impone la legislación o la justificación sanitaria", "El trabajador es ascendido automáticamente", "La empresa no puede tomar ninguna medida", "A Seguridade Social paga unha indemnización"]
             },
             respuestaCorrecta: 0,
             explicacion: {
