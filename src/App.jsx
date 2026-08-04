@@ -21,8 +21,9 @@ export default function App() {
   const [vidasAula, setVidasAula] = useState({});
   const [tabAlumno, setTabAlumno] = useState('juego');
 
-  // Estados para que el profesor seleccione las unidades en el modo proyector
+  // Estados de configuración de la sesión que el profesor controla desde el proyector
   const [unidadesSeleccionadasProfesor, setUnidadesSeleccionadasProfesor] = useState([]);
+  const [modoJuegoProfesor, setModoJuegoProfesor] = useState('clasico');
 
   const txt = TEXTOS_UI[lang];
   const currentUrl = window.location.href;
@@ -40,9 +41,31 @@ export default function App() {
       setVidasAula(snapshot.val() || {});
     });
 
+    // Sincronizar la configuración del profesor desde Firebase si el alumno entra a una sala existente
+    const configRef = ref(db, `salas/${codigoSala}/config`);
+    const unsubscribeConfig = onValue(configRef, (snapshot) => {
+      const config = snapshot.val();
+      if (config) {
+        if (config.modoJuego) setModoJuegoSeleccionado(config.modoJuego);
+        if (config.unidades && config.unidades.length > 0) {
+          const preguntasMix = generarTestGeneral50(config.unidades);
+          setUnidadeSeleccionada({
+            id: "mix_profesor",
+            isTestGeneral: true,
+            titulo: {
+              gl: `EXAME CONFIGURADO (${config.unidades.length} unidades)`,
+              es: `EXAMEN CONFIGURADO (${config.unidades.length} unidades)`
+            },
+            preguntas: preguntasMix
+          });
+        }
+      }
+    });
+
     return () => {
       unsubscribeRanking();
       unsubscribeVidas();
+      unsubscribeConfig();
     };
   }, [codigoSala]);
 
@@ -100,6 +123,17 @@ export default function App() {
     }
   };
 
+  // Guardar la configuración de la sesión elegida por el profesor en Firebase
+  const guardarConfiguracionSala = async () => {
+    if (!codigoSala) return;
+    const configRef = ref(db, `salas/${codigoSala}/config`);
+    await set(configRef, {
+      modoJuego: modoJuegoProfesor,
+      unidades: unidadesSeleccionadasProfesor
+    });
+    alert("Configuración de la sesión guardada y aplicada a la sala.");
+  };
+
   const toggleUnidadProfesor = (id) => {
     if (unidadesSeleccionadasProfesor.includes(id)) {
       setUnidadesSeleccionadasProfesor(unidadesSeleccionadasProfesor.filter(uId => uId !== id));
@@ -111,7 +145,6 @@ export default function App() {
   const rankingOrdenado = Object.entries(rankingAula).sort((a, b) => b[1] - a[1]);
   const posicionAlumno = rankingOrdenado.findIndex(([nombre]) => nombre === equipo.trim().replace(/[.#$\[\]]/g, "_")) + 1;
 
-  // Obtener todas las unidades para el panel del profesor
   const todasLasUnidades = [];
   TEMARIO_PRL.forEach((m) => {
     m.unidades.forEach((u) => {
@@ -177,28 +210,45 @@ export default function App() {
               <p className="text-[11px] text-slate-400 mt-3">{txt.apuntaCamara}</p>
             </div>
 
-            {/* Panel de Configuración de Unidades para el Profesor */}
-            <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg space-y-2 text-xs">
+            {/* Panel de Configuración de la Sesión para el Profesor */}
+            <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg space-y-3 text-xs">
               <h3 className="font-bold text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
                 <span>⚙️</span> {txt.gestionTemarioProfesor}
               </h3>
-              <p className="text-[10px] text-slate-400">Seleccione las unidades para la sesión (si no marca ninguna, entrarán todas):</p>
-              <div className="max-h-40 overflow-y-auto space-y-1.5 pr-1">
-                {todasLasUnidades.map((u) => {
-                  const sel = unidadesSeleccionadasProfesor.includes(u.id);
-                  return (
-                    <label key={u.id} className={`flex items-center gap-2 p-1.5 rounded border cursor-pointer ${sel ? 'bg-blue-600/30 border-blue-500 text-white font-bold' : 'bg-slate-800 border-slate-700 text-slate-300'}`}>
-                      <input type="checkbox" checked={sel} onChange={() => toggleUnidadProfesor(u.id)} className="rounded border-slate-700 text-blue-600 w-3.5 h-3.5" />
-                      <span className="truncate text-[11px]">{u.titulo}</span>
-                    </label>
-                  );
-                })}
+              
+              <div>
+                <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Modalidad de Proba:</label>
+                <select 
+                  value={modoJuegoProfesor} 
+                  onChange={(e) => setModoJuegoProfesor(e.target.value)}
+                  className="w-full p-2 rounded-lg bg-slate-800 border border-slate-700 text-white text-xs font-bold"
+                >
+                  <option value="clasico">{txt.modoClasicoTitulo}</option>
+                  <option value="juicio">{txt.modoJuicioTitulo}</option>
+                </select>
               </div>
-              {unidadesSeleccionadasProfesor.length > 0 && (
-                <button onClick={() => setUnidadesSeleccionadasProfesor([])} className="text-[10px] text-red-400 hover:underline uppercase font-bold pt-1">
-                  Limpiar filtro (Todas)
-                </button>
-              )}
+
+              <div>
+                <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Unidades Didácticas (Mix):</label>
+                <div className="max-h-36 overflow-y-auto space-y-1 pr-1">
+                  {todasLasUnidades.map((u) => {
+                    const sel = unidadesSeleccionadasProfesor.includes(u.id);
+                    return (
+                      <label key={u.id} className={`flex items-center gap-2 p-1.5 rounded border cursor-pointer ${sel ? 'bg-blue-600/30 border-blue-500 text-white font-bold' : 'bg-slate-800 border-slate-700 text-slate-300'}`}>
+                        <input type="checkbox" checked={sel} onChange={() => toggleUnidadProfesor(u.id)} className="rounded border-slate-700 text-blue-600 w-3.5 h-3.5" />
+                        <span className="truncate text-[11px]">{u.titulo}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <button 
+                onClick={guardarConfiguracionSala}
+                className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-colors shadow-md"
+              >
+                {txt.guardarConfiguracion}
+              </button>
             </div>
           </div>
 
@@ -262,18 +312,16 @@ export default function App() {
       <main className="flex-1 p-4">
         <div className={tabAlumno === 'juego' ? 'block' : 'hidden'}>
           {!modoJuegoSeleccionado ? (
-            <SelectorModo lang={lang} onSelectModo={(modo) => setModoJuegoSeleccionado(modo)} />
-          ) : !unidadeSeleccionada ? (
-            <div className="space-y-3">
-              <button onClick={() => setModoJuegoSeleccionado(null)} className="text-xs font-bold text-blue-400 hover:underline">
-                ⬅️ Cambiar Modalidade
-              </button>
-              <SelectorUnidad
-                lang={lang}
-                unidadesProfesor={unidadesSeleccionadasProfesor}
-                onSelectUnidad={(ud) => setUnidadeSeleccionada(ud)}
-              />
+            <div className="max-w-md mx-auto bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center space-y-4">
+              <h2 className="text-base font-bold text-white uppercase tracking-wider">Agardando á configuración do profesor...</h2>
+              <p className="text-xs text-slate-400">O profesor está a configurar o xogo e as unidades para esta sala ({codigoSala}). A pantalla actualizarase en breve.</p>
+              <div className="animate-pulse text-blue-400 text-xs font-bold">Conectado á Sala • Sincronizando...</div>
             </div>
+          ) : !unidadeSeleccionada ? (
+            <SelectorUnidad
+              lang={lang}
+              onSelectUnidad={(ud) => setUnidadeSeleccionada(ud)}
+            />
           ) : (
             <GameQuiz
               unidade={unidadeSeleccionada}
