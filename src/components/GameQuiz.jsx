@@ -1,3 +1,4 @@
+// src/components/GameQuiz.jsx
 import React, { useState, useEffect } from 'react';
 import { barajarArray, TEXTOS_UI } from '../data/temarioPRL';
 import { ref, set } from 'firebase/database';
@@ -205,7 +206,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
         </h2>
 
         {eliminadoJuicioFinal && (
-          <p className="text-slate-400 text-xs">Quedou sen oportunidades nesta modalidade. Consulte a clasificación xeral na pestana superior.</p>
+          <p className="text-slate-400 text-xs">Quedou sen oportunidades. Os seus puntos acumulados xa están gardados na clasificación xeral da aula.</p>
         )}
 
         <div className="grid grid-cols-3 gap-2 bg-slate-950 p-3 rounded-xl border border-slate-800 text-center text-xs">
@@ -224,7 +225,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
         </div>
 
         <div className="grid grid-cols-1 gap-2 pt-2">
-          {(!eliminadoJuicioFinal || modoJuego === 'clasico') && (
+          {modoJuego === 'clasico' && (
             <button onClick={reiniciarTest} className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs uppercase tracking-wider transition-all">
               {txt.repetirTest}
             </button>

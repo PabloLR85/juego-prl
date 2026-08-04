@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { ref, onValue, set, get, update } from 'firebase/database';
@@ -141,7 +142,6 @@ export default function App() {
   };
 
   const rankingOrdenado = Object.entries(rankingAula).sort((a, b) => b[1] - a[1]);
-  const posicionAlumno = rankingOrdenado.findIndex(([nombre]) => nombre === equipo.trim().replace(/[.#$\[\]]/g, "_")) + 1;
 
   const todasLasUnidades = [];
   TEMARIO_PRL.forEach((m) => {
@@ -289,7 +289,7 @@ export default function App() {
                         <div>
                           <span className="font-bold text-white">{nombre}</span>
                           <div className="text-[10px] text-slate-400">
-                            {infoVidas.eliminado ? 'Eliminado' : `Oportunidades: ${infoVidas.vidas} / 3`}
+                            {infoVidas.eliminado ? '⚠️ Eliminado (Sin vidas)' : `Oportunidades: ${infoVidas.vidas} / 3`}
                           </div>
                         </div>
                       </div>
@@ -373,7 +373,7 @@ export default function App() {
                         <div>
                           <span>{nombre} {esMiEquipo && txt.tuEres}</span>
                           <div className="text-[10px] text-slate-400">
-                            {infoVidas.eliminado ? 'Eliminado' : `Oportunidades: ${infoVidas.vidas}/3`}
+                            {infoVidas.eliminado ? '⚠️ Eliminado' : `Oportunidades: ${infoVidas.vidas}/3`}
                           </div>
                         </div>
                       </div>
