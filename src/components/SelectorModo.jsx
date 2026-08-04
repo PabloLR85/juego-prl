@@ -1,3 +1,4 @@
+// src/components/SelectorModo.jsx
 import React from 'react';
 import { TEXTOS_UI } from '../data/temarioPRL';
 
