@@ -5,7 +5,7 @@ import { TEMARIO_PRL, TEXTOS_UI, generarTestGeneral50 } from '../data/temarioPRL
 export default function SelectorUnidad({ lang, onSelectUnidad }) {
   const txt = TEXTOS_UI[lang];
   const [unidadesSeleccionadas, setUnidadesSeleccionadas] = useState([]);
-  const [modoFiltradoActivo, setModoFiltradoActivo] = useState(false);
+  const [modoFiltradoActivo, setModoFiltradoActivo] = useState(true); // Abierto por defecto para que sea visible
 
   // Obtener todas las unidades disponibles
   const todasLasUnidades = [];
@@ -24,7 +24,6 @@ export default function SelectorUnidad({ lang, onSelectUnidad }) {
   };
 
   const handleIniciarTestGeneral = () => {
-    // Si hay unidades seleccionadas, pasamos el filtro. Si no, entran todas.
     const idsFiltro = unidadesSeleccionadas.length > 0 ? unidadesSeleccionadas : null;
     const preguntas50 = generarTestGeneral50(idsFiltro);
     
@@ -40,10 +39,6 @@ export default function SelectorUnidad({ lang, onSelectUnidad }) {
     onSelectUnidad(unidadTestGeneral);
   };
 
-  const handleSeleccionarUnidadIndividual = (unidade) => {
-    onSelectUnidad(unidade);
-  };
-
   return (
     <div className="max-w-4xl mx-auto space-y-6 px-2">
       <div className="text-center">
@@ -56,27 +51,27 @@ export default function SelectorUnidad({ lang, onSelectUnidad }) {
       </div>
 
       {/* Panel de Configuración de Temario para el Profesor / Sesión */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
+      <div className="bg-slate-900 border border-slate-700 rounded-2xl p-4 shadow-lg space-y-3">
         <div className="flex justify-between items-center cursor-pointer" onClick={() => setModoFiltradoActivo(!modoFiltradoActivo)}>
           <div className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
             <span>⚙️</span> {txt.gestionTemarioProfesor} ({unidadesSeleccionadas.length === 0 ? txt.todasUnidadesSeleccionadas : `${unidadesSeleccionadas.length} sel.`})
           </div>
-          <span className="text-xs text-slate-400">{modoFiltradoActivo ? '▲ Ocultar' : '▼ Filtrar Temario'}</span>
+          <span className="text-xs text-slate-400">{modoFiltradoActivo ? '▲ Ocultar' : '▼ Amosar Filtrado'}</span>
         </div>
 
         {modoFiltradoActivo && (
-          <div className="pt-2 border-t border-slate-800 space-y-2">
-            <p className="text-[11px] text-slate-400">Selecciona que unidades formarán parte do Exame Xeral (Se non marcas ningunha, entraran todas):</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
+          <div className="pt-3 border-t border-slate-800 space-y-3">
+            <p className="text-[11px] text-slate-300">Selecciona que unidades formarán parte do Exame Xeral (Se non marcas ningunha, entraran todas):</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-52 overflow-y-auto pr-1">
               {todasLasUnidades.map((u) => {
                 const seleccionada = unidadesSeleccionadas.includes(u.id);
                 return (
-                  <label key={u.id} className={`flex items-center gap-2 p-2 rounded-lg border text-xs cursor-pointer transition-colors ${seleccionada ? 'bg-blue-600/20 border-blue-500 text-white' : 'bg-slate-800/50 border-slate-700/60 text-slate-300'}`}>
+                  <label key={u.id} className={`flex items-center gap-2.5 p-2.5 rounded-xl border text-xs cursor-pointer transition-colors ${seleccionada ? 'bg-blue-600/30 border-blue-500 text-white font-bold' : 'bg-slate-800/80 border-slate-700 text-slate-300'}`}>
                     <input
                       type="checkbox"
                       checked={seleccionada}
                       onChange={() => toggleUnidad(u.id)}
-                      className="rounded border-slate-700 text-blue-600 focus:ring-blue-500 w-3.5 h-3.5"
+                      className="rounded border-slate-700 text-blue-600 focus:ring-blue-500 w-4 h-4"
                     />
                     <span className="truncate">{u.titulo}</span>
                   </label>
@@ -86,7 +81,7 @@ export default function SelectorUnidad({ lang, onSelectUnidad }) {
             {unidadesSeleccionadas.length > 0 && (
               <button
                 onClick={() => setUnidadesSeleccionadas([])}
-                className="text-[10px] text-red-400 hover:underline uppercase font-bold"
+                className="text-[11px] text-red-400 hover:underline uppercase font-bold"
               >
                 Limpiar filtros (Seleccionar todo)
               </button>
@@ -122,7 +117,7 @@ export default function SelectorUnidad({ lang, onSelectUnidad }) {
                 return (
                   <button
                     key={unidade.id}
-                    onClick={() => handleSeleccionarUnidadIndividual(unidade)}
+                    onClick={() => onSelectUnidad(unidade)}
                     className="p-3 rounded-xl border border-slate-700/60 bg-slate-800/60 hover:bg-blue-600/20 hover:border-blue-500 text-left transition-all duration-200 flex items-center justify-between group"
                   >
                     <div>
