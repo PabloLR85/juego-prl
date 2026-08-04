@@ -18,7 +18,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
   const [aciertos, setAciertos] = useState(0);
   const [puntosTotalesIntento, setPuntosTotalesIntento] = useState(0);
   const [historialRespuestas, setHistorialRespuestas] = useState([]);
-  const [mostrarModalConfirmacion, setMostrarModalConfirmacion] = useState(false);
+  const [modoRevision, setModoRevision] = useState(false);
   
   const [vidas, setVidas] = useState(3);
   const [eliminadoJuicioFinal, setEliminadoJuicioFinal] = useState(false);
@@ -67,6 +67,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
     setAciertos(0);
     setPuntosTotalesIntento(0);
     setHistorialRespuestas([]);
+    setModoRevision(false);
     setVidas(3);
     setEliminadoJuicioFinal(false);
     if (modoJuego === 'juicio') sincronizarVidasFirebase(3, false);
@@ -87,14 +88,14 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
   const preguntaActual = preguntasBarajadas[currentIdx];
 
   useEffect(() => {
-    if (isAnswered || isQuizFinished || !preguntaActual || eliminadoJuicioFinal) return;
+    if (isAnswered || isQuizFinished || !preguntaActual || eliminadoJuicioFinal || modoRevision) return;
     if (timeLeft === 0) {
       handleTimeout();
       return;
     }
     const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
-  }, [timeLeft, isAnswered, isQuizFinished, preguntaActual, eliminadoJuicioFinal]);
+  }, [timeLeft, isAnswered, isQuizFinished, preguntaActual, eliminadoJuicioFinal, modoRevision]);
 
   const restarVidaPorFallo = () => {
     if (modoJuego !== 'juicio') return;
@@ -192,8 +193,54 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
   };
 
   if (isQuizFinished) {
-    const porcentajeAciertos = Math.round((aciertos / preguntasBarajadas.length) * 100) || 0;
+    const porcentajeAciertos = Math.round((aciertos / historialRespuestas.length) * 100) || 0;
     const aprobado = porcentajeAciertos >= 50 && !eliminadoJuicioFinal;
+
+    if (modoRevision) {
+      return (
+        <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl max-w-2xl mx-auto space-y-4 text-xs">
+          <div className="flex justify-between items-center pb-3 border-b border-slate-800">
+            <h2 className="text-sm font-bold text-white uppercase tracking-wider">{txt.revisarHistorial}</h2>
+            <button onClick={() => setModoRevision(false)} className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-lg border border-slate-700">
+              Volver ao Resumo
+            </button>
+          </div>
+
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+            {historialRespuestas.map((item, idx) => {
+              const esAcertada = item.seleccionada === item.correcta;
+              return (
+                <div key={idx} className={`p-3 rounded-xl border space-y-2 ${esAcertada ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-bold text-slate-200">#{idx + 1}. {item.pregunta}</span>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold shrink-0 ${esAcertada ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}`}>
+                      {esAcertada ? 'ACERTADA' : 'FALLADA'}
+                    </span>
+                  </div>
+
+                  <div className="space-y-1 text-[11px] text-slate-300">
+                    <div><strong className="text-slate-400">{txt.tuRespuesta}</strong> <span className={esAcertada ? 'text-emerald-300 font-bold' : 'text-red-300 font-bold'}>{item.seleccionada >= 0 ? item.opciones[item.seleccionada] : txt.tempoAgotado}</span></div>
+                    {!esAcertada && (
+                      <div><strong className="text-slate-400">{txt.respuestaCorrectaLabel}</strong> <span className="text-emerald-300 font-bold">{item.opciones[item.correcta]}</span></div>
+                    )}
+                  </div>
+
+                  {item.explicacion && (
+                    <div className="mt-2 pt-2 border-t border-slate-700/50 text-[11px] text-slate-300 bg-slate-950/50 p-2 rounded-lg leading-normal">
+                      <strong className="text-blue-400 block mb-0.5">{txt.justificacionDidactica}</strong> {item.explicacion}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <button onClick={() => setModoRevision(false)} className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-colors">
+            Volver ao Resumo
+          </button>
+        </div>
+      );
+    }
 
     return (
       <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl max-w-lg mx-auto text-center space-y-4">
@@ -216,7 +263,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
           </div>
           <div>
             <div className="text-slate-500 uppercase font-bold">{txt.aciertos}</div>
-            <div className="text-base font-bold text-emerald-400">{aciertos} / {preguntasBarajadas.length}</div>
+            <div className="text-base font-bold text-emerald-400">{aciertos} / {historialRespuestas.length}</div>
           </div>
           <div>
             <div className="text-slate-500 uppercase font-bold">{txt.aciertoPorcentaje}</div>
@@ -225,6 +272,9 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
         </div>
 
         <div className="grid grid-cols-1 gap-2 pt-2">
+          <button onClick={() => setModoRevision(true)} className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-all shadow-md">
+            {txt.revisarHistorial}
+          </button>
           {modoJuego === 'clasico' && (
             <button onClick={reiniciarTest} className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs uppercase tracking-wider transition-all">
               {txt.repetirTest}
@@ -251,7 +301,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
   return (
     <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl max-w-2xl mx-auto relative text-sm">
       <div className="flex justify-between items-center mb-3 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-        <button onClick={() => setMostrarModalConfirmacion(true)} className="text-xs font-bold text-slate-400 hover:text-white bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700">
+        <button onClick={() => setModoRevision(true)} className="text-xs font-bold text-slate-400 hover:text-white bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700">
           {txt.cambiarTema}
         </button>
 
