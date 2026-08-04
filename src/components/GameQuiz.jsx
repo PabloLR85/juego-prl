@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { barajarArray, TIEMPO_POR_DEFECTO_SEGUNDOS, TEXTOS_UI } from '../data/temarioPRL';
+import { barajarArray, TEXTOS_UI } from '../data/temarioPRL';
 import { ref, set } from 'firebase/database';
 import { db } from '../firebase';
 
-export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onReportScore, equipo, codigoSala, modoJuego }) {
+export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onReportScore, equipo, codigoSala, modoJuego, tiempoPersonalizado }) {
   const [preguntasBarajadas, setPreguntasBarajadas] = useState([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(30);
-  const [globalTimeLeft, setGlobalTimeLeft] = useState(unidade.isTestGeneral ? 600 : null);
+  
+  const tiempoInicialPregunta = tiempoPersonalizado || 30;
+  const [timeLeft, setTimeLeft] = useState(tiempoInicialPregunta);
+
   const [isAnswered, setIsAnswered] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [isQuizFinished, setIsQuizFinished] = useState(false);
   const [aciertos, setAciertos] = useState(0);
   const [puntosTotalesIntento, setPuntosTotalesIntento] = useState(0);
   const [historialRespuestas, setHistorialRespuestas] = useState([]);
-  const [mostrarRevision, setMostrarRevision] = useState(false);
   const [mostrarModalConfirmacion, setMostrarModalConfirmacion] = useState(false);
   
   const [vidas, setVidas] = useState(3);
@@ -65,12 +66,10 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
     setAciertos(0);
     setPuntosTotalesIntento(0);
     setHistorialRespuestas([]);
-    setMostrarRevision(false);
     setVidas(3);
     setEliminadoJuicioFinal(false);
     if (modoJuego === 'juicio') sincronizarVidasFirebase(3, false);
-    setTimeLeft(listaFinal[0]?.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS);
-    setGlobalTimeLeft(unidade.isTestGeneral ? 600 : null);
+    setTimeLeft(tiempoPersonalizado || 30);
   };
 
   const sincronizarVidasFirebase = (numVidas, estadoEliminado) => {
@@ -83,16 +82,6 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
   const reiniciarTest = () => {
     inicializarPreguntas(unidade.preguntas);
   };
-
-  useEffect(() => {
-    if (!unidade.isTestGeneral || globalTimeLeft === null || isQuizFinished || eliminadoJuicioFinal) return;
-    if (globalTimeLeft === 0) {
-      setIsQuizFinished(true);
-      return;
-    }
-    const globalTimer = setInterval(() => setGlobalTimeLeft((prev) => prev - 1), 1000);
-    return () => clearInterval(globalTimer);
-  }, [globalTimeLeft, unidade.isTestGeneral, isQuizFinished, eliminadoJuicioFinal]);
 
   const preguntaActual = preguntasBarajadas[currentIdx];
 
@@ -169,7 +158,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
     if (esCorrecta) {
       const bonus = timeLeft * 5;
-      const totalPuntos = preguntaActual.puntos + bonus;
+      const totalPuntos = 100 + bonus;
       onAddPoints(totalPuntos);
       setPuntosTotalesIntento((prev) => prev + totalPuntos);
       setAciertos((prev) => prev + 1);
@@ -177,7 +166,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
       setFeedback({
         type: 'success',
-        text: `${txt.correctoBonus} ${totalPuntos} pts (${preguntaActual.puntos} ${txt.puntosBase} + ${bonus} ${txt.bonusTiempo})`
+        text: `${txt.correctoBonus} ${totalPuntos} pts (100 ${txt.puntosBase} + ${bonus} ${txt.bonusTiempo})`
       });
     } else {
       restarVidaPorFallo();
@@ -195,16 +184,10 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
       setSelectedOption(null);
       setIsAnswered(false);
       setFeedback(null);
-      setTimeLeft(preguntasBarajadas[nextIdx]?.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS);
+      setTimeLeft(tiempoPersonalizado || 30);
     } else {
       setIsQuizFinished(true);
     }
-  };
-
-  const formatMinutos = (seg) => {
-    const min = Math.floor(seg / 60);
-    const s = seg % 60;
-    return `${min}:${s < 10 ? '0' : ''}${s}`;
   };
 
   if (isQuizFinished) {
@@ -218,7 +201,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
         </div>
 
         <h2 className="text-xl font-bold text-white uppercase tracking-wider">
-          {eliminadoJuicioFinal ? 'Eliminado na Proba' : unidade.isTestGeneral ? txt.examenFinalizado : txt.unidadFinalizada}
+          {eliminadoJuicioFinal ? 'Eliminado na Proba' : txt.unidadFinalizada}
         </h2>
 
         {eliminadoJuicioFinal && (
@@ -256,7 +239,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
   if (!preguntaActual) return null;
 
-  const maxTiempo = preguntaActual.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS;
+  const maxTiempo = tiempoPersonalizado || 30;
   const porcentajeTiempo = (timeLeft / maxTiempo) * 100;
 
   const textoPreguntaActual = lang === 'gl' ? preguntaActual.textoGl : preguntaActual.textoEs;

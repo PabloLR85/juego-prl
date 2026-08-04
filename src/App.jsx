@@ -1,10 +1,7 @@
-// src/App.jsx
 import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { ref, onValue, set, get, update } from 'firebase/database';
 import { db } from './firebase';
-import SelectorModo from './components/SelectorModo';
-import SelectorUnidad from './components/SelectorUnidad';
 import GameQuiz from './components/GameQuiz';
 import { TEXTOS_UI, TEMARIO_PRL, generarTestGeneral50 } from './data/temarioPRL';
 
@@ -15,15 +12,17 @@ export default function App() {
   const [codigoSala, setCodigoSala] = useState('');
   const [isStarted, setIsStarted] = useState(false);
   const [isProyectorMode, setIsProyectorMode] = useState(false);
-  const [modoJuegoSeleccionado, setModoJuegoSeleccionado] = useState(null);
   const [unidadeSeleccionada, setUnidadeSeleccionada] = useState(null);
   const [rankingAula, setRankingAula] = useState({});
   const [vidasAula, setVidasAula] = useState({});
   const [tabAlumno, setTabAlumno] = useState('juego');
 
-  // Estados de configuración de la sesión que el profesor controla desde el proyector
   const [unidadesSeleccionadasProfesor, setUnidadesSeleccionadasProfesor] = useState([]);
   const [modoJuegoProfesor, setModoJuegoProfesor] = useState('clasico');
+  const [numPreguntasProfesor, setNumPreguntasProfesor] = useState(15);
+  const [tiempoPreguntaProfesor, setTiempoPreguntaProfesor] = useState(30);
+
+  const [configSesion, setConfigSesion] = useState({ modoJuego: 'clasico', tiempoPregunta: 30 });
 
   const txt = TEXTOS_UI[lang];
   const currentUrl = window.location.href;
@@ -41,20 +40,19 @@ export default function App() {
       setVidasAula(snapshot.val() || {});
     });
 
-    // Sincronizar la configuración del profesor desde Firebase si el alumno entra a una sala existente
     const configRef = ref(db, `salas/${codigoSala}/config`);
     const unsubscribeConfig = onValue(configRef, (snapshot) => {
       const config = snapshot.val();
       if (config) {
-        if (config.modoJuego) setModoJuegoSeleccionado(config.modoJuego);
-        if (config.unidades && config.unidades.length > 0) {
-          const preguntasMix = generarTestGeneral50(config.unidades);
+        setConfigSesion(config);
+        if (config.unidades && config.unidades.length >= 0) {
+          const preguntasMix = generarTestGeneral50(config.unidades, config.numPreguntas || 15);
           setUnidadeSeleccionada({
             id: "mix_profesor",
             isTestGeneral: true,
             titulo: {
-              gl: `EXAME CONFIGURADO (${config.unidades.length} unidades)`,
-              es: `EXAMEN CONFIGURADO (${config.unidades.length} unidades)`
+              gl: `EXAME CONFIGURADO (${config.unidades.length === 0 ? 'Todas' : config.unidades.length} unidades)`,
+              es: `EXAMEN CONFIGURADO (${config.unidades.length === 0 ? 'Todas' : config.unidades.length} unidades)`
             },
             preguntas: preguntasMix
           });
@@ -90,7 +88,6 @@ export default function App() {
 
   const handleVolverAlMenu = () => {
     setScore(0);
-    setModoJuegoSeleccionado(null);
     setUnidadeSeleccionada(null);
   };
 
@@ -123,13 +120,14 @@ export default function App() {
     }
   };
 
-  // Guardar la configuración de la sesión elegida por el profesor en Firebase
   const guardarConfiguracionSala = async () => {
     if (!codigoSala) return;
     const configRef = ref(db, `salas/${codigoSala}/config`);
     await set(configRef, {
       modoJuego: modoJuegoProfesor,
-      unidades: unidadesSeleccionadasProfesor
+      unidades: unidadesSeleccionadasProfesor,
+      numPreguntas: Number(numPreguntasProfesor),
+      tiempoPregunta: Number(tiempoPreguntaProfesor)
     });
     alert("Configuración de la sesión guardada y aplicada a la sala.");
   };
@@ -210,14 +208,13 @@ export default function App() {
               <p className="text-[11px] text-slate-400 mt-3">{txt.apuntaCamara}</p>
             </div>
 
-            {/* Panel de Configuración de la Sesión para el Profesor */}
             <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-lg space-y-3 text-xs">
               <h3 className="font-bold text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
                 <span>⚙️</span> {txt.gestionTemarioProfesor}
               </h3>
               
               <div>
-                <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Modalidad de Proba:</label>
+                <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Modalidade de Proba:</label>
                 <select 
                   value={modoJuegoProfesor} 
                   onChange={(e) => setModoJuegoProfesor(e.target.value)}
@@ -228,9 +225,34 @@ export default function App() {
                 </select>
               </div>
 
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">{txt.numeroPreguntas}</label>
+                  <input 
+                    type="number" 
+                    min="5" 
+                    max="50" 
+                    value={numPreguntasProfesor} 
+                    onChange={(e) => setNumPreguntasProfesor(e.target.value)}
+                    className="w-full p-2 rounded-lg bg-slate-800 border border-slate-700 text-white text-xs font-bold text-center"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">{txt.tiempoPregunta}</label>
+                  <input 
+                    type="number" 
+                    min="10" 
+                    max="120" 
+                    value={tiempoPreguntaProfesor} 
+                    onChange={(e) => setTiempoPreguntaProfesor(e.target.value)}
+                    className="w-full p-2 rounded-lg bg-slate-800 border border-slate-700 text-white text-xs font-bold text-center"
+                  />
+                </div>
+              </div>
+
               <div>
-                <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Unidades Didácticas (Mix):</label>
-                <div className="max-h-36 overflow-y-auto space-y-1 pr-1">
+                <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Unidades Didácticas:</label>
+                <div className="max-h-28 overflow-y-auto space-y-1 pr-1">
                   {todasLasUnidades.map((u) => {
                     const sel = unidadesSeleccionadasProfesor.includes(u.id);
                     return (
@@ -311,24 +333,20 @@ export default function App() {
 
       <main className="flex-1 p-4">
         <div className={tabAlumno === 'juego' ? 'block' : 'hidden'}>
-          {!modoJuegoSeleccionado ? (
-            <div className="max-w-md mx-auto bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center space-y-4">
+          {!unidadeSeleccionada ? (
+            <div className="max-w-md mx-auto bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center space-y-4 shadow-xl my-8">
               <h2 className="text-base font-bold text-white uppercase tracking-wider">Agardando á configuración do profesor...</h2>
-              <p className="text-xs text-slate-400">O profesor está a configurar o xogo e as unidades para esta sala ({codigoSala}). A pantalla actualizarase en breve.</p>
+              <p className="text-xs text-slate-400">O profesor está a configurar a sesión para esta sala ({codigoSala}). O xogo comezará en breve.</p>
               <div className="animate-pulse text-blue-400 text-xs font-bold">Conectado á Sala • Sincronizando...</div>
             </div>
-          ) : !unidadeSeleccionada ? (
-            <SelectorUnidad
-              lang={lang}
-              onSelectUnidad={(ud) => setUnidadeSeleccionada(ud)}
-            />
           ) : (
             <GameQuiz
               unidade={unidadeSeleccionada}
               lang={lang}
               equipo={equipo}
               codigoSala={codigoSala}
-              modoJuego={modoJuegoSeleccionado}
+              modoJuego={configSesion.modoJuego || 'clasico'}
+              tiempoPersonalizado={configSesion.tiempoPregunta || 30}
               onAddPoints={addPoints}
               onReportScore={reportScore}
               onVolver={handleVolverAlMenu}
