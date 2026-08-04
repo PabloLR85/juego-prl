@@ -1,8 +1,10 @@
 // src/components/GameQuiz.jsx
 import React, { useState, useEffect } from 'react';
 import { barajarArray, TIEMPO_POR_DEFECTO_SEGUNDOS, TEXTOS_UI } from '../data/temarioPRL';
+import { ref, set } from 'firebase/database';
+import { db } from '../firebase';
 
-export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onReportScore, equipo }) {
+export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onReportScore, equipo, codigoSala }) {
   const [preguntasBarajadas, setPreguntasBarajadas] = useState([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -16,6 +18,10 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
   const [historialRespuestas, setHistorialRespuestas] = useState([]);
   const [mostrarRevision, setMostrarRevision] = useState(false);
   const [mostrarModalConfirmacion, setMostrarModalConfirmacion] = useState(false);
+  
+  // Variables del Modo Juicio Final (3 vidas)
+  const [vidas, setVidas] = useState(3);
+  const [eliminadoJuicioFinal, setEliminadoJuicioFinal] = useState(false);
 
   const txt = TEXTOS_UI[lang];
 
@@ -62,8 +68,18 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
     setPuntosTotalesIntento(0);
     setHistorialRespuestas([]);
     setMostrarRevision(false);
+    setVidas(3);
+    setEliminadoJuicioFinal(false);
+    sincronizarVidasFirebase(3, false);
     setTimeLeft(listaFinal[0]?.tiempo || TIEMPO_POR_DEFECTO_SEGUNDOS);
     setGlobalTimeLeft(unidade.isTestGeneral ? 600 : null);
+  };
+
+  const sincronizarVidasFirebase = (numVidas, estadoEliminado) => {
+    if (!codigoSala || !equipo) return;
+    const keyEquipo = equipo.trim().replace(/[.#$\[\]]/g, "_");
+    const vidasRef = ref(db, `salas/${codigoSala.trim()}/vidas/${keyEquipo}`);
+    set(vidasRef, { vidas: numVidas, eliminado: estadoEliminado });
   };
 
   const reiniciarTest = () => {
@@ -71,7 +87,7 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
   };
 
   useEffect(() => {
-    if (!unidade.isTestGeneral || globalTimeLeft === null || isQuizFinished) return;
+    if (!unidade.isTestGeneral || globalTimeLeft === null || isQuizFinished || eliminadoJuicioFinal) return;
 
     if (globalTimeLeft === 0) {
       setIsQuizFinished(true);
@@ -80,22 +96,35 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
     const globalTimer = setInterval(() => setGlobalTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(globalTimer);
-  }, [globalTimeLeft, unidade.isTestGeneral, isQuizFinished]);
+  }, [globalTimeLeft, unidade.isTestGeneral, isQuizFinished, eliminadoJuicioFinal]);
 
   const preguntaActual = preguntasBarajadas[currentIdx];
 
   useEffect(() => {
-    if (isAnswered || isQuizFinished || !preguntaActual) return;
+    if (isAnswered || isQuizFinished || !preguntaActual || eliminadoJuicioFinal) return;
     if (timeLeft === 0) {
       handleTimeout();
       return;
     }
     const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
-  }, [timeLeft, isAnswered, isQuizFinished, preguntaActual]);
+  }, [timeLeft, isAnswered, isQuizFinished, preguntaActual, eliminadoJuicioFinal]);
+
+  const restarVidaPorFallo = () => {
+    const novasVidas = vidas - 1;
+    setVidas(novasVidas);
+    if (novasVidas <= 0) {
+      setEliminadoJuicioFinal(true);
+      sincronizarVidasFirebase(0, true);
+      setIsQuizFinished(true); // Termina su partida y pasa a modo espectador
+    } else {
+      sincronizarVidasFirebase(novasVidas, false);
+    }
+  };
 
   const handleTimeout = () => {
     setIsAnswered(true);
+    restarVidaPorFallo();
     
     const opActuales = lang === 'gl' ? preguntaActual.opcionesGl : preguntaActual.opcionesEs;
     const corrActual = lang === 'gl' ? preguntaActual.corrGl : preguntaActual.corrEs;
@@ -114,12 +143,12 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
     setFeedback({
       type: 'error',
-      text: txt.seAgototiempo
+      text: `${txt.seAgototiempo} (Perdes 1 vida ❤️)`
     });
   };
 
   const handleSelectOption = (index) => {
-    if (isAnswered) return;
+    if (isAnswered || eliminadoJuicioFinal) return;
     setSelectedOption(index);
     setIsAnswered(true);
 
@@ -154,9 +183,10 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
         text: `${txt.correctoBonus} ${totalPuntos} pts (${preguntaActual.puntos} ${txt.puntosBase} + ${bonus} ${txt.bonusTiempo})`
       });
     } else {
+      restarVidaPorFallo();
       setFeedback({
         type: 'error',
-        text: `${txt.incorrectoRespuesta} ${opActuales[corrActual]}`
+        text: `${txt.incorrectoRespuesta} ${opActuales[corrActual]} (-1 Vida ❤️)`
       });
     }
   };
@@ -182,17 +212,21 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
   if (isQuizFinished) {
     const porcentajeAciertos = Math.round((aciertos / preguntasBarajadas.length) * 100) || 0;
-    const aprobado = porcentajeAciertos >= 50;
+    const aprobado = porcentajeAciertos >= 50 && !eliminadoJuicioFinal;
 
     return (
       <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-2xl mx-auto text-center space-y-6">
         <div className="w-20 h-20 bg-blue-600/20 border-2 border-blue-500 rounded-full flex items-center justify-center text-4xl mx-auto">
-          {aprobado ? '🏆' : '📚'}
+          {eliminadoJuicioFinal ? '💀' : aprobado ? '🏆' : '📚'}
         </div>
 
         <h2 className="text-3xl font-black text-white uppercase tracking-wider">
-          {unidade.isTestGeneral ? txt.examenFinalizado : txt.unidadFinalizada}
+          {eliminadoJuicioFinal ? '💀 Eliminado no Xuízo Final' : unidade.isTestGeneral ? txt.examenFinalizado : txt.unidadFinalizada}
         </h2>
+
+        {eliminadoJuicioFinal && (
+          <p className="text-red-400 text-sm font-bold">Quedáchesen sen vidas (❤️❤️❤️). Pasaches a modo espectador.</p>
+        )}
 
         <div className="grid grid-cols-3 gap-4 bg-slate-950/60 p-4 rounded-xl border border-slate-800 text-center">
           <div>
@@ -209,47 +243,6 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
               {porcentajeAciertos}%
             </div>
           </div>
-        </div>
-
-        <div className={`p-4 rounded-xl font-bold border text-sm ${
-          aprobado ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-red-500/20 text-red-300 border-red-500/40'
-        }`}>
-          {aprobado ? txt.aprobadoMsg : txt.suspensoMsg}
-        </div>
-
-        <div className="pt-2">
-          <button
-            onClick={() => setMostrarRevision(!mostrarRevision)}
-            className="text-xs font-bold text-blue-400 hover:text-blue-300 underline uppercase tracking-wider"
-          >
-            {mostrarRevision ? txt.ocultarDesglose : txt.revisarHistorial}
-          </button>
-
-          {mostrarRevision && (
-            <div className="mt-4 text-left space-y-4 max-h-96 overflow-y-auto pr-2 bg-slate-950/80 p-4 rounded-xl border border-slate-800">
-              {historialRespuestas.map((h, i) => {
-                const esCorrecta = h.seleccionada === h.correcta;
-                return (
-                  <div key={i} className={`p-4 rounded-xl border ${esCorrecta ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-red-500/30 bg-red-500/5'}`}>
-                    <p className="font-bold text-sm text-white mb-2">{i + 1}. {h.pregunta}</p>
-                    <p className="text-xs text-slate-300">
-                      <strong>{txt.tuRespuesta}</strong> {h.seleccionada === -1 ? txt.tiempoAgotado : h.opciones[h.seleccionada]}
-                    </p>
-                    {!esCorrecta && (
-                      <p className="text-xs text-emerald-400 mt-1">
-                        <strong>{txt.respuestaCorrectaLabel}</strong> {h.opciones[h.correcta]}
-                      </p>
-                    )}
-                    {h.explicacion && (
-                      <p className="text-xs text-slate-400 mt-2 bg-slate-900 p-2 rounded border border-slate-800 italic">
-                        {txt.justificacionDidactica} {h.explicacion}
-                      </p>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
@@ -282,30 +275,8 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
 
   return (
     <div className="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-3xl mx-auto relative">
-      {mostrarModalConfirmacion && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <h3 className="text-lg font-bold text-white uppercase">{txt.abandonarExamen}</h3>
-            <p className="text-xs text-slate-400">{txt.avisoAbandono}</p>
-            <div className="flex gap-3 pt-2">
-              <button
-                onClick={() => setMostrarModalConfirmacion(false)}
-                className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold border border-slate-700"
-              >
-                {txt.continuarJugando}
-              </button>
-              <button
-                onClick={onVolver}
-                className="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-bold"
-              >
-                {txt.siSalir}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="flex justify-between items-center mb-6">
+      {/* Marcador de Vidas en Vivo */}
+      <div className="flex justify-between items-center mb-4 bg-slate-950 p-3 rounded-xl border border-slate-800">
         <button
           onClick={() => setMostrarModalConfirmacion(true)}
           className="text-xs font-bold text-slate-400 hover:text-white bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700"
@@ -313,15 +284,14 @@ export default function GameQuiz({ unidade, lang, onAddPoints, onVolver, onRepor
           {txt.cambiarTema}
         </button>
 
-        <span className="text-xs font-black text-blue-400 uppercase tracking-widest bg-blue-500/10 border border-blue-500/20 px-3 py-1 rounded-lg">
-          {txt.pregunta} {currentIdx + 1} {txt.de} {preguntasBarajadas.length}
-        </span>
-
-        {unidade.isTestGeneral && globalTimeLeft !== null && (
-          <div className="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-xl font-mono font-bold text-xs">
-            {txt.tiempoGlobal} {formatMinutos(globalTimeLeft)}
-          </div>
-        )}
+        <div className="flex items-center gap-1 text-lg">
+          <span className="text-xs font-bold text-slate-400 uppercase mr-2">Vidas Xuízo Final:</span>
+          {['❤️', '❤️', '❤️'].map((corazon, i) => (
+            <span key={i} className={`transition-opacity ${i < vidas ? 'opacity-100 scale-110' : 'opacity-25 grayscale'}`}>
+              {corazon}
+            </span>
+          ))}
+        </div>
 
         <div className={`px-4 py-1.5 rounded-xl font-mono font-black text-lg border ${
           timeLeft <= 5 ? 'bg-red-500/20 text-red-400 border-red-500/40 animate-pulse' : 'bg-amber-500/10 text-amber-400 border-amber-500/30'

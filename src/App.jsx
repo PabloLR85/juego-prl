@@ -16,6 +16,7 @@ export default function App() {
   const [isProyectorMode, setIsProyectorMode] = useState(false);
   const [unidadeSeleccionada, setUnidadeSeleccionada] = useState(null);
   const [rankingAula, setRankingAula] = useState({});
+  const [vidasAula, setVidasAula] = useState({});
   const [tabAlumno, setTabAlumno] = useState('juego');
 
   const txt = TEXTOS_UI[lang];
@@ -25,12 +26,21 @@ export default function App() {
     if (!codigoSala) return;
 
     const rankingRef = ref(db, `salas/${codigoSala}/ranking`);
-    const unsubscribe = onValue(rankingRef, (snapshot) => {
+    const unsubscribeRanking = onValue(rankingRef, (snapshot) => {
       const data = snapshot.val();
       setRankingAula(data || {});
     });
 
-    return () => unsubscribe();
+    const vidasRef = ref(db, `salas/${codigoSala}/vidas`);
+    const unsubscribeVidas = onValue(vidasRef, (snapshot) => {
+      const data = snapshot.val();
+      setVidasAula(data || {});
+    });
+
+    return () => {
+      unsubscribeRanking();
+      unsubscribeVidas();
+    };
   }, [codigoSala]);
 
   const handleEntrarAlumno = (e) => {
@@ -38,7 +48,10 @@ export default function App() {
     if (equipo.trim() && codigoSala.trim()) {
       const keyEquipo = equipo.trim().replace(/[.#$\[\]]/g, "_");
       const equipoRef = ref(db, `salas/${codigoSala.trim()}/ranking/${keyEquipo}`);
+      const vidasRef = ref(db, `salas/${codigoSala.trim()}/vidas/${keyEquipo}`);
+      
       set(equipoRef, 0);
+      set(vidasRef, { vidas: 3, eliminado: false });
       setIsStarted(true);
     }
   };
@@ -80,7 +93,7 @@ export default function App() {
           lang === 'gl' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
         }`}
       >
-        GAL
+        Galego
       </button>
       <button
         onClick={() => setLang('es')}
@@ -88,7 +101,7 @@ export default function App() {
           lang === 'es' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
         }`}
       >
-        CAS
+        Castellano
       </button>
     </div>
   );
@@ -153,7 +166,7 @@ export default function App() {
         <header className="flex justify-between items-center bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
           <div>
             <h1 className="text-2xl font-black text-blue-400 uppercase tracking-wider">
-              {txt.pantallaAula}
+              {txt.pantallaAula} (Modo Xuízo Final 💀)
             </h1>
             <p className="text-slate-400 text-sm">{txt.instruccionesQR}</p>
           </div>
@@ -188,17 +201,31 @@ export default function App() {
               </div>
             ) : (
               <div className="space-y-3">
-                {rankingOrdenado.map(([nombre, pts], index) => (
-                  <div key={nombre} className="p-4 bg-slate-800/80 border border-slate-700 rounded-xl flex items-center justify-between shadow-md">
-                    <div className="flex items-center gap-4">
-                      <span className="text-xl font-black text-amber-400 w-8">
-                        {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}º`}
-                      </span>
-                      <span className="font-bold text-white text-lg">{nombre}</span>
+                {rankingOrdenado.map(([nombre, pts], index) => {
+                  const infoVidas = vidasAula[nombre] || { vidas: 3, eliminado: false };
+                  return (
+                    <div key={nombre} className={`p-4 rounded-xl flex items-center justify-between shadow-md border ${infoVidas.eliminado ? 'bg-red-950/20 border-red-900/50 opacity-60' : 'bg-slate-800/80 border-slate-700'}`}>
+                      <div className="flex items-center gap-4">
+                        <span className="text-xl font-black text-amber-400 w-8">
+                          {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}º`}
+                        </span>
+                        <div>
+                          <span className="font-bold text-white text-lg">{nombre}</span>
+                          <div className="text-sm tracking-widest mt-0.5">
+                            {infoVidas.eliminado ? '💀 Eliminado' : (
+                              <>
+                                {infoVidas.vidas >= 1 ? '❤️' : '🖤'}
+                                {infoVidas.vidas >= 2 ? '❤️' : '🖤'}
+                                {infoVidas.vidas >= 3 ? '❤️' : '🖤'}
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <span className="text-2xl font-black text-amber-400">{pts} <span className="text-xs text-slate-400 font-normal">pts</span></span>
                     </div>
-                    <span className="text-2xl font-black text-amber-400">{pts} <span className="text-xs text-slate-400 font-normal">pts</span></span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -241,7 +268,7 @@ export default function App() {
             tabAlumno === 'juego' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
           }`}
         >
-          🎮 Preguntas
+          {txt.preguntasTab}
         </button>
         <button
           onClick={() => setTabAlumno('ranking')}
@@ -249,12 +276,11 @@ export default function App() {
             tabAlumno === 'ranking' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
           }`}
         >
-          📊 Clasificación Clase ({rankingOrdenado.length})
+          {txt.rankingTab} ({rankingOrdenado.length})
         </button>
       </div>
 
       <main className="flex-1 p-6">
-        {/* Mantener montado el bloque de juego/selector usando 'hidden' para evitar que se reinicie al cambiar de pestaña */}
         <div className={tabAlumno === 'juego' ? 'block' : 'hidden'}>
           {!unidadeSeleccionada ? (
             <SelectorUnidad lang={lang} onSelectUnidad={(ud) => setUnidadeSeleccionada(ud)} />
@@ -263,6 +289,7 @@ export default function App() {
               unidade={unidadeSeleccionada}
               lang={lang}
               equipo={equipo}
+              codigoSala={codigoSala}
               onAddPoints={addPoints}
               onReportScore={reportScore}
               onVolver={handleVolverAlMenu}
@@ -281,6 +308,7 @@ export default function App() {
               <div className="space-y-2">
                 {rankingOrdenado.map(([nombre, pts], index) => {
                   const esMiEquipo = nombre === equipo.trim().replace(/[.#$\[\]]/g, "_");
+                  const infoVidas = vidasAula[nombre] || { vidas: 3, eliminado: false };
                   return (
                     <div
                       key={nombre}
@@ -294,7 +322,12 @@ export default function App() {
                         <span className="font-mono font-bold w-6 text-amber-400">
                           {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}º`}
                         </span>
-                        <span className="text-sm">{nombre} {esMiEquipo && '(Tú)'}</span>
+                        <div>
+                          <span className="text-sm">{nombre} {esMiEquipo && txt.tuEres}</span>
+                          <div className="text-xs">
+                            {infoVidas.eliminado ? '💀 Eliminado' : `Vidas: ${infoVidas.vidas === 3 ? '❤️❤️❤️' : infoVidas.vidas === 2 ? '❤️❤️' : '❤️'}`}
+                          </div>
+                        </div>
                       </div>
                       <span className="font-bold text-amber-400 text-sm">{pts} pts</span>
                     </div>
